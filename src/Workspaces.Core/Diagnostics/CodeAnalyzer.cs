@@ -32,13 +32,13 @@ namespace Roslynator.Diagnostics
             if (analyzerAssemblies != null)
                 _analyzerAssemblies.AddRange(analyzerAssemblies);
 
-            Options = options ?? CodeAnalyzerOptions.Default;
             FormatProvider = formatProvider;
+            Options = options ?? CodeAnalyzerOptions.Default;
         }
 
-        public CodeAnalyzerOptions Options { get; }
-
         public IFormatProvider FormatProvider { get; }
+
+        public CodeAnalyzerOptions Options { get; }
 
         public async Task<ImmutableArray<ProjectAnalysisResult>> AnalyzeSolutionAsync(
             Solution solution,
@@ -119,14 +119,22 @@ namespace Roslynator.Diagnostics
                 analyzerReferences: _analyzerReferences,
                 options: Options);
 
+            ProjectAnalysisResult result = null;
+
             if (!analyzers.Any())
-            {
                 WriteLine($"  No analyzers found to analyze '{project.Name}'", ConsoleColor.DarkGray, Verbosity.Normal);
 
-                if (Options.IgnoreCompilerDiagnostics)
-                    return default;
+            if (analyzers.Any()
+                || !Options.IgnoreCompilerDiagnostics)
+            {
+                result = await AnalyzeProjectCoreAsync(project, analyzers, cancellationToken).ConfigureAwait(false);
             }
 
+            return result;
+        }
+
+        private async Task<ProjectAnalysisResult> AnalyzeProjectCoreAsync(Project project, ImmutableArray<DiagnosticAnalyzer> analyzers, CancellationToken cancellationToken = default)
+        {
             LogHelpers.WriteUsedAnalyzers(analyzers, project, Options, ConsoleColor.DarkGray, Verbosity.Diagnostic);
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -186,7 +194,12 @@ namespace Roslynator.Diagnostics
 
             LogHelpers.WriteDiagnostics(diagnostics, baseDirectoryPath: projectDirectoryPath, formatProvider: FormatProvider, indentation: "  ", verbosity: Verbosity.Normal);
 
-            return new ProjectAnalysisResult(project.Id, analyzers, compilerDiagnostics, diagnostics, telemetry);
+            return new ProjectAnalysisResult(
+                project.Id,
+                analyzers,
+                compilerDiagnostics,
+                diagnostics,
+                telemetry);
         }
 
         private IEnumerable<Diagnostic> FilterDiagnostics(IEnumerable<Diagnostic> diagnostics, CancellationToken cancellationToken = default)

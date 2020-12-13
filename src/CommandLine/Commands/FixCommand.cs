@@ -79,13 +79,15 @@ namespace Roslynator.CommandLine
             IFormatProvider formatProvider = null,
             CancellationToken cancellationToken = default)
         {
+            CodeFixer codeFixer;
+
             if (projectOrSolution.IsProject)
             {
                 Project project = projectOrSolution.AsProject();
 
                 Solution solution = project.Solution;
 
-                CodeFixer codeFixer = GetCodeFixer(solution);
+                codeFixer = GetCodeFixer(solution);
 
                 WriteLine($"Fix '{project.Name}'", ConsoleColor.Cyan, Verbosity.Minimal);
 
@@ -103,7 +105,7 @@ namespace Roslynator.CommandLine
             {
                 Solution solution = projectOrSolution.AsSolution();
 
-                CodeFixer codeFixer = GetCodeFixer(solution);
+                codeFixer = GetCodeFixer(solution);
 
                 await codeFixer.FixSolutionAsync(f => projectFilter.IsMatch(f), cancellationToken);
             }

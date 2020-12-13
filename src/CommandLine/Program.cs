@@ -3,12 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.CodeAnalysis;
@@ -48,6 +46,7 @@ namespace Roslynator.CommandLine
                     AnalyzeCommandLineOptions,
                     ListSymbolsCommandLineOptions,
                     FormatCommandLineOptions,
+                    FixSpellingCommandLineOptions,
                     PhysicalLinesOfCodeCommandLineOptions,
                     LogicalLinesOfCodeCommandLineOptions,
                     GenerateDocCommandLineOptions,
@@ -97,6 +96,7 @@ namespace Roslynator.CommandLine
                     (AnalyzeCommandLineOptions options) => AnalyzeAsync(options).Result,
                     (ListSymbolsCommandLineOptions options) => ListSymbolsAsync(options).Result,
                     (FormatCommandLineOptions options) => FormatAsync(options).Result,
+                    (FixSpellingCommandLineOptions options) => FixSpellingAsync(options).Result,
                     (PhysicalLinesOfCodeCommandLineOptions options) => PhysicalLinesOfCodeAsync(options).Result,
                     (LogicalLinesOfCodeCommandLineOptions options) => LogicalLinesOrCodeAsync(options).Result,
                     (GenerateDocCommandLineOptions options) => GenerateDocAsync(options).Result,
@@ -335,6 +335,23 @@ namespace Roslynator.CommandLine
 
             IEnumerable<string> properties = options.Properties;
 
+            CommandResult result = await command.ExecuteAsync(options.Path, options.MSBuildPath, properties);
+
+            return (result == CommandResult.Success) ? 0 : 1;
+        }
+
+        private static async Task<int> FixSpellingAsync(FixSpellingCommandLineOptions options)
+        {
+            if (!options.TryGetProjectFilter(out ProjectFilter projectFilter))
+                return 1;
+
+            var command = new FixSpellingCommand(options, projectFilter);
+
+            IEnumerable<string> properties = options.Properties;
+#if DEBUG
+            Console.WriteLine("Processing word lists");
+            WordListHelpers.ProcessWordLists();
+#endif
             CommandResult result = await command.ExecuteAsync(options.Path, options.MSBuildPath, properties);
 
             return (result == CommandResult.Success) ? 0 : 1;

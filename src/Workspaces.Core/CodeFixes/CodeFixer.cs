@@ -42,9 +42,9 @@ namespace Roslynator.CodeFixes
 
         public Workspace Workspace { get; }
 
-        public CodeFixerOptions Options { get; }
-
         public IFormatProvider FormatProvider { get; }
+
+        public CodeFixerOptions Options { get; }
 
         private Solution CurrentSolution => Workspace.CurrentSolution;
 
