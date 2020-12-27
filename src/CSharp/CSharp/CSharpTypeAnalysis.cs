@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Diagnostics;
 using System.Threading;
 using Microsoft.CodeAnalysis;
@@ -153,9 +154,9 @@ namespace Roslynator.CSharp
             switch (typeAppearance)
             {
                 case TypeAppearance.Obvious:
-                    return IsTypeObvious(expression, semanticModel, cancellationToken);
+                    return IsTypeObvious(expression, typeSymbol, semanticModel, cancellationToken);
                 case TypeAppearance.NotObvious:
-                    return !IsTypeObvious(expression, semanticModel, cancellationToken);
+                    return !IsTypeObvious(expression, typeSymbol, semanticModel, cancellationToken);
             }
 
             Debug.Assert(typeAppearance == TypeAppearance.None, typeAppearance.ToString());
@@ -232,9 +233,9 @@ namespace Roslynator.CSharp
             switch (typeAppearance)
             {
                 case TypeAppearance.Obvious:
-                    return IsTypeObvious(expression, semanticModel, cancellationToken);
+                    return IsTypeObvious(expression, typeSymbol, semanticModel, cancellationToken);
                 case TypeAppearance.NotObvious:
-                    return !IsTypeObvious(expression, semanticModel, cancellationToken);
+                    return !IsTypeObvious(expression, typeSymbol, semanticModel, cancellationToken);
             }
 
             Debug.Assert(typeAppearance == TypeAppearance.None, typeAppearance.ToString());
@@ -242,7 +243,7 @@ namespace Roslynator.CSharp
             return true;
         }
 
-        public static bool IsTypeObvious(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
+        public static bool IsTypeObvious(ExpressionSyntax expression, ITypeSymbol typeSymbol, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
             switch (expression.Kind())
             {
@@ -270,7 +271,7 @@ namespace Roslynator.CSharp
 
                         foreach (ExpressionSyntax expression2 in expressions)
                         {
-                            if (!IsTypeObvious(expression2, semanticModel, cancellationToken))
+                            if (!IsTypeObvious(expression2, typeSymbol, semanticModel, cancellationToken))
                                 return false;
                         }
 
@@ -282,6 +283,36 @@ namespace Roslynator.CSharp
 
                         return symbol?.Kind == SymbolKind.Field
                             && symbol.ContainingType?.TypeKind == TypeKind.Enum;
+                    }
+                case SyntaxKind.InvocationExpression:
+                    {
+                        if (typeSymbol != null)
+                        {
+                            var invocationExpression = (InvocationExpressionSyntax)expression;
+                            if (invocationExpression.Expression.IsKind(SyntaxKind.SimpleMemberAccessExpression))
+                            {
+                                ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);
+
+                                if (symbol?.IsStatic == true
+                                    && string.Equals(symbol.Name, "Parse", StringComparison.Ordinal)
+                                    && SymbolEqualityComparer.IncludeNullability.Equals(
+                                        ((IMethodSymbol)symbol).ReturnType,
+                                        typeSymbol))
+                                {
+                                    var simpleMemberAccess = (MemberAccessExpressionSyntax)invocationExpression.Expression;
+
+                                    ISymbol symbol2 = semanticModel.GetSymbol(simpleMemberAccess.Expression, cancellationToken);
+
+                                    if (SymbolEqualityComparer.Default.Equals(symbol2, typeSymbol)
+                                        && semanticModel.GetAliasInfo(simpleMemberAccess.Expression, cancellationToken) == null)
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+
+                        break;
                     }
             }
 
@@ -358,6 +389,10 @@ namespace Roslynator.CSharp
                     {
                         return IsLocalThatSupportsExplicitDeclaration(singleVariableDesignation);
                     }
+                case DiscardDesignationSyntax discardDesignation:
+                    {
+                        return IsLocalThatSupportsExplicitDeclaration(discardDesignation);
+                    }
                 case ParenthesizedVariableDesignationSyntax parenthesizedVariableDesignation:
                     {
                         foreach (VariableDesignationSyntax variableDesignation in parenthesizedVariableDesignation.Variables)
@@ -378,9 +413,9 @@ namespace Roslynator.CSharp
                     }
             }
 
-            bool IsLocalThatSupportsExplicitDeclaration(SingleVariableDesignationSyntax singleVariableDesignation)
+            bool IsLocalThatSupportsExplicitDeclaration(VariableDesignationSyntax variableDesignation)
             {
-                if (!(semanticModel.GetDeclaredSymbol(singleVariableDesignation, cancellationToken) is ILocalSymbol localSymbol))
+                if (!(semanticModel.GetDeclaredSymbol(variableDesignation, cancellationToken) is ILocalSymbol localSymbol))
                     return false;
 
                 ITypeSymbol typeSymbol = localSymbol.Type;
@@ -459,6 +494,7 @@ namespace Roslynator.CSharp
                 case SyntaxKind.ArrowExpressionClause:
                 case SyntaxKind.SimpleLambdaExpression:
                 case SyntaxKind.ParenthesizedLambdaExpression:
+                case SyntaxKind.CollectionInitializerExpression:
                     {
                         Debug.Assert(!tupleExpression.Arguments.Any(f => f.Expression.IsKind(SyntaxKind.DeclarationExpression)), tupleExpression.ToString());
                         return false;
@@ -541,9 +577,9 @@ namespace Roslynator.CSharp
             switch (typeAppearance)
             {
                 case TypeAppearance.Obvious:
-                    return IsTypeObvious(expression, semanticModel, cancellationToken);
+                    return IsTypeObvious(expression, null, semanticModel, cancellationToken);
                 case TypeAppearance.NotObvious:
-                    return !IsTypeObvious(expression, semanticModel, cancellationToken);
+                    return !IsTypeObvious(expression, null, semanticModel, cancellationToken);
             }
 
             Debug.Assert(typeAppearance == TypeAppearance.None, typeAppearance.ToString());
