@@ -327,6 +327,8 @@ namespace Roslynator.CSharp
                     return ((FieldDeclarationSyntax)node).Declaration?.Variables.FirstOrDefault()?.Identifier ?? default;
                 case SyntaxKind.VariableDeclarator:
                     return ((VariableDeclaratorSyntax)node).Identifier;
+                case SyntaxKind.RecordDeclaration:
+                    return ((RecordDeclarationSyntax)node).Identifier;
             }
 
             return default;
@@ -398,6 +400,7 @@ namespace Roslynator.CSharp
                     case SyntaxKind.RemoveAccessorDeclaration:
                     case SyntaxKind.UnknownAccessorDeclaration:
                     case SyntaxKind.IncompleteMember:
+                    case SyntaxKind.ArrowExpressionClause:
                         return false;
 #if DEBUG
                     default:
@@ -700,6 +703,8 @@ namespace Roslynator.CSharp
                     return ((IndexerDeclarationSyntax)declaration).ParameterList;
                 case SyntaxKind.LocalFunctionStatement:
                     return ((LocalFunctionStatementSyntax)declaration).ParameterList;
+                case SyntaxKind.RecordDeclaration:
+                    return ((RecordDeclarationSyntax)declaration).ParameterList;
                 default:
                     return null;
             }
@@ -726,6 +731,8 @@ namespace Roslynator.CSharp
                     return ((DelegateDeclarationSyntax)declaration).TypeParameterList;
                 case SyntaxKind.LocalFunctionStatement:
                     return ((LocalFunctionStatementSyntax)declaration).TypeParameterList;
+                case SyntaxKind.RecordDeclaration:
+                    return ((RecordDeclarationSyntax)declaration).TypeParameterList;
                 default:
                     return null;
             }

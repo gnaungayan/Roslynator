@@ -110,6 +110,32 @@ class C
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseVarInsteadOfExplicitTypeWhenTypeIsObvious)]
+        public async Task Test_ParseMethod()
+        {
+            await VerifyDiagnosticAndFixAsync(@"
+using System;
+
+class C
+{
+    void M()
+    {
+        [|TimeSpan|] timeSpan = TimeSpan.Parse(null);
+    }
+}
+", @"
+using System;
+
+class C
+{
+    void M()
+    {
+        var timeSpan = TimeSpan.Parse(null);
+    }
+}
+");
+        }
+
+        [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseVarInsteadOfExplicitTypeWhenTypeIsObvious)]
         public async Task TestNoDiagnostic()
         {
             await VerifyNoDiagnosticAsync(@"
@@ -169,6 +195,54 @@ class C
         }
 
         return default;
+    }
+}
+");
+        }
+
+        [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseVarInsteadOfExplicitTypeWhenTypeIsObvious)]
+        public async Task TestNoDiagnostic_DiscardDesignation()
+        {
+            await VerifyNoDiagnosticAsync(@"
+class C
+{
+    void M()
+    {
+        if (int.TryParse("""", out int result))
+        {
+        }
+    }
+}
+");
+        }
+
+        [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseVarInsteadOfExplicitTypeWhenTypeIsObvious)]
+        public async Task TestNoDiagnostic_ParseMethod()
+        {
+            await VerifyNoDiagnosticAsync(@"
+class C
+{
+    void M()
+    {
+        string x = C.Parse("""");
+    }
+
+    static string Parse(string value) => null;
+}
+");
+        }
+
+        [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseVarInsteadOfExplicitTypeWhenTypeIsObvious)]
+        public async Task TestNoDiagnostic_ParseMethod2()
+        {
+            await VerifyNoDiagnosticAsync(@"
+using I = System.Int32;
+
+class C
+{
+    void M()
+    {
+        int x = I.Parse("""");
     }
 }
 ");
