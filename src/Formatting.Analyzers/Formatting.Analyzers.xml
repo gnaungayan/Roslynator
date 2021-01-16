@@ -334,6 +334,7 @@ This rule does not enforce an empty line between two single-line declaration.</R
       <Option Identifier="RemoveEmptyLineBetweenSingleLineAccessors">
         <Title>Remove empty line between single-line accessors.</Title>
         <Id>i</Id>
+        <Name>invert</Name>
         <Kind>Invert</Kind>
         <Samples>
           <Sample>
@@ -442,6 +443,7 @@ namespace N
         <Title>Remove empty line between using directives with different root namespace.</Title>
         <MessageFormat>Remove empty line between using directives.</MessageFormat>
         <Id>i</Id>
+        <Name>invert</Name>
         <Kind>Invert</Kind>
         <Samples>
           <Sample>
@@ -680,6 +682,7 @@ namespace N
       <Option Identifier="AddNewLineAfterBinaryOperatorInsteadOfBeforeIt">
         <Title>Add newline after binary operator instead of before it.</Title>
         <Id>i</Id>
+        <Name>invert</Name>
         <Kind>Invert</Kind>
         <Samples>
           <Sample>
@@ -720,6 +723,7 @@ namespace N
       <Option Identifier="AddNewLineAfterConditionalOperatorInsteadOfBeforeIt">
         <Title>Add newline after conditional operator instead of before it.</Title>
         <Id>i</Id>
+        <Name>invert</Name>
         <Kind>Invert</Kind>
         <Samples>
           <Sample>
@@ -808,6 +812,7 @@ namespace N
       <Option Identifier="AddNewLineAfterExpressionBodyArrowInsteadOfBeforeIt">
         <Title>Add newline after expression-body arrow instead of before it.</Title>
         <Id>i</Id>
+        <Name>invert</Name>
         <Kind>Invert</Kind>
         <Samples>
           <Sample>
@@ -1200,6 +1205,7 @@ while (x);]]></After>
       <Option Identifier="RemoveNewLineBetweenClosingBraceAndWhileKeyword">
         <Title>Remove newline between closing brace and 'while' keyword.</Title>
         <Id>i</Id>
+        <Name>invert</Name>
         <Kind>Invert</Kind>
         <Samples>
           <Sample>
@@ -1236,6 +1242,7 @@ while (x);]]></Before>
       <Option Identifier="AddNewLineAfterEqualsSignInsteadOfBeforeIt">
         <Title>Add newline after equals sign instead of before it.</Title>
         <Id>i</Id>
+        <Name>invert</Name>
         <Kind>Invert</Kind>
         <Samples>
           <Sample>

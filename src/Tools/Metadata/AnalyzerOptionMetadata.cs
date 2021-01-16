@@ -12,6 +12,8 @@ namespace Roslynator.Metadata
         public AnalyzerOptionMetadata(
             string identifier,
             string id,
+            string parentId,
+            string name,
             AnalyzerOptionKind kind,
             string title,
             bool isEnabledByDefault,
@@ -23,6 +25,8 @@ namespace Roslynator.Metadata
         {
             Identifier = identifier;
             Id = id;
+            ParentId = parentId;
+            Name = name;
             Kind = kind;
             Title = title;
             IsEnabledByDefault = isEnabledByDefault;
@@ -60,6 +64,10 @@ namespace Roslynator.Metadata
         public string Identifier { get; }
 
         public string Id { get; }
+
+        public string ParentId { get; }
+
+        public string Name { get; }
 
         public AnalyzerOptionKind Kind { get; }
 

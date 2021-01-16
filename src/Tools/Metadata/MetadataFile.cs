@@ -149,6 +149,7 @@ namespace Roslynator.Metadata
 
             string identifier = element.Attribute("Identifier").Value;
             string id = element.Element("Id").Value;
+            string name = element.Element("Name").Value;
             var kind = (AnalyzerOptionKind)Enum.Parse(typeof(AnalyzerOptionKind), element.Element("Kind").Value);
             bool isEnabledByDefault = element.ElementValueAsBooleanOrDefault("IsEnabledByDefault");
             bool supportsFadeOut = element.ElementValueAsBooleanOrDefault("SupportsFadeOut");
@@ -160,6 +161,8 @@ namespace Roslynator.Metadata
             return new AnalyzerOptionMetadata(
                 identifier: identifier,
                 id: id,
+                parentId: parentId,
+                name: name,
                 kind: kind,
                 title: title,
                 isEnabledByDefault: isEnabledByDefault,
