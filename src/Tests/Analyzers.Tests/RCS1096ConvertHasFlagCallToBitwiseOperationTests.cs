@@ -433,7 +433,7 @@ class C
         if (options.HasFlag(StringSplitOptions.RemoveEmptyEntries)) { }
     }
 }
-", options: Options.WithEnabled(AnalyzerOptions.ConvertBitwiseOperationToHasFlagCall));
+", options: Options.WithEnabled(AnalyzerOptions.ConvertBitwiseOperationToHasFlagCall.Descriptor));
         }
     }
 }

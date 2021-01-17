@@ -39,7 +39,7 @@ namespace Roslynator.CSharp.Analysis
 
             if (kind == SyntaxKind.ParenthesizedExpression)
             {
-                if (AnalyzerOptionDescriptors.RemoveParenthesesFromConditionOfConditionalExpressionWhenExpressionIsSingleToken.IsEnabled(context))
+                if (AnalyzerOptions.RemoveParenthesesFromConditionOfConditionalExpressionWhenExpressionIsSingleToken.IsEnabled(context))
                 {
                     var parenthesizedExpression = (ParenthesizedExpressionSyntax)condition;
 
@@ -53,7 +53,7 @@ namespace Roslynator.CSharp.Analysis
                 }
             }
             else if (!CSharpFacts.IsSingleTokenExpression(kind)
-                || !AnalyzerOptionDescriptors.RemoveParenthesesFromConditionOfConditionalExpressionWhenExpressionIsSingleToken.IsEnabled(context))
+                || !AnalyzerOptions.RemoveParenthesesFromConditionOfConditionalExpressionWhenExpressionIsSingleToken.IsEnabled(context))
             {
                 DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ParenthesizeConditionOfConditionalExpression, condition);
             }

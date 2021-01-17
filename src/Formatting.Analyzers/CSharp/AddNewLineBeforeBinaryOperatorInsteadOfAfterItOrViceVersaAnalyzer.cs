@@ -61,11 +61,11 @@ namespace Roslynator.Formatting.CSharp
 
             if (SyntaxTriviaAnalysis.IsTokenFollowedWithNewLineAndNotPrecededWithNewLine(left, binaryExpression.OperatorToken, right))
             {
-                if (!AnalyzerOptionDescriptors.AddNewLineAfterBinaryOperatorInsteadOfBeforeIt.IsEnabled(context))
+                if (!AnalyzerOptions.AddNewLineAfterBinaryOperatorInsteadOfBeforeIt.IsEnabled(context))
                     ReportDiagnostic(DiagnosticDescriptors.AddNewLineBeforeBinaryOperatorInsteadOfAfterItOrViceVersa, ImmutableDictionary<string, string>.Empty);
             }
             else if (SyntaxTriviaAnalysis.IsTokenPrecededWithNewLineAndNotFollowedWithNewLine(left, binaryExpression.OperatorToken, right)
-                && AnalyzerOptionDescriptors.AddNewLineAfterBinaryOperatorInsteadOfBeforeIt.IsEnabled(context))
+                && AnalyzerOptions.AddNewLineAfterBinaryOperatorInsteadOfBeforeIt.IsEnabled(context))
             {
                 ReportDiagnostic(DiagnosticDescriptors.ReportOnly.AddNewLineAfterBinaryOperatorInsteadOfBeforeIt, DiagnosticProperties.AnalyzerOption_Invert);
             }

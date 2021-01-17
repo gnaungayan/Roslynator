@@ -122,7 +122,7 @@ namespace Roslynator.CSharp.Analysis
                 AnalyzeEnd(context, sections.Last(), switchStatement.CloseBraceToken);
 
                 if (sections.Count > 1
-                    && AnalyzerOptionDescriptors.RemoveEmptyLineBetweenClosingBraceAndSwitchSection.IsEnabled(context))
+                    && AnalyzerOptions.RemoveEmptyLineBetweenClosingBraceAndSwitchSection.IsEnabled(context))
                 {
                     SwitchSectionSyntax prevSection = sections[0];
 

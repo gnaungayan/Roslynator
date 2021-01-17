@@ -21,7 +21,7 @@ namespace Roslynator.CSharp.Analysis.Tests
         {
             compilation = base.UpdateCompilation(compilation);
 
-            return compilation.EnsureEnabled(AnalyzerOptions.ConvertBitwiseOperationToHasFlagCall);
+            return compilation.EnsureEnabled(AnalyzerOptionDiagnosticDescriptors.ConvertBitwiseOperationToHasFlagCall);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertHasFlagCallToBitwiseOperationOrViceVersa)]

@@ -32,7 +32,7 @@ namespace Roslynator.Formatting
             if (!tree.TryGetText(out SourceText sourceText))
                 return;
 
-            int maxLength = AnalyzerOptionDescriptors.MaxLineLength.GetInt32Value(context.Tree, context.Options, AnalyzerSettings.Current.MaxLineLength);
+            int maxLength = CSharp.AnalyzerOptions.MaxLineLength.GetInt32Value(context.Tree, context.Options, AnalyzerSettings.Current.MaxLineLength);
 
             if (maxLength <= 0)
                 return;

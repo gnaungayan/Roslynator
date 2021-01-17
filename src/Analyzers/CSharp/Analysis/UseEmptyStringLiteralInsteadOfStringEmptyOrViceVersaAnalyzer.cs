@@ -24,7 +24,7 @@ namespace Roslynator.CSharp.Analysis
             context.RegisterSyntaxNodeAction(
                 c =>
                 {
-                    if (!AnalyzerOptionDescriptors.UseStringEmptyInsteadOfEmptyStringLiteral.IsEnabled(c))
+                    if (!AnalyzerOptions.UseStringEmptyInsteadOfEmptyStringLiteral.IsEnabled(c))
                         AnalyzeSimpleMemberAccessExpression(c);
                 },
                 SyntaxKind.SimpleMemberAccessExpression);
@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.Analysis
             context.RegisterSyntaxNodeAction(
                 c =>
                 {
-                    if (AnalyzerOptionDescriptors.UseStringEmptyInsteadOfEmptyStringLiteral.IsEnabled(c))
+                    if (AnalyzerOptions.UseStringEmptyInsteadOfEmptyStringLiteral.IsEnabled(c))
                         AnalyzeStringLiteralExpression(c);
                 },
                 SyntaxKind.StringLiteralExpression);
@@ -40,7 +40,7 @@ namespace Roslynator.CSharp.Analysis
             context.RegisterSyntaxNodeAction(
                 c =>
                 {
-                    if (AnalyzerOptionDescriptors.UseStringEmptyInsteadOfEmptyStringLiteral.IsEnabled(c))
+                    if (AnalyzerOptions.UseStringEmptyInsteadOfEmptyStringLiteral.IsEnabled(c))
                         AnalyzeInterpolatedStringExpression(c);
                 },
                 SyntaxKind.InterpolatedStringExpression);

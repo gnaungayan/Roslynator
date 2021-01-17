@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Analysis
             context.RegisterSyntaxNodeAction(
                 c =>
                 {
-                    if (AnalyzerOptionDescriptors.RemoveCallToConfigureAwait.IsEnabled(c))
+                    if (AnalyzerOptions.RemoveCallToConfigureAwait.IsEnabled(c))
                     {
                         RemoveCallToConfigureAwait(c);
                     }

@@ -21,7 +21,7 @@ namespace Roslynator.CSharp.Analysis.Tests
         protected override CSharpCodeVerificationOptions UpdateOptions(CSharpCodeVerificationOptions options)
         {
             return base.UpdateOptions(options)
-                .WithEnabled(AnalyzerOptions.ConvertMethodGroupToAnonymousFunction);
+                .WithEnabled(AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.Descriptor);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertAnonymousFunctionToMethodGroupOrViceVersa)]
@@ -603,7 +603,7 @@ class C
         M2(M);
     }
 }
-", options: Options.WithSuppressed(AnalyzerOptions.ConvertMethodGroupToAnonymousFunction));
+", options: Options.WithSuppressed(AnalyzerOptionDiagnosticDescriptors.ConvertMethodGroupToAnonymousFunction));
         }
     }
 }

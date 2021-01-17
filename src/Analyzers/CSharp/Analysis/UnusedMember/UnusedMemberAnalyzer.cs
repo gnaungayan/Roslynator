@@ -146,7 +146,7 @@ namespace Roslynator.CSharp.Analysis.UnusedMember
                                 break;
 
                             if (declaration.ReturnsVoid()
-                                && AnalyzerOptionDescriptors.SuppressUnityScriptMethods.IsEnabled(context))
+                                && AnalyzerOptions.SuppressUnityScriptMethods.IsEnabled(context))
                             {
                                 if (canContainUnityScriptMethods == null)
                                 {

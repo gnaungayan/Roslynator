@@ -155,19 +155,19 @@ namespace Roslynator.CodeGeneration
                 if (optionAnalyzers.Any())
                 {
                     WriteCompilationUnit(
-                        Path.Combine(dirPath, "AnalyzerOptions.Generated.cs"),
-                        DiagnosticDescriptorsGenerators.Default.Generate(optionAnalyzers, obsolete: false, comparer: comparer, @namespace: @namespace, className: "AnalyzerOptions", identifiersClassName: "AnalyzerOptionIdentifiers"),
+                        Path.Combine(dirPath, "AnalyzerOptionDiagnosticDescriptors.Generated.cs"),
+                        DiagnosticDescriptorsGenerators.Default.Generate(optionAnalyzers, obsolete: false, comparer: comparer, @namespace: @namespace, className: "AnalyzerOptionDiagnosticDescriptors", identifiersClassName: "AnalyzerOptionDiagnosticIdentifiers"),
                         normalizeWhitespace: false,
                         fileMustExist: false);
 
                     WriteCompilationUnit(
-                        Path.Combine(dirPath, "AnalyzerOptionIdentifiers.Generated.cs"),
-                        DiagnosticIdentifiersGenerator.Generate(optionAnalyzers, obsolete: false, comparer: comparer, @namespace: @namespace, className: "AnalyzerOptionIdentifiers"),
+                        Path.Combine(dirPath, "AnalyzerOptionDiagnosticIdentifiers.Generated.cs"),
+                        DiagnosticIdentifiersGenerator.Generate(optionAnalyzers, obsolete: false, comparer: comparer, @namespace: @namespace, className: "AnalyzerOptionDiagnosticIdentifiers"),
                         fileMustExist: false);
 
                     WriteCompilationUnit(
-                        Path.Combine(dirPath, "AnalyzerOptionDescriptors.Generated.cs"),
-                        AnalyzerOptionDescriptorsGenerator.Generate(analyzers, obsolete: false, comparer: comparer, @namespace: @namespace, className: "AnalyzerOptionDescriptors"),
+                        Path.Combine(dirPath, "AnalyzerOptions.Generated.cs"),
+                        AnalyzerOptionDescriptorsGenerator.Generate(analyzers, obsolete: false, comparer: comparer, @namespace: @namespace, className: "AnalyzerOptions"),
                         fileMustExist: false);
                 }
 

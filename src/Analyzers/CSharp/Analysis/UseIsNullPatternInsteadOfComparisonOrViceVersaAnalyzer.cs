@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Analysis
             context.RegisterSyntaxNodeAction(
                 c =>
                 {
-                    if (AnalyzerOptionDescriptors.UseComparisonInsteadOfIsNullPattern.IsEnabled(c))
+                    if (AnalyzerOptions.UseComparisonInsteadOfIsNullPattern.IsEnabled(c))
                         AnalyzeIsPatternExpression(c);
                 },
                 SyntaxKind.IsPatternExpression);
@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.Analysis
             context.RegisterSyntaxNodeAction(
                 c =>
                 {
-                    if (!AnalyzerOptionDescriptors.UseComparisonInsteadOfIsNullPattern.IsEnabled(c))
+                    if (!AnalyzerOptions.UseComparisonInsteadOfIsNullPattern.IsEnabled(c))
                         AnalyzeEqualsExpression(c);
                 },
                 SyntaxKind.EqualsExpression);
@@ -41,8 +41,8 @@ namespace Roslynator.CSharp.Analysis
             context.RegisterSyntaxNodeAction(
                 c =>
                 {
-                    if (!AnalyzerOptionDescriptors.UseComparisonInsteadOfIsNullPattern.IsEnabled(c)
-                        && AnalyzerOptionDescriptors.UseIsNullPatternInsteadOfInequalityOperator.IsEnabled(c))
+                    if (!AnalyzerOptions.UseComparisonInsteadOfIsNullPattern.IsEnabled(c)
+                        && AnalyzerOptions.UseIsNullPatternInsteadOfInequalityOperator.IsEnabled(c))
                     {
                         AnalyzeNotEqualsExpression(c);
                     }

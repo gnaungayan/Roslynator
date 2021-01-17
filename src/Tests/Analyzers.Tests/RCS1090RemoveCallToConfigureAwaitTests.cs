@@ -20,7 +20,7 @@ namespace Roslynator.CSharp.Analysis.Tests
 
         protected override CSharpCodeVerificationOptions UpdateOptions(CSharpCodeVerificationOptions options)
         {
-            return base.UpdateOptions(options).WithEnabled(AnalyzerOptions.RemoveCallToConfigureAwait);
+            return base.UpdateOptions(options).WithEnabled(AnalyzerOptions.RemoveCallToConfigureAwait.Descriptor);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddCallToConfigureAwaitOrViceVersa)]

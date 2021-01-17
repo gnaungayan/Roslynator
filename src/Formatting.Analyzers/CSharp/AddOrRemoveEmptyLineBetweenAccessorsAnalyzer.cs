@@ -68,7 +68,7 @@ namespace Roslynator.Formatting.CSharp
                 {
                     if (isEmptyLine)
                     {
-                        if (AnalyzerOptionDescriptors.RemoveEmptyLineBetweenSingleLineAccessors.IsEnabled(context))
+                        if (AnalyzerOptions.RemoveEmptyLineBetweenSingleLineAccessors.IsEnabled(context))
                         {
                             DiagnosticHelpers.ReportDiagnostic(
                                 context,
@@ -77,7 +77,7 @@ namespace Roslynator.Formatting.CSharp
                                 properties: DiagnosticProperties.AnalyzerOption_Invert);
                         }
                     }
-                    else if (!AnalyzerOptionDescriptors.RemoveEmptyLineBetweenSingleLineAccessors.IsEnabled(context))
+                    else if (!AnalyzerOptions.RemoveEmptyLineBetweenSingleLineAccessors.IsEnabled(context))
                     {
                         DiagnosticHelpers.ReportDiagnostic(
                             context,

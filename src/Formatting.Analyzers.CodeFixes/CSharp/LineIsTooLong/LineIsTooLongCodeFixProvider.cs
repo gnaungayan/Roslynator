@@ -38,7 +38,7 @@ namespace Roslynator.Formatting.CodeFixes.LineIsTooLong
 
             SyntaxTree syntaxTree = await document.GetSyntaxTreeAsync(context.CancellationToken).ConfigureAwait(false);
 
-            int maxLength = AnalyzerOptionDescriptors.MaxLineLength.GetInt32Value(syntaxTree, document.Project.AnalyzerOptions, AnalyzerSettings.Current.MaxLineLength);
+            int maxLength = AnalyzerOptions.MaxLineLength.GetInt32Value(syntaxTree, document.Project.AnalyzerOptions, AnalyzerSettings.Current.MaxLineLength);
 
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
@@ -183,7 +183,7 @@ namespace Roslynator.Formatting.CodeFixes.LineIsTooLong
             return AddNewLineBeforeOrAfterAsync(
                 document,
                 arrowExpressionClause.ArrowToken,
-                AnalyzerOptionDescriptors.AddNewLineAfterExpressionBodyArrowInsteadOfBeforeIt.IsEnabled(document, arrowExpressionClause),
+                AnalyzerOptions.AddNewLineAfterExpressionBodyArrowInsteadOfBeforeIt.IsEnabled(document, arrowExpressionClause),
                 cancellationToken);
         }
 
@@ -195,7 +195,7 @@ namespace Roslynator.Formatting.CodeFixes.LineIsTooLong
             return AddNewLineBeforeOrAfterAsync(
                 document,
                 operatorToken,
-                AnalyzerOptionDescriptors.AddNewLineAfterEqualsSignInsteadOfBeforeIt.IsEnabled(document, operatorToken),
+                AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt.IsEnabled(document, operatorToken),
                 cancellationToken);
         }
 
@@ -206,7 +206,7 @@ namespace Roslynator.Formatting.CodeFixes.LineIsTooLong
         {
             string indentation = SyntaxTriviaAnalysis.GetIncreasedIndentation(conditionalExpression, cancellationToken);
 
-            if (AnalyzerOptionDescriptors.AddNewLineAfterEqualsSignInsteadOfBeforeIt.IsEnabled(document, conditionalExpression))
+            if (AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt.IsEnabled(document, conditionalExpression))
             {
                 return document.WithTextChangesAsync(
                     new TextChange[]

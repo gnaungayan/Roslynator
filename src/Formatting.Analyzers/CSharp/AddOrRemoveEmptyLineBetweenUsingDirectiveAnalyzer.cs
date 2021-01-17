@@ -103,7 +103,7 @@ namespace Roslynator.Formatting.CSharp
                 {
                     if (isEmptyLine)
                     {
-                        if (AnalyzerOptionDescriptors.RemoveEmptyLineBetweenUsingDirectivesWithDifferentRootNamespace.IsEnabled(context))
+                        if (AnalyzerOptions.RemoveEmptyLineBetweenUsingDirectivesWithDifferentRootNamespace.IsEnabled(context))
                         {
                             DiagnosticHelpers.ReportDiagnostic(
                                 context,
@@ -112,7 +112,7 @@ namespace Roslynator.Formatting.CSharp
                                 properties: DiagnosticProperties.AnalyzerOption_Invert);
                         }
                     }
-                    else if (!AnalyzerOptionDescriptors.RemoveEmptyLineBetweenUsingDirectivesWithDifferentRootNamespace.IsEnabled(context))
+                    else if (!AnalyzerOptions.RemoveEmptyLineBetweenUsingDirectivesWithDifferentRootNamespace.IsEnabled(context))
                     {
                         DiagnosticHelpers.ReportDiagnostic(
                             context,

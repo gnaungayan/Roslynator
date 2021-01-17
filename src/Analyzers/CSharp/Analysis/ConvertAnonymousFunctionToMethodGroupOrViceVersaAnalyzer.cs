@@ -54,7 +54,7 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeSimpleLambdaExpression(SyntaxNodeAnalysisContext context)
         {
-            if (AnalyzerOptionDescriptors.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
+            if (AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
             if (context.Node.SpanContainsDirectives())
@@ -143,7 +143,7 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeParenthesizedLambdaExpression(SyntaxNodeAnalysisContext context)
         {
-            if (AnalyzerOptionDescriptors.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
+            if (AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
             if (context.Node.SpanContainsDirectives())
@@ -242,7 +242,7 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeAnonymousMethodExpression(SyntaxNodeAnalysisContext context)
         {
-            if (AnalyzerOptionDescriptors.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
+            if (AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
             if (context.Node.SpanContainsDirectives())
@@ -573,7 +573,7 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeArgument(SyntaxNodeAnalysisContext context)
         {
-            if (!AnalyzerOptionDescriptors.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
+            if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
             var argument = (ArgumentSyntax)context.Node;
@@ -593,7 +593,7 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeEqualsValueClause(SyntaxNodeAnalysisContext context)
         {
-            if (!AnalyzerOptionDescriptors.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
+            if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
             var argument = (EqualsValueClauseSyntax)context.Node;
@@ -613,7 +613,7 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeAssignment(SyntaxNodeAnalysisContext context)
         {
-            if (!AnalyzerOptionDescriptors.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
+            if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
             var argument = (AssignmentExpressionSyntax)context.Node;
@@ -633,7 +633,7 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeReturnStatement(SyntaxNodeAnalysisContext context)
         {
-            if (!AnalyzerOptionDescriptors.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
+            if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
             var returnStatement = (ReturnStatementSyntax)context.Node;
@@ -653,7 +653,7 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeYieldReturnStatement(SyntaxNodeAnalysisContext context)
         {
-            if (!AnalyzerOptionDescriptors.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
+            if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
             var yieldReturnStatement = (YieldStatementSyntax)context.Node;
@@ -673,7 +673,7 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeArrowExpressionClause(SyntaxNodeAnalysisContext context)
         {
-            if (!AnalyzerOptionDescriptors.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
+            if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
             var arrowExpressionClause = (ArrowExpressionClauseSyntax)context.Node;
@@ -694,7 +694,7 @@ namespace Roslynator.CSharp.Analysis
         //TODO: test
         private static void AnalyzeSwitchExpressionArm(SyntaxNodeAnalysisContext context)
         {
-            if (!AnalyzerOptionDescriptors.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
+            if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
             var switchExpressionArm = (SwitchExpressionArmSyntax)context.Node;
@@ -714,7 +714,7 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeArrayInitializer(SyntaxNodeAnalysisContext context)
         {
-            if (!AnalyzerOptionDescriptors.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
+            if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
             var initializer = (InitializerExpressionSyntax)context.Node;
@@ -735,7 +735,7 @@ namespace Roslynator.CSharp.Analysis
 #if DEBUG
         private static void AnalyzeIdentifierName(SyntaxNodeAnalysisContext context)
         {
-            if (!AnalyzerOptionDescriptors.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
+            if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
             var identifierName = (IdentifierNameSyntax)context.Node;
@@ -745,7 +745,7 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeSimpleMemberAccessExpression(SyntaxNodeAnalysisContext context)
         {
-            if (!AnalyzerOptionDescriptors.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
+            if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
             var simpleMemberAccess = (MemberAccessExpressionSyntax)context.Node;

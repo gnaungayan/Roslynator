@@ -38,7 +38,7 @@ namespace Roslynator.CSharp.Analysis
 
             if (argumentList == null)
             {
-                if (!AnalyzerOptionDescriptors.RemoveArgumentListFromObjectCreation.IsEnabled(context))
+                if (!AnalyzerOptions.RemoveArgumentListFromObjectCreation.IsEnabled(context))
                 {
                     var span = new TextSpan(objectCreationExpression.Type.Span.End, 0);
 
@@ -49,7 +49,7 @@ namespace Roslynator.CSharp.Analysis
                 }
             }
             else if (!argumentList.Arguments.Any()
-                && AnalyzerOptionDescriptors.RemoveArgumentListFromObjectCreation.IsEnabled(context))
+                && AnalyzerOptions.RemoveArgumentListFromObjectCreation.IsEnabled(context))
             {
                 SyntaxToken openParen = argumentList.OpenParenToken;
                 SyntaxToken closeParen = argumentList.CloseParenToken;

@@ -24,8 +24,8 @@ namespace Roslynator.CSharp.Analysis
             context.RegisterSyntaxNodeAction(
                 c =>
                 {
-                    if (AnalyzerOptionDescriptors.UseImplicitlyTypedArrayWhenTypeIsObvious.IsEnabled(c)
-                        || !AnalyzerOptionDescriptors.UseImplicitlyTypedArray.IsEnabled(c))
+                    if (AnalyzerOptions.UseImplicitlyTypedArrayWhenTypeIsObvious.IsEnabled(c)
+                        || !AnalyzerOptions.UseImplicitlyTypedArray.IsEnabled(c))
                     {
                         AnalyzeImplicitArrayCreationExpression(c);
                     }
@@ -35,8 +35,8 @@ namespace Roslynator.CSharp.Analysis
             context.RegisterSyntaxNodeAction(
                 c =>
                 {
-                    if (AnalyzerOptionDescriptors.UseImplicitlyTypedArrayWhenTypeIsObvious.IsEnabled(c)
-                        || AnalyzerOptionDescriptors.UseImplicitlyTypedArray.IsEnabled(c))
+                    if (AnalyzerOptions.UseImplicitlyTypedArrayWhenTypeIsObvious.IsEnabled(c)
+                        || AnalyzerOptions.UseImplicitlyTypedArray.IsEnabled(c))
                     {
                         AnalyzeArrayCreationExpression(c);
                     }
@@ -60,7 +60,7 @@ namespace Roslynator.CSharp.Analysis
             if (expression.CloseBracketToken.ContainsDirectives)
                 return;
 
-            if (AnalyzerOptionDescriptors.UseImplicitlyTypedArrayWhenTypeIsObvious.IsEnabled(context))
+            if (AnalyzerOptions.UseImplicitlyTypedArrayWhenTypeIsObvious.IsEnabled(context))
             {
                 InitializerExpressionSyntax initializer = expression.Initializer;
 
@@ -110,7 +110,7 @@ namespace Roslynator.CSharp.Analysis
             if (!expressions.Any())
                 return;
 
-            if (AnalyzerOptionDescriptors.UseImplicitlyTypedArrayWhenTypeIsObvious.IsEnabled(context))
+            if (AnalyzerOptions.UseImplicitlyTypedArrayWhenTypeIsObvious.IsEnabled(context))
             {
                 foreach (ExpressionSyntax expression in expressions)
                 {

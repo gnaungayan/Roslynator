@@ -62,7 +62,7 @@ class C
             null;
     }
 }
-", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt));
+", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt.Descriptor));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddNewLineBeforeEqualsSignInsteadOfAfterItOrViceVersa)]
@@ -118,7 +118,7 @@ class C
             null;
     }
 }
-", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt));
+", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt.Descriptor));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddNewLineBeforeEqualsSignInsteadOfAfterItOrViceVersa)]
@@ -154,7 +154,7 @@ class C
     string P { get; } =
         null;
 }
-", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt));
+", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt.Descriptor));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddNewLineBeforeEqualsSignInsteadOfAfterItOrViceVersa)]
@@ -190,7 +190,7 @@ class C
     string F =
         null;
 }
-", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt));
+", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt.Descriptor));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddNewLineBeforeEqualsSignInsteadOfAfterItOrViceVersa)]
@@ -234,7 +234,7 @@ class C
     {
     }
 }
-", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt));
+", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt.Descriptor));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddNewLineBeforeEqualsSignInsteadOfAfterItOrViceVersa)]
@@ -298,7 +298,7 @@ class C
             """" });
     }
 }
-", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt));
+", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt.Descriptor));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddNewLineBeforeEqualsSignInsteadOfAfterItOrViceVersa)]
@@ -342,7 +342,7 @@ using System.Diagnostics;
 class C
 {
 }
-", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt));
+", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt.Descriptor));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddNewLineBeforeEqualsSignInsteadOfAfterItOrViceVersa)]
@@ -372,7 +372,7 @@ class C
             = null;
     }
 }
-", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt));
+", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt.Descriptor));
         }
     }
 }
