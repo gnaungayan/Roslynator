@@ -154,7 +154,7 @@ namespace Roslynator.Formatting.CSharp
 
                 if (leadingTrivia.Any()
                     && leadingTrivia.Last() == indentationAnalysis.Indentation
-                    && context.IsAnalyzerOptionEnabled(AnalyzerOptions.AddNewLineAfterBinaryOperatorInsteadOfBeforeIt))
+                    && AnalyzerOptionDescriptors.AddNewLineAfterBinaryOperatorInsteadOfBeforeIt.IsEnabled(context, checkParent: true))
                 {
                     return indentationAnalysis.IndentationLength;
                 }

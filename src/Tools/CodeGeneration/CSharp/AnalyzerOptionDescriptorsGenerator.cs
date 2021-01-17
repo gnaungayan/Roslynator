@@ -10,10 +10,10 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CodeGeneration.CSharp
 {
-    public static class AnalyzerOptionIdentifiersGenerator
+    public static class AnalyzerOptionDescriptorsGenerator
     {
         public static CompilationUnitSyntax Generate(
-            IEnumerable<AnalyzerOptionMetadata> analyzers,
+            IEnumerable<AnalyzerMetadata> analyzers,
             bool obsolete,
             IComparer<string> comparer,
             string @namespace,
@@ -27,23 +27,24 @@ namespace Roslynator.CodeGeneration.CSharp
                         Modifiers.Public_Static_Partial(),
                         className,
                         analyzers
+                            .SelectMany(f => f.Options)
                             .Where(f => f.IsObsolete == obsolete)
                             .OrderBy(f => f.Id, comparer)
-                            .Select(f => CreateMember(f))
+                            .Select(f => CreateMember(f, analyzers.Single(a => a.Id == f.ParentId)))
                             .ToSyntaxList<MemberDeclarationSyntax>())));
         }
 
-        private static FieldDeclarationSyntax CreateMember(AnalyzerOptionMetadata analyzer)
+        private static FieldDeclarationSyntax CreateMember(AnalyzerOptionMetadata analyzer, AnalyzerMetadata parent)
         {
             FieldDeclarationSyntax fieldDeclaration = FieldDeclaration(
                 Modifiers.Internal_Static_ReadOnly(),
-                IdentifierName(nameof(AnalyzerOptionInfo)),
+                IdentifierName(nameof(AnalyzerOptionDescriptor)),
                 analyzer.Identifier,
                 ObjectCreationExpression(
-                    IdentifierName(nameof(AnalyzerOptionInfo)),
+                    IdentifierName(nameof(AnalyzerOptionDescriptor)),
                     ArgumentList(
-                        Argument(StringLiteralExpression(analyzer.ParentId + analyzer.Id)),
-                        Argument(StringLiteralExpression(analyzer.ParentId)),
+                        Argument(SimpleMemberAccessExpression(IdentifierName("AnalyzerOptions"), IdentifierName(analyzer.Identifier))),
+                        Argument(SimpleMemberAccessExpression(IdentifierName("DiagnosticDescriptors"), IdentifierName(parent.Identifier))),
                         Argument(StringLiteralExpression($"roslynator.{analyzer.ParentId}.{analyzer.Name}")))));
 
             if (analyzer.IsObsolete)

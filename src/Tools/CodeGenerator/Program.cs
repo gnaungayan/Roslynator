@@ -156,13 +156,18 @@ namespace Roslynator.CodeGeneration
                 {
                     WriteCompilationUnit(
                         Path.Combine(dirPath, "AnalyzerOptions.Generated.cs"),
-                        DiagnosticDescriptorsGenerators.AnalyzerOptions.Generate(optionAnalyzers, obsolete: false, comparer: comparer, @namespace: @namespace, className: "AnalyzerOptions", identifiersClassName: "AnalyzerOptionIdentifiers"),
+                        DiagnosticDescriptorsGenerators.Default.Generate(optionAnalyzers, obsolete: false, comparer: comparer, @namespace: @namespace, className: "AnalyzerOptions", identifiersClassName: "AnalyzerOptionIdentifiers"),
                         normalizeWhitespace: false,
                         fileMustExist: false);
 
                     WriteCompilationUnit(
                         Path.Combine(dirPath, "AnalyzerOptionIdentifiers.Generated.cs"),
-                        AnalyzerOptionIdentifiersGenerator.Generate(analyzers.SelectMany(f => f.Options), obsolete: false, comparer: comparer, @namespace: @namespace, className: "AnalyzerOptionIdentifiers"),
+                        DiagnosticIdentifiersGenerator.Generate(optionAnalyzers, obsolete: false, comparer: comparer, @namespace: @namespace, className: "AnalyzerOptionIdentifiers"),
+                        fileMustExist: false);
+
+                    WriteCompilationUnit(
+                        Path.Combine(dirPath, "AnalyzerOptionDescriptors.Generated.cs"),
+                        AnalyzerOptionDescriptorsGenerator.Generate(analyzers, obsolete: false, comparer: comparer, @namespace: @namespace, className: "AnalyzerOptionDescriptors"),
                         fileMustExist: false);
                 }
 

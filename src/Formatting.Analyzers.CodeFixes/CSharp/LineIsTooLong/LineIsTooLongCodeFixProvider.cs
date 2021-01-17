@@ -180,7 +180,7 @@ namespace Roslynator.Formatting.CodeFixes.LineIsTooLong
             return AddNewLineBeforeOrAfterAsync(
                 document,
                 arrowExpressionClause.ArrowToken,
-                document.IsAnalyzerOptionEnabled(AnalyzerOptions.AddNewLineAfterExpressionBodyArrowInsteadOfBeforeIt),
+                AnalyzerOptionDescriptors.AddNewLineAfterExpressionBodyArrowInsteadOfBeforeIt.IsEnabled(document, arrowExpressionClause),
                 cancellationToken);
         }
 
@@ -192,7 +192,7 @@ namespace Roslynator.Formatting.CodeFixes.LineIsTooLong
             return AddNewLineBeforeOrAfterAsync(
                 document,
                 operatorToken,
-                document.IsAnalyzerOptionEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt),
+                AnalyzerOptionDescriptors.AddNewLineAfterEqualsSignInsteadOfBeforeIt.IsEnabled(document, operatorToken),
                 cancellationToken);
         }
 
@@ -203,7 +203,7 @@ namespace Roslynator.Formatting.CodeFixes.LineIsTooLong
         {
             string indentation = SyntaxTriviaAnalysis.GetIncreasedIndentation(conditionalExpression, cancellationToken);
 
-            if (document.IsAnalyzerOptionEnabled(AnalyzerOptions.AddNewLineAfterEqualsSignInsteadOfBeforeIt))
+            if (AnalyzerOptionDescriptors.AddNewLineAfterEqualsSignInsteadOfBeforeIt.IsEnabled(document, conditionalExpression))
             {
                 return document.WithTextChangesAsync(
                     new TextChange[]

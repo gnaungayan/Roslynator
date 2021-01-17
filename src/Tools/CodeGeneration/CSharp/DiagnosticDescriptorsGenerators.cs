@@ -5,7 +5,5 @@ namespace Roslynator.CodeGeneration.CSharp
     public static class DiagnosticDescriptorsGenerators
     {
         public static DiagnosticDescriptorsGenerator Default { get; } = new DiagnosticDescriptorsGenerator();
-
-        public static DiagnosticDescriptorsGenerator AnalyzerOptions { get; } = new AnalyzerOptionsDescriptorsGenerator();
     }
 }

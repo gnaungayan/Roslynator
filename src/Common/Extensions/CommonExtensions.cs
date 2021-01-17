@@ -2,21 +2,38 @@
 
 using System;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Roslynator
 {
-    internal static class DocumentExtensions
+    internal static class CommonExtensions
     {
-        public static bool IsOptionEnabled(
-            this Document document,
-            SyntaxNode node,
-            AnalyzerOptionInfo analyzerOption)
+        public static bool IsEnabled(
+            this AnalyzerOptionDescriptor analyzerOption,
+            SyntaxNodeAnalysisContext context,
+            bool checkParent = false)
         {
-            if (document
-                .Project
-                .AnalyzerOptions
+            return IsEnabled(
+                analyzerOption,
+                context.Node.SyntaxTree,
+                context.Compilation.Options,
+                context.Options,
+                checkParent);
+        }
+
+        public static bool IsEnabled(
+            this AnalyzerOptionDescriptor analyzerOption,
+            SyntaxTree syntaxTree,
+            CompilationOptions compilationOptions,
+            AnalyzerOptions analyzerOptions,
+            bool checkParent = false)
+        {
+            if (checkParent && compilationOptions.IsAnalyzerSuppressed(analyzerOption.Parent))
+                return false;
+
+            if (analyzerOptions
                 .AnalyzerConfigOptionsProvider
-                .GetOptions(node.SyntaxTree)
+                .GetOptions(syntaxTree)
                 .TryGetValue(analyzerOption.Name, out string value)
                 && bool.TryParse(value, out bool enabled)
                 && enabled)
@@ -24,9 +41,7 @@ namespace Roslynator
                 return true;
             }
 
-            if (document
-                .Project
-                .CompilationOptions
+            if (compilationOptions
                 .SpecificDiagnosticOptions
                 .TryGetValue(analyzerOption.Id, out ReportDiagnostic reportDiagnostic))
             {

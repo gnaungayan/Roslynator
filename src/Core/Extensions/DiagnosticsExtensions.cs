@@ -535,46 +535,6 @@ namespace Roslynator
         {
             return context.Compilation.IsAnalyzerSuppressed(descriptor);
         }
-
-        internal static bool IsOptionEnabled(
-            this SyntaxNodeAnalysisContext context,
-            AnalyzerOptionInfo option)
-        {
-            if (context
-                .Options
-                .AnalyzerConfigOptionsProvider
-                .GetOptions(context.Node.SyntaxTree)
-                .TryGetValue(option.Name, out string value)
-                && bool.TryParse(value, out bool enabled)
-                && enabled)
-            {
-                return true;
-            }
-
-            if (context
-                .Compilation
-                .Options
-                .SpecificDiagnosticOptions
-                .TryGetValue(option.Id, out ReportDiagnostic reportDiagnostic))
-            {
-                switch (reportDiagnostic)
-                {
-                    case Microsoft.CodeAnalysis.ReportDiagnostic.Default:
-                    case Microsoft.CodeAnalysis.ReportDiagnostic.Suppress:
-                        return false;
-                    case Microsoft.CodeAnalysis.ReportDiagnostic.Error:
-                    case Microsoft.CodeAnalysis.ReportDiagnostic.Warn:
-                    case Microsoft.CodeAnalysis.ReportDiagnostic.Info:
-                    case Microsoft.CodeAnalysis.ReportDiagnostic.Hidden:
-                        return true;
-                    default:
-                        throw new InvalidOperationException();
-                }
-            }
-
-            return false;
-        }
-
 #pragma warning disable RS1012
         internal static bool IsAnalyzerSuppressed(this CompilationStartAnalysisContext context, DiagnosticDescriptor descriptor)
         {
