@@ -4442,10 +4442,14 @@ x = "";]]></Before>
     <DefaultSeverity>Info</DefaultSeverity>
     <IsEnabledByDefault>true</IsEnabledByDefault>
     <SupportsFadeOut>true</SupportsFadeOut>
-    <Configuration>Use following EditorConfig option to suppress diagnostic from [Unity script methods](https://docs.unity3d.com/ScriptReference/MonoBehaviour.html):
-```editorconfig
-roslynator.RCS1213.suppress_unity_script_methods = true
-```</Configuration>
+    <Options>
+      <Option Identifier="SuppressUnityScriptMethods">
+        <Title>Suppress Unity script methods.</Title>
+        <Name>suppress_unity_script_methods</Name>
+        <Kind>Disable</Kind>
+        <Summary>Use following EditorConfig option to suppress diagnostic from [Unity script methods](https://docs.unity3d.com/ScriptReference/MonoBehaviour.html)</Summary>
+      </Option>
+    </Options>
   </Analyzer>
   <Analyzer Identifier="UnnecessaryInterpolatedString">
     <Id>RCS1214</Id>

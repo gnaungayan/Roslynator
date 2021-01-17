@@ -6,6 +6,7 @@ namespace Roslynator.Formatting.CSharp
 {
     public static partial class AnalyzerOptionDescriptors
     {
+        internal static readonly AnalyzerOptionDescriptor MaxLineLength = new AnalyzerOptionDescriptor(null, DiagnosticDescriptors.LineIsTooLong, "roslynator.max_line_length = <MAX_LINE_LENGTH>");
         internal static readonly AnalyzerOptionDescriptor RemoveEmptyLineBetweenSingleLineAccessors = new AnalyzerOptionDescriptor(AnalyzerOptions.RemoveEmptyLineBetweenSingleLineAccessors, DiagnosticDescriptors.AddEmptyLineBetweenSingleLineAccessorsOrViceVersa, "roslynator.RCS0011.invert");
         internal static readonly AnalyzerOptionDescriptor RemoveEmptyLineBetweenUsingDirectivesWithDifferentRootNamespace = new AnalyzerOptionDescriptor(AnalyzerOptions.RemoveEmptyLineBetweenUsingDirectivesWithDifferentRootNamespace, DiagnosticDescriptors.AddEmptyLineBetweenUsingDirectivesWithDifferentRootNamespaceOrViceVersa, "roslynator.RCS0015.invert");
         internal static readonly AnalyzerOptionDescriptor AddNewLineAfterBinaryOperatorInsteadOfBeforeIt = new AnalyzerOptionDescriptor(AnalyzerOptions.AddNewLineAfterBinaryOperatorInsteadOfBeforeIt, DiagnosticDescriptors.AddNewLineBeforeBinaryOperatorInsteadOfAfterItOrViceVersa, "roslynator.RCS0027.invert");

@@ -173,6 +173,7 @@ namespace Roslynator.CodeGeneration
 
                 IEnumerable<string> analyzerOptionIdentifiers = analyzers
                     .SelectMany(f => f.OptionAnalyzers)
+                    .Where(f => f.Id != null)
                     .Select(f => f.Identifier);
 
                 WriteCompilationUnit(

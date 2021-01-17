@@ -43,9 +43,11 @@ namespace Roslynator.CodeGeneration.CSharp
                 ObjectCreationExpression(
                     IdentifierName(nameof(AnalyzerOptionDescriptor)),
                     ArgumentList(
-                        Argument(SimpleMemberAccessExpression(IdentifierName("AnalyzerOptions"), IdentifierName(analyzer.Identifier))),
+                        (analyzer.Id != null)
+                            ? Argument(SimpleMemberAccessExpression(IdentifierName("AnalyzerOptions"), IdentifierName(analyzer.Identifier)))
+                            : Argument(NullLiteralExpression()),
                         Argument(SimpleMemberAccessExpression(IdentifierName("DiagnosticDescriptors"), IdentifierName(parent.Identifier))),
-                        Argument(StringLiteralExpression($"roslynator.{analyzer.ParentId}.{analyzer.Name}")))));
+                        Argument(StringLiteralExpression(analyzer.FullName ?? $"roslynator.{analyzer.ParentId}.{analyzer.Name}")))));
 
             if (analyzer.IsObsolete)
                 fieldDeclaration = fieldDeclaration.AddObsoleteAttributeIf(analyzer.IsObsolete, error: true);

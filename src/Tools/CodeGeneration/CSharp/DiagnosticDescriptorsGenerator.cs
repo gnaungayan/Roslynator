@@ -47,6 +47,9 @@ namespace Roslynator.CodeGeneration.CSharp
         {
             foreach (AnalyzerMetadata analyzer in analyzers)
             {
+                if (analyzer.Id == null)
+                    continue;
+
                 string identifier = analyzer.Identifier;
                 string title = analyzer.Title;
                 string messageFormat = analyzer.MessageFormat;

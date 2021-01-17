@@ -41,9 +41,10 @@ namespace Roslynator
                 return true;
             }
 
-            if (compilationOptions
-                .SpecificDiagnosticOptions
-                .TryGetValue(analyzerOption.Id, out ReportDiagnostic reportDiagnostic))
+            if (analyzerOption.Descriptor != null
+                && compilationOptions
+                    .SpecificDiagnosticOptions
+                    .TryGetValue(analyzerOption.Id, out ReportDiagnostic reportDiagnostic))
             {
                 switch (reportDiagnostic)
                 {

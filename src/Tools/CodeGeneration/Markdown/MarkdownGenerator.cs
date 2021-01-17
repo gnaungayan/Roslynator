@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
@@ -197,7 +198,6 @@ namespace Roslynator.CodeGeneration.Markdown
                     (!string.IsNullOrEmpty(analyzer.MinLanguageVersion)) ? TableRow("Minimal Language Version", analyzer.MinLanguageVersion) : null),
                 CreateSummary(),
                 GetAnalyzerSamples(analyzer),
-                CreateConfiguration(analyzer.Configuration),
                 CreateOptions(analyzer),
                 CreateRemarks(analyzer.Remarks),
                 CreateAppliesTo(appliesTo),
@@ -372,18 +372,9 @@ namespace Roslynator.CodeGeneration.Markdown
             }
         }
 
-        private static IEnumerable<MElement> CreateConfiguration(string configuration)
-        {
-            if (!string.IsNullOrEmpty(configuration))
-            {
-                yield return Heading2("Configuration");
-                yield return Raw(configuration);
-            }
-        }
-
         private static IEnumerable<MElement> CreateOptions(AnalyzerMetadata analyzer)
         {
-            using (IEnumerator<AnalyzerMetadata> en = analyzer.OptionAnalyzers.GetEnumerator())
+            using (IEnumerator<AnalyzerOptionMetadata> en = analyzer.Options.GetEnumerator())
             {
                 if (en.MoveNext())
                 {
@@ -391,9 +382,21 @@ namespace Roslynator.CodeGeneration.Markdown
 
                     do
                     {
-                        string id = en.Current.Id;
+                        yield return Heading3(en.Current.Title);
 
-                        yield return BulletItem(Link(id, $"{id}.md"), " - ", en.Current.Title);
+                        if (!string.IsNullOrEmpty(en.Current.Summary))
+                        {
+                            yield return new MText(en.Current.Summary);
+                            yield return new MText(NewLine);
+                        }
+
+                        string line = (!string.IsNullOrEmpty(en.Current.FullName))
+                            ? en.Current.FullName
+                            : $"roslynator.{en.Current.ParentId}.{en.Current.Name} = true";
+
+                        yield return FencedCodeBlock(
+                            line,
+                            "editorconfig");
 
                     } while (en.MoveNext());
                 }

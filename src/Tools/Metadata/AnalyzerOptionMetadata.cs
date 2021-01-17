@@ -14,6 +14,7 @@ namespace Roslynator.Metadata
             string id,
             string parentId,
             string name,
+            string fullName,
             AnalyzerOptionKind kind,
             string title,
             bool isEnabledByDefault,
@@ -27,6 +28,7 @@ namespace Roslynator.Metadata
             Id = id;
             ParentId = parentId;
             Name = name;
+            FullName = fullName;
             Kind = kind;
             Title = title;
             IsEnabledByDefault = isEnabledByDefault;
@@ -40,7 +42,7 @@ namespace Roslynator.Metadata
         public AnalyzerMetadata CreateAnalyzerMetadata(AnalyzerMetadata parent)
         {
             return new AnalyzerMetadata(
-                id: parent.Id + Id,
+                id: (Id != null) ? parent.Id + Id : null,
                 identifier: Identifier,
                 title: Title,
                 messageFormat: Title,
@@ -53,7 +55,6 @@ namespace Roslynator.Metadata
                 minLanguageVersion: MinLanguageVersion ?? parent.MinLanguageVersion,
                 summary: Summary,
                 remarks: null,
-                configuration: null,
                 samples: Samples,
                 links: null,
                 options: null,
@@ -68,6 +69,8 @@ namespace Roslynator.Metadata
         public string ParentId { get; }
 
         public string Name { get; }
+
+        public string FullName { get; }
 
         public AnalyzerOptionKind Kind { get; }
 

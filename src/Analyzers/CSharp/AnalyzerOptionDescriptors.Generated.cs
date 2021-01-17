@@ -6,6 +6,7 @@ namespace Roslynator.CSharp
 {
     public static partial class AnalyzerOptionDescriptors
     {
+        internal static readonly AnalyzerOptionDescriptor SuppressUnityScriptMethods = new AnalyzerOptionDescriptor(null, DiagnosticDescriptors.RemoveUnusedMemberDeclaration, "roslynator.RCS1213.suppress_unity_script_methods");
         internal static readonly AnalyzerOptionDescriptor UseImplicitlyTypedArrayWhenTypeIsObvious = new AnalyzerOptionDescriptor(AnalyzerOptions.UseImplicitlyTypedArrayWhenTypeIsObvious, DiagnosticDescriptors.UseExplicitlyTypedArrayOrViceVersa, "roslynator.RCS1014.use_implicit_when_obvious");
         internal static readonly AnalyzerOptionDescriptor ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine = new AnalyzerOptionDescriptor(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine, DiagnosticDescriptors.ConvertBlockBodyToExpressionBodyOrViceVersa, "roslynator.RCS1016.use_block_body_when_expression_is_multiline");
         internal static readonly AnalyzerOptionDescriptor RemoveEmptyLineBetweenClosingBraceAndSwitchSection = new AnalyzerOptionDescriptor(AnalyzerOptions.RemoveEmptyLineBetweenClosingBraceAndSwitchSection, DiagnosticDescriptors.RemoveRedundantEmptyLine, "roslynator.RCS1036.remove_empty_line_between_closing_brace_and_switch_section");
