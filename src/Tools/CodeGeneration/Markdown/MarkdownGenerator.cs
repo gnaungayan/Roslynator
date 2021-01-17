@@ -382,7 +382,7 @@ namespace Roslynator.CodeGeneration.Markdown
 
                     do
                     {
-                        yield return Heading3(en.Current.Title);
+                        yield return Heading3(en.Current.Title.TrimEnd('.'));
 
                         if (!string.IsNullOrEmpty(en.Current.Summary))
                         {
@@ -390,12 +390,16 @@ namespace Roslynator.CodeGeneration.Markdown
                             yield return new MText(NewLine);
                         }
 
-                        string line = (!string.IsNullOrEmpty(en.Current.FullName))
-                            ? en.Current.FullName
-                            : $"roslynator.{en.Current.ParentId}.{en.Current.Name} = true";
+                        string helpValue = en.Current.OptionKey;
+
+                        if (!helpValue.StartsWith("roslynator.", StringComparison.Ordinal))
+                            helpValue = $"roslynator.{en.Current.ParentId}.{helpValue}";
+
+                        helpValue += " = ";
+                        helpValue += en.Current.OptionValue ?? "true";
 
                         yield return FencedCodeBlock(
-                            line,
+                            helpValue,
                             "editorconfig");
 
                     } while (en.MoveNext());

@@ -36,6 +36,11 @@ namespace Roslynator.CodeGeneration.CSharp
 
         private static FieldDeclarationSyntax CreateMember(AnalyzerOptionMetadata analyzer, AnalyzerMetadata parent)
         {
+            string optionKey = analyzer.OptionKey;
+
+            if (!optionKey.StartsWith("roslynator.", System.StringComparison.Ordinal))
+                optionKey = $"roslynator.{analyzer.ParentId}.{optionKey}";
+
             FieldDeclarationSyntax fieldDeclaration = FieldDeclaration(
                 Modifiers.Internal_Static_ReadOnly(),
                 IdentifierName(nameof(AnalyzerOptionDescriptor)),
@@ -47,7 +52,7 @@ namespace Roslynator.CodeGeneration.CSharp
                             ? Argument(SimpleMemberAccessExpression(IdentifierName("AnalyzerOptions"), IdentifierName(analyzer.Identifier)))
                             : Argument(NullLiteralExpression()),
                         Argument(SimpleMemberAccessExpression(IdentifierName("DiagnosticDescriptors"), IdentifierName(parent.Identifier))),
-                        Argument(StringLiteralExpression(analyzer.FullName ?? $"roslynator.{analyzer.ParentId}.{analyzer.Name}")))));
+                        Argument(StringLiteralExpression(optionKey)))));
 
             if (analyzer.IsObsolete)
                 fieldDeclaration = fieldDeclaration.AddObsoleteAttributeIf(analyzer.IsObsolete, error: true);

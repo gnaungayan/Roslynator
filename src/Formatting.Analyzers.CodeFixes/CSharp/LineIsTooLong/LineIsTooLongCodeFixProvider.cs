@@ -35,7 +35,10 @@ namespace Roslynator.Formatting.CodeFixes.LineIsTooLong
 
             Document document = context.Document;
             Diagnostic diagnostic = context.Diagnostics[0];
-            var maxLength = int.Parse(diagnostic.Properties[LineIsTooLongAnalyzer.PropertyKey]);
+
+            SyntaxTree syntaxTree = await document.GetSyntaxTreeAsync(context.CancellationToken).ConfigureAwait(false);
+
+            int maxLength = AnalyzerOptionDescriptors.MaxLineLength.GetInt32Value(syntaxTree, document.Project.AnalyzerOptions, AnalyzerSettings.Current.MaxLineLength);
 
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 

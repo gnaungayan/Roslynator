@@ -9,21 +9,17 @@ namespace Roslynator
         public AnalyzerOptionDescriptor(
             DiagnosticDescriptor descriptor,
             DiagnosticDescriptor parent,
-            string name)
+            string optionKey)
         {
             Descriptor = descriptor;
             Parent = parent;
-            Name = name;
+            OptionKey = optionKey;
         }
 
         public DiagnosticDescriptor Descriptor { get; }
 
         public DiagnosticDescriptor Parent { get; }
 
-        public string Name { get; }
-
-        public string Id => Descriptor.Id;
-
-        public string ParentId => Parent.Id;
+        public string OptionKey { get; }
     }
 }

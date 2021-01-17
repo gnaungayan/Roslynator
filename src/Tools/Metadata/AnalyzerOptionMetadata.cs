@@ -13,8 +13,8 @@ namespace Roslynator.Metadata
             string identifier,
             string id,
             string parentId,
-            string name,
-            string fullName,
+            string optionKey,
+            string optionValue,
             AnalyzerOptionKind kind,
             string title,
             bool isEnabledByDefault,
@@ -27,8 +27,8 @@ namespace Roslynator.Metadata
             Identifier = identifier;
             Id = id;
             ParentId = parentId;
-            Name = name;
-            FullName = fullName;
+            OptionKey = optionKey;
+            OptionValue = optionValue;
             Kind = kind;
             Title = title;
             IsEnabledByDefault = isEnabledByDefault;
@@ -68,9 +68,9 @@ namespace Roslynator.Metadata
 
         public string ParentId { get; }
 
-        public string Name { get; }
+        public string OptionKey { get; }
 
-        public string FullName { get; }
+        public string OptionValue { get; }
 
         public AnalyzerOptionKind Kind { get; }
 

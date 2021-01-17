@@ -147,8 +147,8 @@ namespace Roslynator.Metadata
 
             string identifier = element.Attribute("Identifier").Value;
             string id = element.Element("Id")?.Value;
-            string name = element.Element("Name").Value;
-            string fullName = element.Element("FullName")?.Value;
+            string optionKey = element.Element("OptionKey").Value;
+            string optionValue = element.Element("OptionValue")?.Value;
             var kind = (AnalyzerOptionKind)Enum.Parse(typeof(AnalyzerOptionKind), element.Element("Kind").Value);
             bool isEnabledByDefault = element.ElementValueAsBooleanOrDefault("IsEnabledByDefault");
             bool supportsFadeOut = element.ElementValueAsBooleanOrDefault("SupportsFadeOut");
@@ -161,8 +161,8 @@ namespace Roslynator.Metadata
                 identifier: identifier,
                 id: id,
                 parentId: parentId,
-                name: name,
-                fullName: fullName,
+                optionKey: optionKey,
+                optionValue: optionValue,
                 kind: kind,
                 title: title,
                 isEnabledByDefault: isEnabledByDefault,
