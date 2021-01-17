@@ -66,7 +66,7 @@ namespace Roslynator.CSharp.Analysis
                 if (!analysis.Success)
                     return;
 
-                if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine)
+                if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine.IsEnabled(context)
                     && methodDeclaration.SyntaxTree.IsMultiLineSpan(methodDeclaration.HeaderSpan()))
                 {
                     return;
@@ -80,14 +80,14 @@ namespace Roslynator.CSharp.Analysis
 
                 if (expressionBody?.ContainsDirectives == false)
                 {
-                    if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine)
+                    if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine.IsEnabled(context)
                         && methodDeclaration.SyntaxTree.IsMultiLineSpan(methodDeclaration.HeaderSpan()))
                     {
                         DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine, expressionBody);
                         return;
                     }
 
-                    if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine)
+                    if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine.IsEnabled(context)
                         && expressionBody.Expression?.IsMultiLine() == true)
                     {
                         DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine, expressionBody);
@@ -104,14 +104,14 @@ namespace Roslynator.CSharp.Analysis
 
             if (expressionBody?.ContainsDirectives == false)
             {
-                if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine)
+                if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine.IsEnabled(context)
                     && propertyDeclaration.SyntaxTree.IsMultiLineSpan(propertyDeclaration.HeaderSpan()))
                 {
                     DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine, expressionBody);
                     return;
                 }
 
-                if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine)
+                if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine.IsEnabled(context)
                     && expressionBody.Expression?.IsMultiLine() == true)
                 {
                     DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine, expressionBody);
@@ -127,14 +127,14 @@ namespace Roslynator.CSharp.Analysis
 
             if (expressionBody?.ContainsDirectives == false)
             {
-                if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine)
+                if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine.IsEnabled(context)
                     && indexerDeclaration.SyntaxTree.IsMultiLineSpan(indexerDeclaration.HeaderSpan()))
                 {
                     DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine, expressionBody);
                     return;
                 }
 
-                if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine)
+                if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine.IsEnabled(context)
                     && expressionBody.Expression?.IsMultiLine() == true)
                 {
                     DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine, expressionBody);
@@ -157,7 +157,7 @@ namespace Roslynator.CSharp.Analysis
                 if (!analysis.Success)
                     return;
 
-                if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine)
+                if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine.IsEnabled(context)
                     && operatorDeclaration.SyntaxTree.IsMultiLineSpan(operatorDeclaration.HeaderSpan()))
                 {
                     return;
@@ -171,14 +171,14 @@ namespace Roslynator.CSharp.Analysis
 
                 if (expressionBody?.ContainsDirectives == false)
                 {
-                    if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine)
+                    if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine.IsEnabled(context)
                         && operatorDeclaration.SyntaxTree.IsMultiLineSpan(operatorDeclaration.HeaderSpan()))
                     {
                         DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine, expressionBody);
                         return;
                     }
 
-                    if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine)
+                    if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine.IsEnabled(context)
                         && expressionBody.Expression?.IsMultiLine() == true)
                     {
                         DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine, expressionBody);
@@ -202,7 +202,7 @@ namespace Roslynator.CSharp.Analysis
                 if (!analysis.Success)
                     return;
 
-                if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine)
+                if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine.IsEnabled(context)
                     && operatorDeclaration.SyntaxTree.IsMultiLineSpan(operatorDeclaration.HeaderSpan()))
                 {
                     return;
@@ -216,14 +216,14 @@ namespace Roslynator.CSharp.Analysis
 
                 if (expressionBody?.ContainsDirectives == false)
                 {
-                    if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine)
+                    if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine.IsEnabled(context)
                         && operatorDeclaration.SyntaxTree.IsMultiLineSpan(operatorDeclaration.HeaderSpan()))
                     {
                         DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine, expressionBody);
                         return;
                     }
 
-                    if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine)
+                    if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine.IsEnabled(context)
                         && expressionBody.Expression?.IsMultiLine() == true)
                     {
                         DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine, expressionBody);
@@ -247,7 +247,7 @@ namespace Roslynator.CSharp.Analysis
                 if (!analysis.Success)
                     return;
 
-                if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine)
+                if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine.IsEnabled(context)
                     && constructorDeclaration.SyntaxTree.IsMultiLineSpan(constructorDeclaration.HeaderSpan()))
                 {
                     return;
@@ -261,14 +261,14 @@ namespace Roslynator.CSharp.Analysis
 
                 if (expressionBody?.ContainsDirectives == false)
                 {
-                    if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine)
+                    if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine.IsEnabled(context)
                         && constructorDeclaration.SyntaxTree.IsMultiLineSpan(constructorDeclaration.HeaderSpan()))
                     {
                         DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine, expressionBody);
                         return;
                     }
 
-                    if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine)
+                    if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine.IsEnabled(context)
                         && expressionBody.Expression?.IsMultiLine() == true)
                     {
                         DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine, expressionBody);
@@ -292,7 +292,7 @@ namespace Roslynator.CSharp.Analysis
                 if (!analysis.Success)
                     return;
 
-                if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine)
+                if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine.IsEnabled(context)
                     && destructorDeclaration.SyntaxTree.IsMultiLineSpan(destructorDeclaration.HeaderSpan()))
                 {
                     return;
@@ -306,14 +306,14 @@ namespace Roslynator.CSharp.Analysis
 
                 if (expressionBody?.ContainsDirectives == false)
                 {
-                    if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine)
+                    if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine.IsEnabled(context)
                         && destructorDeclaration.SyntaxTree.IsMultiLineSpan(destructorDeclaration.HeaderSpan()))
                     {
                         DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine, expressionBody);
                         return;
                     }
 
-                    if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine)
+                    if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine.IsEnabled(context)
                         && expressionBody.Expression?.IsMultiLine() == true)
                     {
                         DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine, expressionBody);
@@ -337,7 +337,7 @@ namespace Roslynator.CSharp.Analysis
                 if (!analysis.Success)
                     return;
 
-                if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine)
+                if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine.IsEnabled(context)
                     && localFunction.SyntaxTree.IsMultiLineSpan(localFunction.HeaderSpan()))
                 {
                     return;
@@ -351,14 +351,14 @@ namespace Roslynator.CSharp.Analysis
 
                 if (expressionBody?.ContainsDirectives == false)
                 {
-                    if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine)
+                    if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine.IsEnabled(context)
                         && localFunction.SyntaxTree.IsMultiLineSpan(localFunction.HeaderSpan()))
                     {
                         DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine, expressionBody);
                         return;
                     }
 
-                    if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine)
+                    if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine.IsEnabled(context)
                         && expressionBody.Expression?.IsMultiLine() == true)
                     {
                         DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine, expressionBody);
@@ -382,7 +382,7 @@ namespace Roslynator.CSharp.Analysis
                 ArrowExpressionClauseSyntax expressionBody = accessor.ExpressionBody;
 
                 if (expressionBody?.ContainsDirectives == false
-                    && !context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine)
+                    && AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine.IsEnabled(context)
                     && expressionBody.Expression?.IsMultiLine() == true)
                 {
                     DiagnosticHelpers.ReportDiagnostic(context, DiagnosticDescriptors.ReportOnly.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine, expressionBody);
@@ -410,7 +410,7 @@ namespace Roslynator.CSharp.Analysis
             if (expression == null)
                 return;
 
-            if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine)
+            if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine.IsEnabled(context)
                 && expression.IsMultiLine())
             {
                 return;
@@ -429,7 +429,7 @@ namespace Roslynator.CSharp.Analysis
                 if (!SyntaxTriviaAnalysis.IsExteriorTriviaEmptyOrWhitespace(body.OpenBraceToken))
                     return;
 
-                if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine))
+                if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine.IsEnabled(context))
                 {
                     switch (accessorList.Parent.Kind())
                     {
@@ -476,7 +476,7 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeBlock(SyntaxNodeAnalysisContext context, BlockSyntax block, BlockExpressionAnalysis analysis)
         {
-            if (!context.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine)
+            if (AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine.IsEnabled(context)
                 && analysis.Expression.IsMultiLine())
             {
                 return;

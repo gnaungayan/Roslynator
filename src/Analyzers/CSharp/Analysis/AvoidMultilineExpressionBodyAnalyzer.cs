@@ -20,16 +20,13 @@ namespace Roslynator.CSharp.Analysis
         {
             base.Initialize(context);
 
-            context.RegisterCompilationStartAction(startContext =>
-            {
-                if (!startContext.IsAnalyzerSuppressed(DiagnosticDescriptors.ConvertBlockBodyToExpressionBodyOrViceVersa)
-                    && !startContext.IsAnalyzerSuppressed(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine))
+            context.RegisterSyntaxNodeAction(
+                c =>
                 {
-                    return;
-                }
-
-                startContext.RegisterSyntaxNodeAction(f => AnalyzeArrowExpressionClause(f), SyntaxKind.ArrowExpressionClause);
-            });
+                    if (!AnalyzerOptionDescriptors.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine.IsEnabled(c, checkParent: true))
+                        AnalyzeArrowExpressionClause(c);
+                },
+                SyntaxKind.ArrowExpressionClause);
         }
 
         private static void AnalyzeArrowExpressionClause(SyntaxNodeAnalysisContext context)

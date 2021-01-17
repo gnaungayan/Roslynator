@@ -24,6 +24,19 @@ namespace Roslynator
 
         public static bool IsEnabled(
             this AnalyzerOptionDescriptor analyzerOption,
+            SymbolAnalysisContext context,
+            bool checkParent = false)
+        {
+            return IsEnabled(
+                analyzerOption,
+                context.Symbol.Locations[0].SourceTree,
+                context.Compilation.Options,
+                context.Options,
+                checkParent);
+        }
+
+        public static bool IsEnabled(
+            this AnalyzerOptionDescriptor analyzerOption,
             SyntaxTree syntaxTree,
             CompilationOptions compilationOptions,
             AnalyzerOptions analyzerOptions,
