@@ -9,32 +9,29 @@ namespace Roslynator
         public static bool IsEnabled(
             this AnalyzerOptionDescriptor analyzerOption,
             Document document,
-            SyntaxNode node,
-            bool checkParent = true)
+            SyntaxNode node)
         {
-            return IsEnabled(analyzerOption, document, node.SyntaxTree, checkParent);
+            return IsEnabled(analyzerOption, document, node.SyntaxTree);
         }
 
         public static bool IsEnabled(
             this AnalyzerOptionDescriptor analyzerOption,
             Document document,
-            SyntaxToken token,
-            bool checkParent = true)
+            SyntaxToken token)
         {
-            return IsEnabled(analyzerOption, document, token.SyntaxTree, checkParent);
+            return IsEnabled(analyzerOption, document, token.SyntaxTree);
         }
 
         public static bool IsEnabled(
             this AnalyzerOptionDescriptor analyzerOption,
             Document document,
-            SyntaxTree syntaxTree,
-            bool checkParent = true)
+            SyntaxTree syntaxTree)
         {
-            return analyzerOption.IsEnabled(
-                syntaxTree,
-                document.Project.CompilationOptions,
-                document.Project.AnalyzerOptions,
-                checkParent);
+            return analyzerOption.Parent.IsEffective(syntaxTree, document.Project.CompilationOptions)
+                && analyzerOption.IsEnabled(
+                    syntaxTree,
+                    document.Project.CompilationOptions,
+                    document.Project.AnalyzerOptions);
         }
     }
 }

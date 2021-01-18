@@ -545,11 +545,11 @@ namespace Roslynator
                 context.CancellationToken);
         }
 
-        private static bool IsEffective(
+        public static bool IsEffective(
             this DiagnosticDescriptor descriptor,
             SyntaxTree syntaxTree,
             CompilationOptions compilationOptions,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default)
         {
             var reportDiagnostic = Microsoft.CodeAnalysis.ReportDiagnostic.Default;
 
@@ -559,12 +559,11 @@ namespace Roslynator
                     syntaxTree,
                     descriptor.Id,
                     cancellationToken,
-                    out reportDiagnostic) != true
-                && !compilationOptions
-                    .SpecificDiagnosticOptions
-                    .TryGetValue(descriptor.Id, out reportDiagnostic))
+                    out reportDiagnostic) != true)
             {
-                return false;
+                reportDiagnostic = compilationOptions
+                    .SpecificDiagnosticOptions
+                    .GetValueOrDefault(descriptor.Id);
             }
 
             return reportDiagnostic switch
@@ -575,35 +574,19 @@ namespace Roslynator
             };
         }
 
-        internal static bool IsAnalyzerSuppressed2(this SymbolAnalysisContext context, DiagnosticDescriptor descriptor)
+        internal static bool IsEffective(this DiagnosticDescriptor descriptor, Compilation compilation)
         {
-            return context.Compilation.IsAnalyzerSuppressed(descriptor);
+            return IsEffective(descriptor, compilation.Options);
         }
 
-        internal static bool IsAnalyzerSuppressed2(this SyntaxNodeAnalysisContext context, DiagnosticDescriptor descriptor)
+        internal static bool IsEffective(this DiagnosticDescriptor descriptor, CompilationOptions compilationOptions)
         {
-            return context.Compilation.IsAnalyzerSuppressed(descriptor);
+            return (compilationOptions.SpecificDiagnosticOptions.GetValueOrDefault(descriptor.Id)) switch
+            {
+                Microsoft.CodeAnalysis.ReportDiagnostic.Default => descriptor.IsEnabledByDefault,
+                Microsoft.CodeAnalysis.ReportDiagnostic.Suppress => false,
+                _ => true,
+            };
         }
-#pragma warning disable RS1012
-        internal static bool IsAnalyzerSuppressed(this CompilationStartAnalysisContext context, DiagnosticDescriptor descriptor)
-        {
-            return context.Compilation.IsAnalyzerSuppressed(descriptor);
-        }
-
-        internal static bool AreAnalyzersSuppressed(this CompilationStartAnalysisContext context, ImmutableArray<DiagnosticDescriptor> descriptors)
-        {
-            return context.Compilation.AreAnalyzersSuppressed(descriptors);
-        }
-
-        internal static bool AreAnalyzersSuppressed(this CompilationStartAnalysisContext context, DiagnosticDescriptor descriptor1, DiagnosticDescriptor descriptor2)
-        {
-            return context.Compilation.AreAnalyzersSuppressed(descriptor1, descriptor2);
-        }
-
-        internal static bool AreAnalyzersSuppressed(this CompilationStartAnalysisContext context, DiagnosticDescriptor descriptor1, DiagnosticDescriptor descriptor2, DiagnosticDescriptor descriptor3)
-        {
-            return context.Compilation.AreAnalyzersSuppressed(descriptor1, descriptor2, descriptor3);
-        }
-#pragma warning restore RS1012
     }
 }

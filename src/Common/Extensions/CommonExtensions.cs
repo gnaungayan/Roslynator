@@ -11,8 +11,19 @@ namespace Roslynator
     {
         public static bool IsEnabled(
             this AnalyzerOptionDescriptor analyzerOption,
+            SyntaxNodeAnalysisContext context)
+        {
+            return IsEnabled(
+                analyzerOption,
+                context.Node.SyntaxTree,
+                context.Compilation.Options,
+                context.Options);
+        }
+
+        public static bool? IsEnabled(
+            this AnalyzerOptionDescriptor analyzerOption,
             SyntaxNodeAnalysisContext context,
-            bool checkParent = false)
+            bool checkParent)
         {
             return IsEnabled(
                 analyzerOption,
@@ -24,27 +35,34 @@ namespace Roslynator
 
         public static bool IsEnabled(
             this AnalyzerOptionDescriptor analyzerOption,
-            SymbolAnalysisContext context,
-            bool checkParent = false)
+            SymbolAnalysisContext context)
         {
             return IsEnabled(
                 analyzerOption,
                 context.Symbol.Locations[0].SourceTree,
                 context.Compilation.Options,
-                context.Options,
-                checkParent);
+                context.Options);
+        }
+
+        public static bool? IsEnabled(
+            this AnalyzerOptionDescriptor analyzerOption,
+            SyntaxTree syntaxTree,
+            CompilationOptions compilationOptions,
+            AnalyzerOptions analyzerOptions,
+            bool checkParent)
+        {
+            if (checkParent && !analyzerOption.Parent.IsEffective(syntaxTree, compilationOptions))
+                return null;
+
+            return IsEnabled(analyzerOption, syntaxTree, compilationOptions, analyzerOptions);
         }
 
         public static bool IsEnabled(
             this AnalyzerOptionDescriptor analyzerOption,
             SyntaxTree syntaxTree,
             CompilationOptions compilationOptions,
-            AnalyzerOptions analyzerOptions,
-            bool checkParent = false)
+            AnalyzerOptions analyzerOptions)
         {
-            if (checkParent && compilationOptions.IsAnalyzerSuppressed(analyzerOption.Parent))
-                return false;
-
             if (analyzerOptions
                 .AnalyzerConfigOptionsProvider
                 .GetOptions(syntaxTree)

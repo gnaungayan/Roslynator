@@ -23,7 +23,7 @@ namespace Roslynator.CSharp.Analysis
             context.RegisterSyntaxNodeAction(
                 c =>
                 {
-                    if (!AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine.IsEnabled(c, checkParent: true))
+                    if (AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine.IsEnabled(c, checkParent: true) == false)
                         AnalyzeArrowExpressionClause(c);
                 },
                 SyntaxKind.ArrowExpressionClause);
