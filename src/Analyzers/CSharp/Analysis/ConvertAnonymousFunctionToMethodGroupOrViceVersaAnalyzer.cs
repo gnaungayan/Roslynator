@@ -30,9 +30,6 @@ namespace Roslynator.CSharp.Analysis
 
             context.RegisterCompilationStartAction(startContext =>
             {
-                if (startContext.IsAnalyzerSuppressed(DiagnosticDescriptors.ConvertAnonymousFunctionToMethodGroupOrViceVersa))
-                    return;
-
                 startContext.RegisterSyntaxNodeAction(f => AnalyzeSimpleLambdaExpression(f), SyntaxKind.SimpleLambdaExpression);
                 startContext.RegisterSyntaxNodeAction(f => AnalyzeParenthesizedLambdaExpression(f), SyntaxKind.ParenthesizedLambdaExpression);
                 startContext.RegisterSyntaxNodeAction(f => AnalyzeAnonymousMethodExpression(f), SyntaxKind.AnonymousMethodExpression);
@@ -54,6 +51,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeSimpleLambdaExpression(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertAnonymousFunctionToMethodGroupOrViceVersa.IsEffective(context))
+                return;
+
             if (AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
@@ -143,6 +143,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeParenthesizedLambdaExpression(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertAnonymousFunctionToMethodGroupOrViceVersa.IsEffective(context))
+                return;
+
             if (AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
@@ -242,6 +245,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeAnonymousMethodExpression(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertAnonymousFunctionToMethodGroupOrViceVersa.IsEffective(context))
+                return;
+
             if (AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
@@ -573,6 +579,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeArgument(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertAnonymousFunctionToMethodGroupOrViceVersa.IsEffective(context))
+                return;
+
             if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
@@ -593,6 +602,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeEqualsValueClause(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertAnonymousFunctionToMethodGroupOrViceVersa.IsEffective(context))
+                return;
+
             if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
@@ -613,6 +625,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeAssignment(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertAnonymousFunctionToMethodGroupOrViceVersa.IsEffective(context))
+                return;
+
             if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
@@ -633,6 +648,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeReturnStatement(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertAnonymousFunctionToMethodGroupOrViceVersa.IsEffective(context))
+                return;
+
             if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
@@ -653,6 +671,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeYieldReturnStatement(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertAnonymousFunctionToMethodGroupOrViceVersa.IsEffective(context))
+                return;
+
             if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
@@ -673,6 +694,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeArrowExpressionClause(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertAnonymousFunctionToMethodGroupOrViceVersa.IsEffective(context))
+                return;
+
             if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
@@ -694,6 +718,9 @@ namespace Roslynator.CSharp.Analysis
         //TODO: test
         private static void AnalyzeSwitchExpressionArm(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertAnonymousFunctionToMethodGroupOrViceVersa.IsEffective(context))
+                return;
+
             if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
@@ -714,6 +741,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeArrayInitializer(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertAnonymousFunctionToMethodGroupOrViceVersa.IsEffective(context))
+                return;
+
             if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
@@ -735,6 +765,9 @@ namespace Roslynator.CSharp.Analysis
 #if DEBUG
         private static void AnalyzeIdentifierName(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertAnonymousFunctionToMethodGroupOrViceVersa.IsEffective(context))
+                return;
+
             if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 
@@ -745,6 +778,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeSimpleMemberAccessExpression(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertAnonymousFunctionToMethodGroupOrViceVersa.IsEffective(context))
+                return;
+
             if (!AnalyzerOptions.ConvertMethodGroupToAnonymousFunction.IsEnabled(context))
                 return;
 

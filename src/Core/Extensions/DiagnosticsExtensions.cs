@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -526,12 +527,60 @@ namespace Roslynator
             return false;
         }
 
-        internal static bool IsAnalyzerSuppressed(this SymbolAnalysisContext context, DiagnosticDescriptor descriptor)
+        internal static bool IsEffective(this DiagnosticDescriptor descriptor, SymbolAnalysisContext context)
+        {
+            return IsEffective(
+                descriptor,
+                context.Symbol.Locations[0].SourceTree,
+                context.Compilation.Options,
+                context.CancellationToken);
+        }
+
+        internal static bool IsEffective(this DiagnosticDescriptor descriptor, SyntaxNodeAnalysisContext context)
+        {
+            return IsEffective(
+                descriptor,
+                context.Node.SyntaxTree,
+                context.Compilation.Options,
+                context.CancellationToken);
+        }
+
+        private static bool IsEffective(
+            this DiagnosticDescriptor descriptor,
+            SyntaxTree syntaxTree,
+            CompilationOptions compilationOptions,
+            CancellationToken cancellationToken)
+        {
+            var reportDiagnostic = Microsoft.CodeAnalysis.ReportDiagnostic.Default;
+
+            if (compilationOptions
+                .SyntaxTreeOptionsProvider?
+                .TryGetDiagnosticValue(
+                    syntaxTree,
+                    descriptor.Id,
+                    cancellationToken,
+                    out reportDiagnostic) != true
+                && !compilationOptions
+                    .SpecificDiagnosticOptions
+                    .TryGetValue(descriptor.Id, out reportDiagnostic))
+            {
+                return false;
+            }
+
+            return reportDiagnostic switch
+            {
+                Microsoft.CodeAnalysis.ReportDiagnostic.Default => descriptor.IsEnabledByDefault,
+                Microsoft.CodeAnalysis.ReportDiagnostic.Suppress => false,
+                _ => true,
+            };
+        }
+
+        internal static bool IsAnalyzerSuppressed2(this SymbolAnalysisContext context, DiagnosticDescriptor descriptor)
         {
             return context.Compilation.IsAnalyzerSuppressed(descriptor);
         }
 
-        internal static bool IsAnalyzerSuppressed(this SyntaxNodeAnalysisContext context, DiagnosticDescriptor descriptor)
+        internal static bool IsAnalyzerSuppressed2(this SyntaxNodeAnalysisContext context, DiagnosticDescriptor descriptor)
         {
             return context.Compilation.IsAnalyzerSuppressed(descriptor);
         }

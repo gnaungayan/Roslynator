@@ -29,9 +29,6 @@ namespace Roslynator.CSharp.Analysis
 
             context.RegisterCompilationStartAction(startContext =>
             {
-                if (startContext.IsAnalyzerSuppressed(DiagnosticDescriptors.ConvertBlockBodyToExpressionBodyOrViceVersa))
-                    return;
-
                 if (((CSharpCompilation)startContext.Compilation).LanguageVersion < LanguageVersion.CSharp6)
                     return;
 
@@ -53,6 +50,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertBlockBodyToExpressionBodyOrViceVersa.IsEffective(context))
+                return;
+
             var methodDeclaration = (MethodDeclarationSyntax)context.Node;
 
             BlockSyntax body = methodDeclaration.Body;
@@ -98,6 +98,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzePropertyDeclaration(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertBlockBodyToExpressionBodyOrViceVersa.IsEffective(context))
+                return;
+
             var propertyDeclaration = (PropertyDeclarationSyntax)context.Node;
 
             ArrowExpressionClauseSyntax expressionBody = propertyDeclaration.ExpressionBody;
@@ -121,6 +124,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeIndexerDeclaration(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertBlockBodyToExpressionBodyOrViceVersa.IsEffective(context))
+                return;
+
             var indexerDeclaration = (IndexerDeclarationSyntax)context.Node;
 
             ArrowExpressionClauseSyntax expressionBody = indexerDeclaration.ExpressionBody;
@@ -144,6 +150,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeOperatorDeclaration(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertBlockBodyToExpressionBodyOrViceVersa.IsEffective(context))
+                return;
+
             var operatorDeclaration = (OperatorDeclarationSyntax)context.Node;
 
             BlockSyntax body = operatorDeclaration.Body;
@@ -189,6 +198,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeConversionOperatorDeclaration(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertBlockBodyToExpressionBodyOrViceVersa.IsEffective(context))
+                return;
+
             var operatorDeclaration = (ConversionOperatorDeclarationSyntax)context.Node;
 
             BlockSyntax body = operatorDeclaration.Body;
@@ -234,6 +246,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeConstructorDeclaration(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertBlockBodyToExpressionBodyOrViceVersa.IsEffective(context))
+                return;
+
             var constructorDeclaration = (ConstructorDeclarationSyntax)context.Node;
 
             BlockSyntax body = constructorDeclaration.Body;
@@ -279,6 +294,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeDestructorDeclaration(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertBlockBodyToExpressionBodyOrViceVersa.IsEffective(context))
+                return;
+
             var destructorDeclaration = (DestructorDeclarationSyntax)context.Node;
 
             BlockSyntax body = destructorDeclaration.Body;
@@ -324,6 +342,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeLocalFunctionStatement(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertBlockBodyToExpressionBodyOrViceVersa.IsEffective(context))
+                return;
+
             var localFunction = (LocalFunctionStatementSyntax)context.Node;
 
             BlockSyntax body = localFunction.Body;
@@ -369,6 +390,9 @@ namespace Roslynator.CSharp.Analysis
 
         private static void AnalyzeAccessorDeclaration(SyntaxNodeAnalysisContext context)
         {
+            if (!DiagnosticDescriptors.ConvertBlockBodyToExpressionBodyOrViceVersa.IsEffective(context))
+                return;
+
             var accessor = (AccessorDeclarationSyntax)context.Node;
 
             BlockSyntax body = accessor.Body;

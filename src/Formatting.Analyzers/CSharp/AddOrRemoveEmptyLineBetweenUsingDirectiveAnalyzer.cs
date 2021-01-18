@@ -99,7 +99,7 @@ namespace Roslynator.Formatting.CSharp
                             Location.Create(context.Node.SyntaxTree, leadingTrivia[0].Span.WithLength(0)));
                     }
                 }
-                else if (!context.IsAnalyzerSuppressed(DiagnosticDescriptors.AddEmptyLineBetweenUsingDirectivesWithDifferentRootNamespaceOrViceVersa))
+                else if (DiagnosticDescriptors.AddEmptyLineBetweenUsingDirectivesWithDifferentRootNamespaceOrViceVersa.IsEffective(context))
                 {
                     if (isEmptyLine)
                     {
