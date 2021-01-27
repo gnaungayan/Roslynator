@@ -16,6 +16,7 @@ namespace Roslynator.Testing
         {
             WorkspaceFactory = workspaceFactory;
             Assert = assert;
+            TextParser = new DefaultTextParser(Assert);
         }
 
         protected abstract CodeVerificationOptions CommonOptions { get; }
@@ -26,7 +27,7 @@ namespace Roslynator.Testing
 
         protected IAssert Assert { get; }
 
-        internal virtual TextParser TextParser { get; } = TextParser.Default;
+        internal TextParser TextParser { get; }
 
         internal void VerifyCompilerDiagnostics(
             ImmutableArray<Diagnostic> diagnostics,
@@ -86,7 +87,7 @@ namespace Roslynator.Testing
                     .Where(diagnostic => !allowedDiagnosticIds.Any(id => id == diagnostic.Id))
                     .Except(diagnostics, DiagnosticDeepEqualityComparer.Instance);
 
-                Assert.True(false, $"Code fix introduced new compiler diagnostics.{diff.ToDebugString()}");
+                Assert.True(false, $"Code fix introduced new compiler diagnostic(s).{diff.ToDebugString()}");
             }
 
             bool IsAnyNewCompilerDiagnostic()
