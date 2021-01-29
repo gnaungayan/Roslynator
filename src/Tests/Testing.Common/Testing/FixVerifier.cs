@@ -10,20 +10,27 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.Testing.Text;
 
 namespace Roslynator.Testing
 {
+    /// <summary>
+    /// Represents verifier for a diagnostic produced by <see cref="DiagnosticAnalyzer"/> and a code fix provided by <see cref="CodeFixProvider"/>.
+    /// </summary>
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public abstract class FixVerifier : DiagnosticVerifier
     {
         private ImmutableArray<string> _fixableDiagnosticIds;
 
-        internal FixVerifier(WorkspaceFactory workspaceFactory) : base(workspaceFactory)
+        internal FixVerifier(WorkspaceFactory workspaceFactory, IAssert assert) : base(workspaceFactory, assert)
         {
         }
 
+        /// <summary>
+        /// Gets a <see cref="CodeFixProvider"/> that can fix specified diagnostic.
+        /// </summary>
         public abstract CodeFixProvider FixProvider { get; }
 
         internal ImmutableArray<string> FixableDiagnosticIds
@@ -43,10 +50,21 @@ namespace Roslynator.Testing
             get { return $"{Descriptor.Id} {string.Join(", ", Analyzers.Select(f => f.GetType().Name))} {FixProvider.GetType().Name}"; }
         }
 
+        /// <summary>
+        /// Verifies that specified source will produce diagnostic and that the diagnostic will be fixed with the <see cref="FixProvider"/>.
+        /// </summary>
+        /// <param name="source">A source code that should be tested. Tokens [| and |] represents start and end of selection respectively.</param>
+        /// <param name="expected"></param>
+        /// <param name="additionalData"></param>
+        /// <param name="title">Code action's title.</param>
+        /// <param name="equivalenceKey">Code action's equivalence key.</param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAndFixAsync(
             string source,
             string expected,
             IEnumerable<(string source, string expected)> additionalData = null,
+            string title = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -68,11 +86,20 @@ namespace Roslynator.Testing
                 result.Text,
                 expected,
                 additionalData,
-                equivalenceKey,
+                title: title,
+                equivalenceKey: equivalenceKey,
                 options,
                 cancellationToken);
         }
 
+        /// <summary>
+        /// Verifies that specified source will produce diagnostic and that the diagnostic will not be fixed with the <see cref="FixProvider"/>.
+        /// </summary>
+        /// <param name="source">A source code that should be tested. Tokens [| and |] represents start and end of selection respectively.</param>
+        /// <param name="additionalData"></param>
+        /// <param name="equivalenceKey">Code action's equivalence key.</param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAndNoFixAsync(
             string source,
             IEnumerable<(string source, string expected)> additionalData = null,
@@ -101,15 +128,26 @@ namespace Roslynator.Testing
                 cancellationToken: cancellationToken);
         }
 
+        /// <summary>
+        /// Verifies that specified source will produce diagnostic and that the diagnostic will be fixed with the <see cref="FixProvider"/>.
+        /// </summary>
+        /// <param name="source">Source text that contains placeholder [||] to be replaced with <paramref name="sourceData"/> and <paramref name="expectedData"/>.</param>
+        /// <param name="sourceData"></param>
+        /// <param name="expectedData"></param>
+        /// <param name="title">Code action's title.</param>
+        /// <param name="equivalenceKey">Code action's equivalence key.</param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAndFixAsync(
             string source,
-            string inlineSource,
-            string inlineExpected,
+            string sourceData,
+            string expectedData,
+            string title = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            (TextSpan span, string source2, string expected) = TextParser.ReplaceEmptySpan(source, inlineSource, inlineExpected);
+            (TextSpan span, string source2, string expected) = TextParser.ReplaceEmptySpan(source, sourceData, expectedData);
 
             TextParserResult result = TextParser.GetSpans(source2);
 
@@ -119,38 +157,41 @@ namespace Roslynator.Testing
 
                 await VerifyDiagnosticAsync(result.Text, diagnostics, additionalSources: null, options: options, cancellationToken);
 
-                await VerifyFixAsync(result.Text, expected, additionalData: null, equivalenceKey: equivalenceKey, options: options, cancellationToken: cancellationToken);
+                await VerifyFixAsync(result.Text, expected, additionalData: null, title: title, equivalenceKey: equivalenceKey, options: options, cancellationToken: cancellationToken);
             }
             else
             {
                 await VerifyDiagnosticAsync(source2, span, options, cancellationToken);
 
-                await VerifyFixAsync(source2, expected, additionalData: null, equivalenceKey: equivalenceKey, options: options, cancellationToken: cancellationToken);
+                await VerifyFixAsync(source2, expected, additionalData: null, title: title, equivalenceKey: equivalenceKey, options: options, cancellationToken: cancellationToken);
             }
         }
 
-        public async Task VerifyFixAsync(
+        internal async Task VerifyFixAsync(
             string source,
-            string inlineSource,
-            string inlineExpected,
+            string sourceData,
+            string expectedData,
+            string title = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            (_, string source2, string expected) = TextParser.ReplaceEmptySpan(source, inlineSource, inlineExpected);
+            (_, string source2, string expected) = TextParser.ReplaceEmptySpan(source, sourceData, expectedData);
 
             await VerifyFixAsync(
                 source: source2,
                 expected: expected,
+                title: title,
                 equivalenceKey: equivalenceKey,
                 options: options,
                 cancellationToken: cancellationToken);
         }
 
-        public async Task VerifyFixAsync(
+        internal async Task VerifyFixAsync(
             string source,
             string expected,
             IEnumerable<(string source, string expected)> additionalData = null,
+            string title = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -167,11 +208,9 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                Project project = WorkspaceFactory.AddProject(workspace.CurrentSolution, options);
+                Document document = WorkspaceFactory.CreateDocument(workspace.CurrentSolution, source, options);
 
-                Document document = WorkspaceFactory.AddDocument(project, source);
-
-                project = document.Project;
+                Project project = document.Project;
 
                 ImmutableArray<ExpectedDocument> expectedDocuments = (additionalData != null)
                     ? WorkspaceFactory.AddAdditionalDocuments(additionalData, ref project)
@@ -244,7 +283,7 @@ namespace Roslynator.Testing
 
                     fixRegistered = true;
 
-                    document = await document.ApplyCodeActionAsync(action);
+                    document = await VerifyAndApplyCodeActionAsync(document, action, title);
 
                     compilation = await document.Project.GetCompilationAsync(cancellationToken);
 
@@ -270,6 +309,14 @@ namespace Roslynator.Testing
             }
         }
 
+        /// <summary>
+        /// Verifies that specified source does not contains diagnostic that can be fixed with the <see cref="FixProvider"/>.
+        /// </summary>
+        /// <param name="source">A source code that should be tested. Tokens [| and |] represents start and end of selection respectively.</param>
+        /// <param name="additionalSources"></param>
+        /// <param name="equivalenceKey">Code action's equivalence key.</param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
         public async Task VerifyNoFixAsync(
             string source,
             IEnumerable<string> additionalSources = null,
@@ -283,9 +330,7 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                Project project = WorkspaceFactory.AddProject(workspace.CurrentSolution, options);
-
-                Document document = WorkspaceFactory.AddDocument(project, source, additionalSources);
+                Document document = WorkspaceFactory.CreateDocument(workspace.CurrentSolution, source, additionalSources, options);
 
                 Compilation compilation = await document.Project.GetCompilationAsync(cancellationToken);
 

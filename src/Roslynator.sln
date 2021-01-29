@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VisualStudio", "VisualStudi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{228E25E1-FDE6-40C1-98AF-8E636D174D94}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		Analyzers\Analyzers.xml = Analyzers\Analyzers.xml
 		..\ChangeLog.md = ..\ChangeLog.md
 		CodeFixes\CodeFixes.xml = CodeFixes\CodeFixes.xml
@@ -131,7 +132,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Formatting.Analyzers.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestCodeGenerator", "Tools\TestCodeGenerator\TestCodeGenerator.csproj", "{41F5F74A-7D16-4B6B-81E6-D222A4485FC4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing.Xunit", "Tests\Testing.Xunit\Testing.Xunit.csproj", "{CA7B4345-0758-4AFA-ADCC-2563640614BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing.CSharp.Xunit", "Tests\Testing.CSharp.Xunit\Testing.CSharp.Xunit.csproj", "{CA7B4345-0758-4AFA-ADCC-2563640614BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
