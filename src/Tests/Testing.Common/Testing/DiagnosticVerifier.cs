@@ -14,22 +14,38 @@ using Roslynator.Testing.Text;
 
 namespace Roslynator.Testing
 {
+    /// <summary>
+    /// Represents verifier for a diagnostic that is produced by <see cref="DiagnosticAnalyzer"/>.
+    /// </summary>
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public abstract class DiagnosticVerifier : CodeVerifier
     {
         private ImmutableArray<DiagnosticAnalyzer> _analyzers;
         private ImmutableArray<DiagnosticDescriptor> _supportedDiagnostics;
 
-        internal DiagnosticVerifier(WorkspaceFactory workspaceFactory) : base(workspaceFactory)
+        internal DiagnosticVerifier(WorkspaceFactory workspaceFactory, IAssert assert) : base(workspaceFactory, assert)
         {
         }
 
+        /// <summary>
+        /// Gets a <see cref="DiagnosticDescriptor"/> that describes diagnostic that should be verified.
+        /// </summary>
         public abstract DiagnosticDescriptor Descriptor { get; }
 
-        public abstract DiagnosticAnalyzer Analyzer { get; }
+        /// <summary>
+        /// Gets an analyzer that can produce a diagnostic that should be verified.
+        /// </summary>
+        protected abstract DiagnosticAnalyzer Analyzer { get; }
 
-        public virtual ImmutableArray<DiagnosticAnalyzer> AdditionalAnalyzers { get; } = ImmutableArray<DiagnosticAnalyzer>.Empty;
+        /// <summary>
+        /// Gets a collection of additional analyzers that can produce a diagnostic that should be verified.
+        /// Override this property if a diagnostic that should be verified can be produced by more than one analyzer.
+        /// </summary>
+        protected virtual ImmutableArray<DiagnosticAnalyzer> AdditionalAnalyzers { get; } = ImmutableArray<DiagnosticAnalyzer>.Empty;
 
+        /// <summary>
+        /// A collection of analyzers that can produce a diagnostic that should be verified.
+        /// </summary>
         public ImmutableArray<DiagnosticAnalyzer> Analyzers
         {
             get
@@ -75,6 +91,12 @@ namespace Roslynator.Testing
             get { return $"{Descriptor.Id} {string.Join(", ", Analyzers.Select(f => f.GetType().Name))}"; }
         }
 
+        /// <summary>
+        /// Verifies that specified source will produce diagnostic described with see <see cref="Descriptor"/>
+        /// </summary>
+        /// <param name="source">A source code that should be tested. Tokens [| and |] represents start and end of selection respectively.</param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAsync(
             string source,
             CodeVerificationOptions options = null,
@@ -90,13 +112,20 @@ namespace Roslynator.Testing
                 cancellationToken);
         }
 
+        /// <summary>
+        /// Verifies that specified source will produce diagnostic described with see <see cref="Descriptor"/>
+        /// </summary>
+        /// <param name="source">Source text that contains placeholder [||] to be replaced with <paramref name="sourceData"/>.</param>
+        /// <param name="sourceData"></param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAsync(
             string source,
-            string inlineSource,
+            string sourceData,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            (TextSpan span, string text) = TextParser.ReplaceEmptySpan(source, inlineSource);
+            (TextSpan span, string text) = TextParser.ReplaceEmptySpan(source, sourceData);
 
             TextParserResult result = TextParser.GetSpans(text);
 
@@ -110,7 +139,7 @@ namespace Roslynator.Testing
             }
         }
 
-        public async Task VerifyDiagnosticAsync(
+        internal async Task VerifyDiagnosticAsync(
             string source,
             TextSpan span,
             CodeVerificationOptions options = null,
@@ -123,7 +152,7 @@ namespace Roslynator.Testing
                 cancellationToken);
         }
 
-        public async Task VerifyDiagnosticAsync(
+        internal async Task VerifyDiagnosticAsync(
             string source,
             IEnumerable<TextSpan> spans,
             CodeVerificationOptions options = null,
@@ -137,7 +166,7 @@ namespace Roslynator.Testing
                 cancellationToken);
         }
 
-        public async Task VerifyDiagnosticAsync(
+        internal async Task VerifyDiagnosticAsync(
             string source,
             Diagnostic expectedDiagnostic,
             CodeVerificationOptions options = null,
@@ -151,7 +180,7 @@ namespace Roslynator.Testing
                 cancellationToken);
         }
 
-        public async Task VerifyDiagnosticAsync(
+        internal async Task VerifyDiagnosticAsync(
             string source,
             IEnumerable<Diagnostic> expectedDiagnostics,
             IEnumerable<string> additionalSources = null,
@@ -164,9 +193,7 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                Project project = WorkspaceFactory.AddProject(workspace.CurrentSolution, options);
-
-                Document document = WorkspaceFactory.AddDocument(project, source, additionalSources);
+                Document document = WorkspaceFactory.CreateDocument(workspace.CurrentSolution, source, additionalSources, options);
 
                 Compilation compilation = await document.Project.GetCompilationAsync(cancellationToken);
 
@@ -209,6 +236,10 @@ namespace Roslynator.Testing
             }
         }
 
+        /// <summary>
+        /// Updates compilation that will be used during verification.
+        /// </summary>
+        /// <param name="compilation"></param>
         protected virtual Compilation UpdateCompilation(Compilation compilation)
         {
             if (!Descriptor.IsEnabledByDefault)
@@ -217,13 +248,20 @@ namespace Roslynator.Testing
             return compilation;
         }
 
+        /// <summary>
+        /// Verifies that specified source will not produce diagnostic described with see <see cref="Descriptor"/>
+        /// </summary>
+        /// <param name="source">Source text that contains placeholder [||] to be replaced with <paramref name="sourceData"/>.</param>
+        /// <param name="sourceData"></param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
         public async Task VerifyNoDiagnosticAsync(
             string source,
-            string inlineSource,
+            string sourceData,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            (_, string text) = TextParser.ReplaceEmptySpan(source, inlineSource);
+            (_, string text) = TextParser.ReplaceEmptySpan(source, sourceData);
 
             await VerifyNoDiagnosticAsync(
                 source: text,
@@ -232,6 +270,13 @@ namespace Roslynator.Testing
                 cancellationToken);
         }
 
+        /// <summary>
+        /// Verifies that specified source will not produce diagnostic described with see <see cref="Descriptor"/>
+        /// </summary>
+        /// <param name="source">A source code that should be tested. Tokens [| and |] represents start and end of selection respectively.</param>
+        /// <param name="additionalSources"></param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
         public async Task VerifyNoDiagnosticAsync(
             string source,
             IEnumerable<string> additionalSources = null,
@@ -243,13 +288,11 @@ namespace Roslynator.Testing
             options ??= Options;
 
             if (SupportedDiagnostics.IndexOf(Descriptor, DiagnosticDescriptorComparer.Id) == -1)
-                Assert.True(false, $"Diagnostic \"{Descriptor.Id}\" is not supported by analyzer(s) {string.Join(", ", Analyzers.Select(f => f.GetType().Name))}.");
+                  Assert.True(false, $"Diagnostic \"{Descriptor.Id}\" is not supported by analyzer(s) {string.Join(", ", Analyzers.Select(f => f.GetType().Name))}.");
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                Project project = WorkspaceFactory.AddProject(workspace.CurrentSolution, options);
-
-                Document document = WorkspaceFactory.AddDocument(project, source, additionalSources);
+                Document document = WorkspaceFactory.CreateDocument(workspace.CurrentSolution, source, additionalSources, options);
 
                 Compilation compilation = await document.Project.GetCompilationAsync(cancellationToken);
 
@@ -290,7 +333,7 @@ namespace Roslynator.Testing
             using (IEnumerator<Diagnostic> actualEnumerator = actualDiagnostics.OrderBy(f => f, DiagnosticComparer.SpanStart).GetEnumerator())
             {
                 if (!expectedEnumerator.MoveNext())
-                    throw new InvalidOperationException($"'{nameof(expectedDiagnostics)}' contains no elements.");
+                    Assert.True(false, "Diagnostic's location not found in a source text.");
 
                 do
                 {
@@ -314,7 +357,7 @@ namespace Roslynator.Testing
                         while (expectedEnumerator.MoveNext())
                             expectedCount++;
 
-                        Assert.True(false, $"Mismatch between number of diagnostics returned, expected: {expectedCount} actual: {actualCount}{actualDiagnostics.ToDebugString()}");
+                        ReportMismatch(actualDiagnostics, actualCount, expectedCount);
                     }
 
                 } while (expectedEnumerator.MoveNext());
@@ -326,7 +369,19 @@ namespace Roslynator.Testing
                     while (actualEnumerator.MoveNext())
                         actualCount++;
 
-                    Assert.True(false, $"Mismatch between number of diagnostics returned, expected: {expectedCount} actual: {actualCount}{actualDiagnostics.ToDebugString()}");
+                    ReportMismatch(actualDiagnostics, actualCount, expectedCount);
+                }
+            }
+
+            void ReportMismatch(IEnumerable<Diagnostic> actualDiagnostics, int actualCount, int expectedCount)
+            {
+                if (actualCount == 0)
+                {
+                    Assert.True(false, $"No diagnostic found, expected: {expectedCount}.");
+                }
+                else
+                {
+                    Assert.True(false, $"Mismatch between number of diagnostics, expected: {expectedCount} actual: {actualCount}{actualDiagnostics.ToDebugString()}");
                 }
             }
         }

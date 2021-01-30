@@ -15,15 +15,24 @@ using Roslynator.Testing.Text;
 
 namespace Roslynator.Testing
 {
+    /// <summary>
+    /// Represents verifier for a refactoring that is provided by <see cref="RefactoringProvider"/>
+    /// </summary>
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public abstract class RefactoringVerifier : CodeVerifier
     {
-        internal RefactoringVerifier(WorkspaceFactory workspaceFactory) : base(workspaceFactory)
+        internal RefactoringVerifier(WorkspaceFactory workspaceFactory, IAssert assert) : base(workspaceFactory, assert)
         {
         }
 
+        /// <summary>
+        /// ID of a refactoring that should be applied.
+        /// </summary>
         public abstract string RefactoringId { get; }
 
+        /// <summary>
+        /// <see cref="CodeRefactoringProvider"/> that provides a refactoring that should be applied.
+        /// </summary>
         public abstract CodeRefactoringProvider RefactoringProvider { get; }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -37,10 +46,21 @@ namespace Roslynator.Testing
             }
         }
 
+        /// <summary>
+        /// Verifies that a refactoring can be applied on a specified source code.
+        /// </summary>
+        /// <param name="source">A source code that should be tested. Tokens [| and |] represents start and end of selection respectively.</param>
+        /// <param name="expected"></param>
+        /// <param name="additionalSources"></param>
+        /// <param name="title">Code action's title.</param>
+        /// <param name="equivalenceKey">Code action's equivalence key.</param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
         public async Task VerifyRefactoringAsync(
             string source,
             string expected,
             IEnumerable<string> additionalSources = null,
+            string title = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -52,20 +72,32 @@ namespace Roslynator.Testing
                 expected: expected,
                 spans: result.Spans.Select(f => f.Span),
                 additionalSources: additionalSources,
+                title: title,
                 equivalenceKey: equivalenceKey,
                 options: options,
                 cancellationToken: cancellationToken);
         }
 
+        /// <summary>
+        /// Verifies that a refactoring can be applied on a specified source code.
+        /// </summary>
+        /// <param name="source">Source text that contains placeholder [||] to be replaced with <paramref name="sourceData"/> and <paramref name="expectedData"/>.</param>
+        /// <param name="sourceData"></param>
+        /// <param name="expectedData"></param>
+        /// <param name="title">Code action's title.</param>
+        /// <param name="equivalenceKey">Code action's equivalence key.</param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
         public async Task VerifyRefactoringAsync(
             string source,
-            string inlineSource,
-            string inlineExpected,
+            string sourceData,
+            string expectedData,
+            string title = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            (TextSpan span, string source2, string expected) = TextParser.ReplaceEmptySpan(source, inlineSource, inlineExpected);
+            (TextSpan span, string source2, string expected) = TextParser.ReplaceEmptySpan(source, sourceData, expectedData);
 
             TextParserResult result = TextParser.GetSpans(source2, LinePositionSpanInfoComparer.IndexDescending);
 
@@ -75,6 +107,7 @@ namespace Roslynator.Testing
                     source: result.Text,
                     expected: expected,
                     spans: result.Spans.Select(f => f.Span),
+                    title: title,
                     equivalenceKey: equivalenceKey,
                     options: options,
                     cancellationToken: cancellationToken);
@@ -85,17 +118,19 @@ namespace Roslynator.Testing
                     source: source2,
                     expected: expected,
                     span: span,
+                    title: title,
                     equivalenceKey: equivalenceKey,
                     options: options,
                     cancellationToken: cancellationToken);
             }
         }
 
-        public async Task VerifyRefactoringAsync(
+        internal async Task VerifyRefactoringAsync(
             string source,
             string expected,
             IEnumerable<TextSpan> spans,
             IEnumerable<string> additionalSources = null,
+            string title = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -103,7 +138,7 @@ namespace Roslynator.Testing
             using (IEnumerator<TextSpan> en = spans.GetEnumerator())
             {
                 if (!en.MoveNext())
-                    throw new InvalidOperationException($"'{nameof(spans)}' contains no elements.");
+                    Assert.True(false, "Span on which a refactoring should be invoked was not found.");
 
                 do
                 {
@@ -114,6 +149,7 @@ namespace Roslynator.Testing
                         expected: expected,
                         span: en.Current,
                         additionalSources: additionalSources,
+                        title: title,
                         equivalenceKey: equivalenceKey,
                         options: options,
                         cancellationToken: cancellationToken);
@@ -122,11 +158,12 @@ namespace Roslynator.Testing
             }
         }
 
-        public async Task VerifyRefactoringAsync(
+        internal async Task VerifyRefactoringAsync(
             string source,
             string expected,
             TextSpan span,
             IEnumerable<string> additionalSources = null,
+            string title = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -137,9 +174,7 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                Project project = WorkspaceFactory.AddProject(workspace.CurrentSolution, options);
-
-                Document document = WorkspaceFactory.AddDocument(project, source, additionalSources);
+                Document document = WorkspaceFactory.CreateDocument(workspace.CurrentSolution, source, additionalSources, options);
 
                 SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
@@ -166,7 +201,7 @@ namespace Roslynator.Testing
 
                 Assert.True(action != null, "No code refactoring has been registered.");
 
-                document = await document.ApplyCodeActionAsync(action);
+                document = await VerifyAndApplyCodeActionAsync(document, action, title);
 
                 semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
@@ -182,6 +217,13 @@ namespace Roslynator.Testing
             }
         }
 
+        /// <summary>
+        /// Verifies that a refactoring cannot be applied on a specified source code.
+        /// </summary>
+        /// <param name="source">A source code that should be tested. Tokens [| and |] represents start and end of selection respectively.</param>
+        /// <param name="equivalenceKey">Code action's equivalence key.</param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
         public async Task VerifyNoRefactoringAsync(
             string source,
             string equivalenceKey = null,
@@ -198,7 +240,7 @@ namespace Roslynator.Testing
                 cancellationToken: cancellationToken);
         }
 
-        public async Task VerifyNoRefactoringAsync(
+        internal async Task VerifyNoRefactoringAsync(
             string source,
             TextSpan span,
             string equivalenceKey = null,
@@ -208,12 +250,12 @@ namespace Roslynator.Testing
             await VerifyNoRefactoringAsync(
                 source,
                 ImmutableArray.Create(span),
-                equivalenceKey,
+                equivalenceKey: equivalenceKey,
                 options,
                 cancellationToken);
         }
 
-        public async Task VerifyNoRefactoringAsync(
+        internal async Task VerifyNoRefactoringAsync(
             string source,
             IEnumerable<TextSpan> spans,
             string equivalenceKey = null,
@@ -226,9 +268,7 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                Project project = WorkspaceFactory.AddProject(workspace.CurrentSolution, options);
-
-                Document document = WorkspaceFactory.AddDocument(project, source);
+                Document document = WorkspaceFactory.CreateDocument(workspace.CurrentSolution, source, options);
 
                 SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
@@ -239,7 +279,7 @@ namespace Roslynator.Testing
                 using (IEnumerator<TextSpan> en = spans.GetEnumerator())
                 {
                     if (!en.MoveNext())
-                        throw new InvalidOperationException($"'{nameof(spans)}' contains no elements.");
+                        Assert.True(false, "Span on which a refactoring should be invoked was not found.");
 
                     do
                     {

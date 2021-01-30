@@ -7,10 +7,14 @@ using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Roslynator.Testing;
 
-namespace Roslynator.CSharp.Testing
+#pragma warning disable RCS1223
+
+namespace Roslynator.Testing.CSharp
 {
+    /// <summary>
+    /// Represents a set of options for C# code verifications.
+    /// </summary>
     public class CSharpCodeVerificationOptions : CodeVerificationOptions
     {
         private static CSharpCodeVerificationOptions _default_CSharp5;
@@ -19,6 +23,14 @@ namespace Roslynator.CSharp.Testing
         private static CSharpCodeVerificationOptions _default_CSharp7_3;
         private static CSharpCodeVerificationOptions _default_NullableReferenceTypes;
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="CSharpCodeVerificationOptions"/>.
+        /// </summary>
+        /// <param name="parseOptions"></param>
+        /// <param name="compilationOptions"></param>
+        /// <param name="assemblyNames"></param>
+        /// <param name="allowedCompilerDiagnosticSeverity"></param>
+        /// <param name="allowedCompilerDiagnosticIds"></param>
         public CSharpCodeVerificationOptions(
             CSharpParseOptions parseOptions,
             CSharpCompilationOptions compilationOptions,
@@ -31,14 +43,29 @@ namespace Roslynator.CSharp.Testing
             CompilationOptions = compilationOptions ?? throw new ArgumentNullException(nameof(compilationOptions));
         }
 
+        /// <summary>
+        /// Gets a parse options that should be used to parse tested source code.
+        /// </summary>
         new public CSharpParseOptions ParseOptions { get; }
 
+        /// <summary>
+        /// Gets a compilation options that should be used to compile test project.
+        /// </summary>
         new public CSharpCompilationOptions CompilationOptions { get; }
 
+        /// <summary>
+        /// Gets a common parse options.
+        /// </summary>
         protected override ParseOptions CommonParseOptions => ParseOptions;
 
+        /// <summary>
+        /// Gets a common compilation options.
+        /// </summary>
         protected override CompilationOptions CommonCompilationOptions => CompilationOptions;
 
+        /// <summary>
+        /// Gets a default code verification options.
+        /// </summary>
         public static CSharpCodeVerificationOptions Default { get; } = CreateDefault();
 
         private static CSharpCodeVerificationOptions CreateDefault()
@@ -146,34 +173,41 @@ namespace Roslynator.CSharp.Testing
             }
         }
 
+        /// <summary>
+        /// Adds specified compiler diagnostic ID to the list of allowed compiler diagnostic IDs.
+        /// </summary>
+        /// <param name="diagnosticId"></param>
         public CSharpCodeVerificationOptions AddAllowedCompilerDiagnosticId(string diagnosticId)
         {
             return WithAllowedCompilerDiagnosticIds(AllowedCompilerDiagnosticIds.Add(diagnosticId));
         }
 
+        /// <summary>
+        /// Adds a list of specified compiler diagnostic IDs to the list of allowed compiler diagnostic IDs.
+        /// </summary>
+        /// <param name="diagnosticIds"></param>
         public CSharpCodeVerificationOptions AddAllowedCompilerDiagnosticIds(IEnumerable<string> diagnosticIds)
         {
             return WithAllowedCompilerDiagnosticIds(AllowedCompilerDiagnosticIds.AddRange(diagnosticIds));
         }
 
-        public CSharpCodeVerificationOptions WithAllowedCompilerDiagnosticIds(IEnumerable<string> allowedCompilerDiagnosticIds)
+        /// <summary>
+        /// Adds specified assembly name to the list of assembly names.
+        /// </summary>
+        /// <param name="assemblyName"></param>
+        public CSharpCodeVerificationOptions AddAssemblyName(string assemblyName)
         {
-            return new CSharpCodeVerificationOptions(
-                parseOptions: ParseOptions,
-                compilationOptions: CompilationOptions,
-                assemblyNames: AssemblyNames,
-                allowedCompilerDiagnosticSeverity: AllowedCompilerDiagnosticSeverity,
-                allowedCompilerDiagnosticIds: allowedCompilerDiagnosticIds);
+            return WithAssemblyNames(AssemblyNames.Add(assemblyName));
         }
 
-        public CSharpCodeVerificationOptions WithEnabled(DiagnosticDescriptor descriptor)
+        internal CSharpCodeVerificationOptions WithEnabled(DiagnosticDescriptor descriptor)
         {
             var compilationOptions = (CSharpCompilationOptions)CompilationOptions.EnsureEnabled(descriptor);
 
             return WithCompilationOptions(compilationOptions);
         }
 
-        public CSharpCodeVerificationOptions WithEnabled(DiagnosticDescriptor descriptor1, DiagnosticDescriptor descriptor2)
+        internal CSharpCodeVerificationOptions WithEnabled(DiagnosticDescriptor descriptor1, DiagnosticDescriptor descriptor2)
         {
             ImmutableDictionary<string, ReportDiagnostic> diagnosticOptions = CompilationOptions.SpecificDiagnosticOptions;
 
@@ -186,11 +220,31 @@ namespace Roslynator.CSharp.Testing
             return WithCompilationOptions(compilationOptions);
         }
 
-        public CSharpCodeVerificationOptions WithSuppressed(DiagnosticDescriptor descriptor)
+        internal CSharpCodeVerificationOptions WithDisabled(DiagnosticDescriptor descriptor)
         {
             var compilationOptions = (CSharpCompilationOptions)CompilationOptions.EnsureSuppressed(descriptor);
 
             return WithCompilationOptions(compilationOptions);
+        }
+#pragma warning disable CS1591
+        public CSharpCodeVerificationOptions WithAllowedCompilerDiagnosticIds(IEnumerable<string> allowedCompilerDiagnosticIds)
+        {
+            return new CSharpCodeVerificationOptions(
+                parseOptions: ParseOptions,
+                compilationOptions: CompilationOptions,
+                assemblyNames: AssemblyNames,
+                allowedCompilerDiagnosticSeverity: AllowedCompilerDiagnosticSeverity,
+                allowedCompilerDiagnosticIds: allowedCompilerDiagnosticIds);
+        }
+
+        public CSharpCodeVerificationOptions WithAllowedCompilerDiagnosticSeverity(DiagnosticSeverity allowedCompilerDiagnosticSeverity)
+        {
+            return new CSharpCodeVerificationOptions(
+                parseOptions: ParseOptions,
+                compilationOptions: CompilationOptions,
+                assemblyNames: AssemblyNames,
+                allowedCompilerDiagnosticSeverity: allowedCompilerDiagnosticSeverity,
+                allowedCompilerDiagnosticIds: AllowedCompilerDiagnosticIds);
         }
 
         public CSharpCodeVerificationOptions WithParseOptions(CSharpParseOptions parseOptions)
@@ -212,5 +266,16 @@ namespace Roslynator.CSharp.Testing
                 allowedCompilerDiagnosticSeverity: AllowedCompilerDiagnosticSeverity,
                 allowedCompilerDiagnosticIds: AllowedCompilerDiagnosticIds);
         }
+
+        public CSharpCodeVerificationOptions WithAssemblyNames(IEnumerable<string> assemblyNames)
+        {
+            return new CSharpCodeVerificationOptions(
+                parseOptions: ParseOptions,
+                compilationOptions: CompilationOptions,
+                assemblyNames: assemblyNames,
+                allowedCompilerDiagnosticSeverity: AllowedCompilerDiagnosticSeverity,
+                allowedCompilerDiagnosticIds: AllowedCompilerDiagnosticIds);
+        }
+#pragma warning restore CS1591
     }
 }

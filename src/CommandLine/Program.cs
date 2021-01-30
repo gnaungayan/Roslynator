@@ -41,6 +41,7 @@ namespace Roslynator.CommandLine
                     SlnListCommandLineOptions,
                     ListVisualStudioCommandLineOptions,
                     GenerateSourceReferencesCommandLineOptions,
+                    ListReferencesCommandLineOptions,
 #endif
                     FixCommandLineOptions,
                     AnalyzeCommandLineOptions,
@@ -91,6 +92,7 @@ namespace Roslynator.CommandLine
                     (SlnListCommandLineOptions options) => SlnListAsync(options).Result,
                     (ListVisualStudioCommandLineOptions options) => ListVisualStudio(options),
                     (GenerateSourceReferencesCommandLineOptions options) => GenerateSourceReferencesAsync(options).Result,
+                    (ListReferencesCommandLineOptions options) => ListReferencesAsync(options).Result,
 #endif
                     (FixCommandLineOptions options) => FixAsync(options).Result,
                     (AnalyzeCommandLineOptions options) => AnalyzeAsync(options).Result,
@@ -538,6 +540,28 @@ namespace Roslynator.CommandLine
                 options.DryRun);
 
             CommandResult result = command.Execute();
+
+            return (result == CommandResult.Success) ? 0 : 1;
+        }
+
+        private static async Task<int> ListReferencesAsync(ListReferencesCommandLineOptions options)
+        {
+            if (!TryParseOptionValueAsEnum(options.Display, ParameterNames.Display, out MetadataReferenceDisplay display, MetadataReferenceDisplay.Path))
+                return 1;
+
+            if (!TryParseOptionValueAsEnumFlags(options.Type, ParameterNames.Type, out MetadataReferenceFilter metadataReferenceFilter, MetadataReferenceFilter.Dll | MetadataReferenceFilter.Project))
+                return 1;
+
+            if (!options.TryGetProjectFilter(out ProjectFilter projectFilter))
+                return 1;
+
+            var command = new ListReferencesCommand(
+                options,
+                display,
+                metadataReferenceFilter,
+                projectFilter);
+
+            CommandResult result = await command.ExecuteAsync(options.Path, options.MSBuildPath, options.Properties);
 
             return (result == CommandResult.Success) ? 0 : 1;
         }
