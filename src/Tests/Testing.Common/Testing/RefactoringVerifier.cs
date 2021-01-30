@@ -49,7 +49,7 @@ namespace Roslynator.Testing
         /// <summary>
         /// Verifies that a refactoring can be applied on a specified source code.
         /// </summary>
-        /// <param name="source">A source code that should be tested. Tokens [| and |] represents start and end of selection respectively.</param>
+        /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="expected"></param>
         /// <param name="additionalSources"></param>
         /// <param name="title">Code action's title.</param>
@@ -81,7 +81,7 @@ namespace Roslynator.Testing
         /// <summary>
         /// Verifies that a refactoring can be applied on a specified source code.
         /// </summary>
-        /// <param name="source">Source text that contains placeholder [||] to be replaced with <paramref name="sourceData"/> and <paramref name="expectedData"/>.</param>
+        /// <param name="source">Source text that contains placeholder <c>[||]</c> to be replaced with <paramref name="sourceData"/> and <paramref name="expectedData"/>.</param>
         /// <param name="sourceData"></param>
         /// <param name="expectedData"></param>
         /// <param name="title">Code action's title.</param>
@@ -220,7 +220,7 @@ namespace Roslynator.Testing
         /// <summary>
         /// Verifies that a refactoring cannot be applied on a specified source code.
         /// </summary>
-        /// <param name="source">A source code that should be tested. Tokens [| and |] represents start and end of selection respectively.</param>
+        /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>

@@ -94,7 +94,7 @@ namespace Roslynator.Testing
         /// <summary>
         /// Verifies that specified source will produce diagnostic described with see <see cref="Descriptor"/>
         /// </summary>
-        /// <param name="source">A source code that should be tested. Tokens [| and |] represents start and end of selection respectively.</param>
+        /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAsync(
@@ -115,7 +115,7 @@ namespace Roslynator.Testing
         /// <summary>
         /// Verifies that specified source will produce diagnostic described with see <see cref="Descriptor"/>
         /// </summary>
-        /// <param name="source">Source text that contains placeholder [||] to be replaced with <paramref name="sourceData"/>.</param>
+        /// <param name="source">Source text that contains placeholder <c>[||]</c> to be replaced with <paramref name="sourceData"/>.</param>
         /// <param name="sourceData"></param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
@@ -251,7 +251,7 @@ namespace Roslynator.Testing
         /// <summary>
         /// Verifies that specified source will not produce diagnostic described with see <see cref="Descriptor"/>
         /// </summary>
-        /// <param name="source">Source text that contains placeholder [||] to be replaced with <paramref name="sourceData"/>.</param>
+        /// <param name="source">Source text that contains placeholder <c>[||]</c> to be replaced with <paramref name="sourceData"/>.</param>
         /// <param name="sourceData"></param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
@@ -273,7 +273,7 @@ namespace Roslynator.Testing
         /// <summary>
         /// Verifies that specified source will not produce diagnostic described with see <see cref="Descriptor"/>
         /// </summary>
-        /// <param name="source">A source code that should be tested. Tokens [| and |] represents start and end of selection respectively.</param>
+        /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="additionalSources"></param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>

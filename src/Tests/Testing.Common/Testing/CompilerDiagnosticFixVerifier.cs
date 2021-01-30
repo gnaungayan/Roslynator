@@ -56,7 +56,7 @@ namespace Roslynator.Testing
         /// <summary>
         /// Verifies that specified source will produce compiler diagnostic with ID specified in <see cref="DiagnosticId"/>.
         /// </summary>
-        /// <param name="source">Source text that contains placeholder [||] to be replaced with <paramref name="sourceData"/> and <paramref name="expectedData"/>.</param>
+        /// <param name="source">Source text that contains placeholder <c>[||]</c> to be replaced with <paramref name="sourceData"/> and <paramref name="expectedData"/>.</param>
         /// <param name="sourceData"></param>
         /// <param name="expectedData"></param>
         /// <param name="title">Code action's title.</param>
@@ -86,7 +86,7 @@ namespace Roslynator.Testing
         /// <summary>
         /// Verifies that specified source will produce compiler diagnostic with ID specified in <see cref="DiagnosticId"/>.
         /// </summary>
-        /// <param name="source">A source code that should be tested. Tokens [| and |] represents start and end of selection respectively.</param>
+        /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="expected"></param>
         /// <param name="additionalData"></param>
         /// <param name="title">Code action's title.</param>
@@ -220,7 +220,7 @@ namespace Roslynator.Testing
         /// <summary>
         /// Verifies that specified source will not produce compiler diagnostic with ID specified in <see cref="DiagnosticId"/>.
         /// </summary>
-        /// <param name="source">A source code that should be tested. Tokens [| and |] represents start and end of selection respectively.</param>
+        /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
