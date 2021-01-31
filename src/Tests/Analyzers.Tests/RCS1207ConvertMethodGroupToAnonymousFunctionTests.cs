@@ -18,10 +18,9 @@ namespace Roslynator.CSharp.Analysis.Tests
 
         public override CodeFixProvider FixProvider { get; } = new ConvertAnonymousFunctionToMethodGroupOrViceVersaCodeFixProvider();
 
-        protected override CSharpCodeVerificationOptions UpdateOptions(CSharpCodeVerificationOptions options)
+        public override CSharpCodeVerificationOptions Options
         {
-            return base.UpdateOptions(options)
-                .WithEnabled(AnalyzerOptions.ConvertMethodGroupToAnonymousFunction);
+            get { return base.Options.WithEnabled(AnalyzerOptions.ConvertMethodGroupToAnonymousFunction); }
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertAnonymousFunctionToMethodGroupOrViceVersa)]

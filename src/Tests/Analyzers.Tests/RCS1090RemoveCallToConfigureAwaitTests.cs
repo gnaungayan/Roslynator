@@ -18,9 +18,9 @@ namespace Roslynator.CSharp.Analysis.Tests
 
         public override CodeFixProvider FixProvider { get; } = new AwaitExpressionCodeFixProvider();
 
-        protected override CSharpCodeVerificationOptions UpdateOptions(CSharpCodeVerificationOptions options)
+        public override CSharpCodeVerificationOptions Options
         {
-            return base.UpdateOptions(options).WithEnabled(AnalyzerOptions.RemoveCallToConfigureAwait);
+            get { return base.Options.WithEnabled(AnalyzerOptions.RemoveCallToConfigureAwait); }
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddCallToConfigureAwaitOrViceVersa)]

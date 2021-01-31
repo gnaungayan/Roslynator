@@ -18,9 +18,9 @@ namespace Roslynator.CSharp.Analysis.Tests
 
         public override CodeFixProvider FixProvider { get; } = new RemoveRedundantAsyncAwaitCodeFixProvider();
 
-        protected override CSharpCodeVerificationOptions UpdateOptions(CSharpCodeVerificationOptions options)
+        public override CSharpCodeVerificationOptions Options
         {
-            return base.UpdateOptions(options).AddAllowedCompilerDiagnosticId(CompilerDiagnosticIdentifiers.UnreachableCodeDetected);
+            get { return base.Options.AddAllowedCompilerDiagnosticId(CompilerDiagnosticIdentifiers.UnreachableCodeDetected); }
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.RemoveRedundantAsyncAwait)]

@@ -19,9 +19,9 @@ namespace Roslynator.Formatting.CSharp.Tests
 
         public override CodeFixProvider FixProvider { get; } = new AddEmptyLineBeforeAndAfterUsingDirectiveListCodeFixProvider();
 
-        protected override CSharpCodeVerificationOptions UpdateOptions(CSharpCodeVerificationOptions options)
+        public override CSharpCodeVerificationOptions Options
         {
-            return options.AddAllowedCompilerDiagnosticId("CS0430");
+            get { return base.Options.AddAllowedCompilerDiagnosticId("CS0430"); }
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddEmptyLineBeforeUsingDirectiveList)]

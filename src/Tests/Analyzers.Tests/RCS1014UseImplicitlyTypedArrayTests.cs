@@ -18,9 +18,9 @@ namespace Roslynator.CSharp.Analysis.Tests
 
         public override CodeFixProvider FixProvider { get; } = new UseExplicitlyTypedArrayOrViceVersaCodeFixProvider();
 
-        protected override CSharpCodeVerificationOptions UpdateOptions(CSharpCodeVerificationOptions options)
+        public override CSharpCodeVerificationOptions Options
         {
-            return base.UpdateOptions(options).WithEnabled(AnalyzerOptions.UseImplicitlyTypedArray);
+            get { return base.Options.WithEnabled(AnalyzerOptions.UseImplicitlyTypedArray); }
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseExplicitlyTypedArrayOrViceVersa)]
