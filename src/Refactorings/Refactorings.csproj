@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>3.1.0.0</Version>
+    <Version>3.1.0.1</Version>
     <AssemblyName>Roslynator.CSharp.Refactorings</AssemblyName>
     <RootNamespace>Roslynator.CSharp.Refactorings</RootNamespace>
   </PropertyGroup>
@@ -21,7 +21,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.7.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.8.0" />
   </ItemGroup>
 
 
