@@ -421,7 +421,7 @@ namespace Roslynator.Testing
             bool checkAdditionalLocations = false)
         {
             if (actualDiagnostic.Id != expectedDiagnostic.Id)
-                Assert.True(false, $"Diagnostic id expected to be \"{expectedDiagnostic.Id}\", actual: \"{actualDiagnostic.Id}\"{GetMessage()}");
+                Assert.True(false, $"Diagnostic's ID expected to be \"{expectedDiagnostic.Id}\", actual: \"{actualDiagnostic.Id}\"{GetMessage()}");
 
             VerifyLocation(actualDiagnostic.Location, expectedDiagnostic.Location);
 
