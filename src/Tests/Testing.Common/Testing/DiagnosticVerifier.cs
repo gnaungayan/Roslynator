@@ -258,11 +258,7 @@ namespace Roslynator.Testing
             }
         }
 
-        /// <summary>
-        /// Updates compilation that will be used during verification.
-        /// </summary>
-        /// <param name="compilation"></param>
-        protected virtual Compilation UpdateCompilation(Compilation compilation)
+        private protected Compilation UpdateCompilation(Compilation compilation)
         {
             if (!Descriptor.IsEnabledByDefault)
                 compilation = compilation.EnsureEnabled(Descriptor);

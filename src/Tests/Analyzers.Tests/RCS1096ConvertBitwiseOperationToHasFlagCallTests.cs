@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.CodeFixes;
+using Roslynator.Testing.CSharp;
 using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
@@ -17,11 +18,9 @@ namespace Roslynator.CSharp.Analysis.Tests
 
         public override CodeFixProvider FixProvider { get; } = new ConvertHasFlagCallToBitwiseOperationOrViceVersaCodeFixProvider();
 
-        protected override Compilation UpdateCompilation(Compilation compilation)
+        public override CSharpCodeVerificationOptions Options
         {
-            compilation = base.UpdateCompilation(compilation);
-
-            return compilation.EnsureEnabled(AnalyzerOptions.ConvertBitwiseOperationToHasFlagCall);
+            get { return base.Options.WithEnabled(AnalyzerOptions.ConvertBitwiseOperationToHasFlagCall); }
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertHasFlagCallToBitwiseOperationOrViceVersa)]
