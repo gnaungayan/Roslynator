@@ -15,7 +15,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 namespace Roslynator.Testing
 {
     /// <summary>
-    /// Represents a verifier for compiler diagnostics (i.e CS1234 for C#).
+    /// Represents a verifier for compiler diagnostic.
     /// </summary>
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public abstract class CompilerDiagnosticFixVerifier : CodeVerifier

@@ -15,7 +15,7 @@ using Roslynator.Testing.Text;
 namespace Roslynator.Testing
 {
     /// <summary>
-    /// Represents base type for verifying diagnostics, code fixes and refactorings.
+    /// Represents base type for verifying a diagnostic, a code fix and a refactoring.
     /// </summary>
     public abstract class CodeVerifier
     {
