@@ -95,10 +95,12 @@ namespace Roslynator.Testing
         /// Verifies that specified source will produce diagnostic described with see <see cref="Descriptor"/>
         /// </summary>
         /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
+        /// <param name="verifyDiagnostic"></param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAsync(
             string source,
+            Action<Diagnostic> verifyDiagnostic = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
@@ -108,8 +110,9 @@ namespace Roslynator.Testing
                 result.Text,
                 result.Spans.Select(f => CreateDiagnostic(f.Span, f.LineSpan)),
                 additionalSources: null,
+                verifyDiagnostic: verifyDiagnostic,
                 options: options,
-                cancellationToken);
+                cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -117,11 +120,13 @@ namespace Roslynator.Testing
         /// </summary>
         /// <param name="source">Source text that contains placeholder <c>[||]</c> to be replaced with <paramref name="sourceData"/>.</param>
         /// <param name="sourceData"></param>
+        /// <param name="verifyDiagnostic"></param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAsync(
             string source,
             string sourceData,
+            Action<Diagnostic> verifyDiagnostic = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
@@ -131,30 +136,43 @@ namespace Roslynator.Testing
 
             if (result.Spans.Any())
             {
-                await VerifyDiagnosticAsync(result.Text, result.Spans.Select(f => f.Span), options, cancellationToken);
+                await VerifyDiagnosticAsync(
+                    result.Text,
+                    result.Spans.Select(f => f.Span),
+                    verifyDiagnostic: verifyDiagnostic,
+                    options: options,
+                    cancellationToken: cancellationToken);
             }
             else
             {
-                await VerifyDiagnosticAsync(text, span, options, cancellationToken);
+                await VerifyDiagnosticAsync(
+                    text,
+                    span,
+                    verifyDiagnostic: verifyDiagnostic,
+                    options: options,
+                    cancellationToken: cancellationToken);
             }
         }
 
         internal async Task VerifyDiagnosticAsync(
             string source,
             TextSpan span,
+            Action<Diagnostic> verifyDiagnostic = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
             await VerifyDiagnosticAsync(
                 source,
                 CreateDiagnostic(source, span),
-                options,
-                cancellationToken);
+                verifyDiagnostic: verifyDiagnostic,
+                options: options,
+                cancellationToken: cancellationToken);
         }
 
         internal async Task VerifyDiagnosticAsync(
             string source,
             IEnumerable<TextSpan> spans,
+            Action<Diagnostic> verifyDiagnostic = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
@@ -162,13 +180,15 @@ namespace Roslynator.Testing
                 source,
                 spans.Select(span => CreateDiagnostic(source, span)),
                 additionalSources: null,
+                verifyDiagnostic: verifyDiagnostic,
                 options: options,
-                cancellationToken);
+                cancellationToken: cancellationToken);
         }
 
         internal async Task VerifyDiagnosticAsync(
             string source,
             Diagnostic expectedDiagnostic,
+            Action<Diagnostic> verifyDiagnostic = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
@@ -176,14 +196,16 @@ namespace Roslynator.Testing
                 source,
                 new Diagnostic[] { expectedDiagnostic },
                 additionalSources: null,
+                verifyDiagnostic: verifyDiagnostic,
                 options: options,
-                cancellationToken);
+                cancellationToken: cancellationToken);
         }
 
         internal async Task VerifyDiagnosticAsync(
             string source,
             IEnumerable<Diagnostic> expectedDiagnostics,
             IEnumerable<string> additionalSources = null,
+            Action<Diagnostic> verifyDiagnostic = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
@@ -208,11 +230,11 @@ namespace Roslynator.Testing
                 if (diagnostics.Length > 0
                     && SupportedDiagnostics.Length > 1)
                 {
-                    VerifyDiagnostics(FilterDiagnostics(diagnostics), expectedDiagnostics, cancellationToken);
+                    VerifyDiagnostics(FilterDiagnostics(diagnostics), expectedDiagnostics, verifyDiagnostic, cancellationToken);
                 }
                 else
                 {
-                    VerifyDiagnostics(diagnostics, expectedDiagnostics, cancellationToken);
+                    VerifyDiagnostics(diagnostics, expectedDiagnostics, verifyDiagnostic, cancellationToken);
                 }
             }
 
@@ -315,15 +337,17 @@ namespace Roslynator.Testing
         private void VerifyDiagnostics(
             IEnumerable<Diagnostic> actualDiagnostics,
             IEnumerable<Diagnostic> expectedDiagnostics,
+            Action<Diagnostic> verifyDiagnostic = null,
             CancellationToken cancellationToken = default)
         {
-            VerifyDiagnostics(actualDiagnostics, expectedDiagnostics, checkAdditionalLocations: false, cancellationToken: cancellationToken);
+            VerifyDiagnostics(actualDiagnostics, expectedDiagnostics, checkAdditionalLocations: false, verifyDiagnostic, cancellationToken: cancellationToken);
         }
 
         private void VerifyDiagnostics(
             IEnumerable<Diagnostic> actualDiagnostics,
             IEnumerable<Diagnostic> expectedDiagnostics,
             bool checkAdditionalLocations,
+            Action<Diagnostic> verifyDiagnostic = null,
             CancellationToken cancellationToken = default)
         {
             int expectedCount = 0;
@@ -350,7 +374,11 @@ namespace Roslynator.Testing
                     {
                         actualCount++;
 
-                        VerifyDiagnostic(actualEnumerator.Current, expectedDiagnostic, checkAdditionalLocations: checkAdditionalLocations);
+                        VerifyDiagnostic(
+                            actualEnumerator.Current,
+                            expectedDiagnostic,
+                            verifyDiagnostic,
+                            checkAdditionalLocations: checkAdditionalLocations);
                     }
                     else
                     {
@@ -389,6 +417,7 @@ namespace Roslynator.Testing
         private void VerifyDiagnostic(
             Diagnostic actualDiagnostic,
             Diagnostic expectedDiagnostic,
+            Action<Diagnostic> verifyDiagnostic = null,
             bool checkAdditionalLocations = false)
         {
             if (actualDiagnostic.Id != expectedDiagnostic.Id)
@@ -398,6 +427,8 @@ namespace Roslynator.Testing
 
             if (checkAdditionalLocations)
                 VerifyAdditionalLocations(actualDiagnostic.AdditionalLocations, expectedDiagnostic.AdditionalLocations);
+
+            verifyDiagnostic?.Invoke(actualDiagnostic);
 
             void VerifyLocation(
                 Location actualLocation,

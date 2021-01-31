@@ -59,7 +59,7 @@ namespace Roslynator.Testing
         /// <param name="source">Source text that contains placeholder <c>[||]</c> to be replaced with <paramref name="sourceData"/> and <paramref name="expectedData"/>.</param>
         /// <param name="sourceData"></param>
         /// <param name="expectedData"></param>
-        /// <param name="title">Code action's title.</param>
+        /// <param name="verifyCodeAction"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
@@ -67,7 +67,7 @@ namespace Roslynator.Testing
             string source,
             string sourceData,
             string expectedData,
-            string title = null,
+            Action<CodeAction> verifyCodeAction = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -77,7 +77,7 @@ namespace Roslynator.Testing
             await VerifyFixAsync(
                 source: source2,
                 expected: expected,
-                title: title,
+                verifyCodeAction: verifyCodeAction,
                 equivalenceKey: equivalenceKey,
                 options: options,
                 cancellationToken: cancellationToken);
@@ -89,7 +89,7 @@ namespace Roslynator.Testing
         /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="expected"></param>
         /// <param name="additionalData"></param>
-        /// <param name="title">Code action's title.</param>
+        /// <param name="verifyCodeAction"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
@@ -97,7 +97,7 @@ namespace Roslynator.Testing
             string source,
             string expected,
             IEnumerable<(string source, string expected)> additionalData = null,
-            string title = null,
+            Action<CodeAction> verifyCodeAction = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -182,7 +182,7 @@ namespace Roslynator.Testing
 
                     fixRegistered = true;
 
-                    document = await VerifyAndApplyCodeActionAsync(document, action, title);
+                    document = await VerifyAndApplyCodeActionAsync(document, action, verifyCodeAction);
 
                     previousDiagnostics = diagnostics;
                 }

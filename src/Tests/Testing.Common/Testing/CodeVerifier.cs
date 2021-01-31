@@ -158,13 +158,12 @@ namespace Roslynator.Testing
             }
         }
 
-        internal async Task<Document> VerifyAndApplyCodeActionAsync(Document document, CodeAction codeAction, string expectedTitle)
+        internal async Task<Document> VerifyAndApplyCodeActionAsync(
+            Document document,
+            CodeAction codeAction,
+            Action<CodeAction> verifyCodeAction)
         {
-            if (expectedTitle != null
-                && !string.Equals(expectedTitle, codeAction.Title, StringComparison.Ordinal))
-            {
-                Assert.True(false, $"Code action title is invalid.\r\nexpected: {expectedTitle}\r\nactual: {codeAction.Title}");
-            }
+            verifyCodeAction?.Invoke(codeAction);
 
             ImmutableArray<CodeActionOperation> operations = await codeAction.GetOperationsAsync(CancellationToken.None);
 
@@ -173,6 +172,16 @@ namespace Roslynator.Testing
                 .Single()
                 .ChangedSolution
                 .GetDocument(document.Id);
+        }
+
+        internal void VerifyDiagnosticMessage(Diagnostic diagnostic, string expectedMessage, IFormatProvider formatProvider = null)
+        {
+            Assert.Equal(expectedMessage, diagnostic.GetMessage(formatProvider));
+        }
+
+        internal void VerifyCodeActionTitle(CodeAction codeAction, string expectedTitle)
+        {
+            Assert.Equal(expectedTitle, codeAction.Title);
         }
     }
 }

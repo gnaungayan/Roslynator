@@ -56,7 +56,8 @@ namespace Roslynator.Testing
         /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="expected"></param>
         /// <param name="additionalData"></param>
-        /// <param name="title">Code action's title.</param>
+        /// <param name="verifyDiagnostic"></param>
+        /// <param name="verifyCodeAction"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
@@ -64,7 +65,8 @@ namespace Roslynator.Testing
             string source,
             string expected,
             IEnumerable<(string source, string expected)> additionalData = null,
-            string title = null,
+            Action<Diagnostic> verifyDiagnostic = null,
+            Action<CodeAction> verifyCodeAction = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -79,6 +81,7 @@ namespace Roslynator.Testing
                 result.Text,
                 diagnostics,
                 additionalSources: additionalSources,
+                verifyDiagnostic: verifyDiagnostic,
                 options: options,
                 cancellationToken: cancellationToken);
 
@@ -86,7 +89,7 @@ namespace Roslynator.Testing
                 result.Text,
                 expected,
                 additionalData,
-                title: title,
+                verifyCodeAction: verifyCodeAction ,
                 equivalenceKey: equivalenceKey,
                 options,
                 cancellationToken);
@@ -97,12 +100,14 @@ namespace Roslynator.Testing
         /// </summary>
         /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="additionalData"></param>
+        /// <param name="verifyDiagnostic"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAndNoFixAsync(
             string source,
             IEnumerable<(string source, string expected)> additionalData = null,
+            Action<Diagnostic> verifyDiagnostic = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -117,6 +122,7 @@ namespace Roslynator.Testing
                 result.Text,
                 diagnostics,
                 additionalSources: additionalSources,
+                verifyDiagnostic: verifyDiagnostic,
                 options: options,
                 cancellationToken: cancellationToken);
 
@@ -134,7 +140,8 @@ namespace Roslynator.Testing
         /// <param name="source">Source text that contains placeholder <c>[||]</c> to be replaced with <paramref name="sourceData"/> and <paramref name="expectedData"/>.</param>
         /// <param name="sourceData"></param>
         /// <param name="expectedData"></param>
-        /// <param name="title">Code action's title.</param>
+        /// <param name="verifyDiagnostic"></param>
+        /// <param name="verifyCodeAction"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
@@ -142,7 +149,8 @@ namespace Roslynator.Testing
             string source,
             string sourceData,
             string expectedData,
-            string title = null,
+            Action<Diagnostic> verifyDiagnostic = null,
+            Action<CodeAction> verifyCodeAction = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -155,15 +163,15 @@ namespace Roslynator.Testing
             {
                 IEnumerable<Diagnostic> diagnostics = result.Spans.Select(f => CreateDiagnostic(f.Span, f.LineSpan));
 
-                await VerifyDiagnosticAsync(result.Text, diagnostics, additionalSources: null, options: options, cancellationToken);
+                await VerifyDiagnosticAsync(result.Text, diagnostics, additionalSources: null, verifyDiagnostic: verifyDiagnostic, options: options, cancellationToken);
 
-                await VerifyFixAsync(result.Text, expected, additionalData: null, title: title, equivalenceKey: equivalenceKey, options: options, cancellationToken: cancellationToken);
+                await VerifyFixAsync(result.Text, expected, additionalData: null, verifyCodeAction: verifyCodeAction , equivalenceKey: equivalenceKey, options: options, cancellationToken: cancellationToken);
             }
             else
             {
-                await VerifyDiagnosticAsync(source2, span, options, cancellationToken);
+                await VerifyDiagnosticAsync(source2, span, verifyDiagnostic: verifyDiagnostic, options, cancellationToken);
 
-                await VerifyFixAsync(source2, expected, additionalData: null, title: title, equivalenceKey: equivalenceKey, options: options, cancellationToken: cancellationToken);
+                await VerifyFixAsync(source2, expected, additionalData: null, verifyCodeAction: verifyCodeAction , equivalenceKey: equivalenceKey, options: options, cancellationToken: cancellationToken);
             }
         }
 
@@ -171,7 +179,7 @@ namespace Roslynator.Testing
             string source,
             string sourceData,
             string expectedData,
-            string title = null,
+            Action<CodeAction> verifyCodeAction = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -181,7 +189,7 @@ namespace Roslynator.Testing
             await VerifyFixAsync(
                 source: source2,
                 expected: expected,
-                title: title,
+                verifyCodeAction: verifyCodeAction ,
                 equivalenceKey: equivalenceKey,
                 options: options,
                 cancellationToken: cancellationToken);
@@ -191,7 +199,7 @@ namespace Roslynator.Testing
             string source,
             string expected,
             IEnumerable<(string source, string expected)> additionalData = null,
-            string title = null,
+            Action<CodeAction> verifyCodeAction = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -283,7 +291,7 @@ namespace Roslynator.Testing
 
                     fixRegistered = true;
 
-                    document = await VerifyAndApplyCodeActionAsync(document, action, title);
+                    document = await VerifyAndApplyCodeActionAsync(document, action, verifyCodeAction);
 
                     compilation = await document.Project.GetCompilationAsync(cancellationToken);
 

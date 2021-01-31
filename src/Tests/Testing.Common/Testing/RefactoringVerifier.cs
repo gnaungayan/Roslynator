@@ -52,7 +52,7 @@ namespace Roslynator.Testing
         /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="expected"></param>
         /// <param name="additionalSources"></param>
-        /// <param name="title">Code action's title.</param>
+        /// <param name="verifyCodeAction"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
@@ -60,7 +60,7 @@ namespace Roslynator.Testing
             string source,
             string expected,
             IEnumerable<string> additionalSources = null,
-            string title = null,
+            Action<CodeAction> verifyCodeAction = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -72,7 +72,7 @@ namespace Roslynator.Testing
                 expected: expected,
                 spans: result.Spans.Select(f => f.Span),
                 additionalSources: additionalSources,
-                title: title,
+                verifyCodeAction: verifyCodeAction ,
                 equivalenceKey: equivalenceKey,
                 options: options,
                 cancellationToken: cancellationToken);
@@ -84,7 +84,7 @@ namespace Roslynator.Testing
         /// <param name="source">Source text that contains placeholder <c>[||]</c> to be replaced with <paramref name="sourceData"/> and <paramref name="expectedData"/>.</param>
         /// <param name="sourceData"></param>
         /// <param name="expectedData"></param>
-        /// <param name="title">Code action's title.</param>
+        /// <param name="verifyCodeAction"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
@@ -92,7 +92,7 @@ namespace Roslynator.Testing
             string source,
             string sourceData,
             string expectedData,
-            string title = null,
+            Action<CodeAction> verifyCodeAction = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -107,7 +107,7 @@ namespace Roslynator.Testing
                     source: result.Text,
                     expected: expected,
                     spans: result.Spans.Select(f => f.Span),
-                    title: title,
+                    verifyCodeAction: verifyCodeAction ,
                     equivalenceKey: equivalenceKey,
                     options: options,
                     cancellationToken: cancellationToken);
@@ -118,7 +118,7 @@ namespace Roslynator.Testing
                     source: source2,
                     expected: expected,
                     span: span,
-                    title: title,
+                    verifyCodeAction: verifyCodeAction ,
                     equivalenceKey: equivalenceKey,
                     options: options,
                     cancellationToken: cancellationToken);
@@ -130,7 +130,7 @@ namespace Roslynator.Testing
             string expected,
             IEnumerable<TextSpan> spans,
             IEnumerable<string> additionalSources = null,
-            string title = null,
+            Action<CodeAction> verifyCodeAction = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -149,7 +149,7 @@ namespace Roslynator.Testing
                         expected: expected,
                         span: en.Current,
                         additionalSources: additionalSources,
-                        title: title,
+                        verifyCodeAction: verifyCodeAction ,
                         equivalenceKey: equivalenceKey,
                         options: options,
                         cancellationToken: cancellationToken);
@@ -163,7 +163,7 @@ namespace Roslynator.Testing
             string expected,
             TextSpan span,
             IEnumerable<string> additionalSources = null,
-            string title = null,
+            Action<CodeAction> verifyCodeAction = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -201,7 +201,7 @@ namespace Roslynator.Testing
 
                 Assert.True(action != null, "No code refactoring has been registered.");
 
-                document = await VerifyAndApplyCodeActionAsync(document, action, title);
+                document = await VerifyAndApplyCodeActionAsync(document, action, verifyCodeAction);
 
                 semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
