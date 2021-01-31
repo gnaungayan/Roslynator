@@ -14,7 +14,7 @@
     <Deterministic>true</Deterministic>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsNotAsErrors>1591</WarningsNotAsErrors>
-    <DocumentationFile>bin\Release\netstandard1.3\Roslynator.Testing.CSharp.xml</DocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\netstandard2.0\Roslynator.Testing.CSharp.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -33,7 +33,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.7.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.8.0" />
   </ItemGroup>
 
   <ItemGroup>

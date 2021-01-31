@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
 
-namespace Roslynator.CSharp.Testing
+namespace Roslynator.Testing.CSharp
 {
     public static class SyntaxKindTests
     {
@@ -549,6 +549,12 @@ namespace Roslynator.CSharp.Testing
                     case SyntaxKind.ImplicitObjectCreationExpression:
                     case SyntaxKind.PrimaryConstructorBaseType:
                     case SyntaxKind.FunctionPointerType:
+                    case SyntaxKind.DefaultConstraint:
+                    case SyntaxKind.FunctionPointerCallingConvention:
+                    case SyntaxKind.FunctionPointerParameter:
+                    case SyntaxKind.FunctionPointerParameterList:
+                    case SyntaxKind.FunctionPointerUnmanagedCallingConvention:
+                    case SyntaxKind.FunctionPointerUnmanagedCallingConventionList:
                         {
                             break;
                         }

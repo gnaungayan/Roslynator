@@ -92,6 +92,8 @@ namespace Roslynator.CSharp
                     return "interface";
                 case SyntaxKind.EnumDeclaration:
                     return "enum";
+                case SyntaxKind.RecordDeclaration:
+                    return "record";
                 case SyntaxKind.IncompleteMember:
                     return "member";
                 case SyntaxKind.GetAccessorDeclaration:
@@ -305,6 +307,7 @@ namespace Roslynator.CSharp
                 case SyntaxKind.MethodDeclaration:
                 case SyntaxKind.OperatorDeclaration:
                 case SyntaxKind.PropertyDeclaration:
+                case SyntaxKind.RecordDeclaration:
                 case SyntaxKind.StructDeclaration:
                 case SyntaxKind.IncompleteMember:
                 case SyntaxKind.GetAccessorDeclaration:
@@ -513,8 +516,11 @@ namespace Roslynator.CSharp
             return false;
         }
 
-        //TODO: make CSharpFacts.IsNumericType public
-        internal static bool IsNumericType(SpecialType specialType)
+        /// <summary>
+        /// Returns true if the specified type is a numeric type.
+        /// </summary>
+        /// <param name="specialType"></param>
+        public static bool IsNumericType(SpecialType specialType)
         {
             switch (specialType)
             {
@@ -1006,6 +1012,7 @@ namespace Roslynator.CSharp
                 case SyntaxKind.OrAssignmentExpression:
                 case SyntaxKind.LeftShiftAssignmentExpression:
                 case SyntaxKind.RightShiftAssignmentExpression:
+                case SyntaxKind.CoalesceAssignmentExpression:
                 case SyntaxKind.SimpleLambdaExpression:
                 case SyntaxKind.ParenthesizedLambdaExpression:
                     return 15;
@@ -1057,6 +1064,7 @@ namespace Roslynator.CSharp
                 case SyntaxKind.ClassDeclaration:
                 case SyntaxKind.InterfaceDeclaration:
                 case SyntaxKind.StructDeclaration:
+                case SyntaxKind.RecordDeclaration:
                 case SyntaxKind.MethodDeclaration:
                 case SyntaxKind.DelegateDeclaration:
                 case SyntaxKind.LocalFunctionStatement:

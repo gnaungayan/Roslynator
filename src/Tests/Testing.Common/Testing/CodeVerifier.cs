@@ -1,31 +1,49 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
 using Roslynator.Testing.Text;
+
+#pragma warning disable RCS1223
 
 namespace Roslynator.Testing
 {
+    /// <summary>
+    /// Represents base type for verifying diagnostics, code fixes and refactorings.
+    /// </summary>
     public abstract class CodeVerifier
     {
-        internal CodeVerifier(WorkspaceFactory workspaceFactory)
+        internal CodeVerifier(WorkspaceFactory workspaceFactory, IAssert assert)
         {
             WorkspaceFactory = workspaceFactory;
+            Assert = assert;
+            TextParser = new DefaultTextParser(Assert);
         }
 
+        /// <summary>
+        /// Gets a common code verification options.
+        /// </summary>
         protected abstract CodeVerificationOptions CommonOptions { get; }
 
+        /// <summary>
+        /// Gets a code verification options.
+        /// </summary>
         public CodeVerificationOptions Options => CommonOptions;
 
         internal WorkspaceFactory WorkspaceFactory { get; }
 
-        internal virtual TextParser TextParser { get; } = TextParser.Default;
+        /// <summary>
+        /// Gets a test assertions.
+        /// </summary>
+        protected IAssert Assert { get; }
 
-        protected abstract IAssert Assert { get; }
+        internal TextParser TextParser { get; }
 
         internal void VerifyCompilerDiagnostics(
             ImmutableArray<Diagnostic> diagnostics,
@@ -85,7 +103,7 @@ namespace Roslynator.Testing
                     .Where(diagnostic => !allowedDiagnosticIds.Any(id => id == diagnostic.Id))
                     .Except(diagnostics, DiagnosticDeepEqualityComparer.Instance);
 
-                Assert.True(false, $"Code fix introduced new compiler diagnostics.{diff.ToDebugString()}");
+                Assert.True(false, $"Code fix introduced new compiler diagnostic(s).{diff.ToDebugString()}");
             }
 
             bool IsAnyNewCompilerDiagnostic()
@@ -138,6 +156,23 @@ namespace Roslynator.Testing
 
                 Assert.Equal(expectedDocument.Text, actual);
             }
+        }
+
+        internal async Task<Document> VerifyAndApplyCodeActionAsync(Document document, CodeAction codeAction, string expectedTitle)
+        {
+            if (expectedTitle != null
+                && !string.Equals(expectedTitle, codeAction.Title, StringComparison.Ordinal))
+            {
+                Assert.True(false, $"Code action title is invalid.\r\nexpected: {expectedTitle}\r\nactual: {codeAction.Title}");
+            }
+
+            ImmutableArray<CodeActionOperation> operations = await codeAction.GetOperationsAsync(CancellationToken.None);
+
+            return operations
+                .OfType<ApplyChangesOperation>()
+                .Single()
+                .ChangedSolution
+                .GetDocument(document.Id);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Roslynator.CSharp.Analysis.Tests
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveUnusedMemberDeclaration;
 
-        public override DiagnosticAnalyzer Analyzer { get; } = new UnusedMemberAnalyzer();
+        protected override DiagnosticAnalyzer Analyzer { get; } = new UnusedMemberAnalyzer();
 
         public override CodeFixProvider FixProvider { get; } = new UnusedMemberCodeFixProvider();
 
@@ -350,5 +350,28 @@ class C
 }
 ");
         }
+
+        //TODO: how to enable EditorConfig options in tests
+//        [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.RemoveUnusedMemberDeclaration)]
+//        public async Task TestNoDiagnostic_UnityScriptMethods()
+//        {
+//            await VerifyNoDiagnosticAsync(@"
+//using UnityEngine;
+
+//class C : MonoBehaviour
+//{
+//    private void Awake()
+//    {
+//    }
+//}
+
+//namespace UnityEngine
+//{
+//    class MonoBehaviour
+//    {
+//    }
+//}
+//");
+//        }
     }
 }

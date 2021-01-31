@@ -10,7 +10,6 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CodeFixes;
-using Roslynator.CSharp.Helpers;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.CodeFixes
@@ -69,7 +68,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                                     var variableDeclaration = (VariableDeclarationSyntax)variableDeclarator.Parent;
 
-                                    ExpressionSyntax value = typeSymbol.GetDefaultValueSyntax(document.GetDefaultSyntaxOptions(), variableDeclaration.Type.WithoutTrivia());
+                                    ExpressionSyntax value = typeSymbol.GetDefaultValueSyntax(variableDeclaration.Type.WithoutTrivia(), document.GetDefaultSyntaxOptions());
 
                                     if (value.IsKind(SyntaxKind.DefaultExpression)
                                         && document.SupportsLanguageFeature(CSharpLanguageFeature.DefaultLiteral))
