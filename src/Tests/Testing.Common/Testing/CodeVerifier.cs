@@ -161,9 +161,10 @@ namespace Roslynator.Testing
         internal async Task<Document> VerifyAndApplyCodeActionAsync(
             Document document,
             CodeAction codeAction,
-            Action<CodeAction> verifyCodeAction)
+            string title)
         {
-            verifyCodeAction?.Invoke(codeAction);
+            if (title != null)
+                Assert.Equal(title, codeAction.Title);
 
             ImmutableArray<CodeActionOperation> operations = await codeAction.GetOperationsAsync(CancellationToken.None);
 

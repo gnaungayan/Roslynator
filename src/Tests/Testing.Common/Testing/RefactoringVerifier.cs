@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -52,7 +51,7 @@ namespace Roslynator.Testing
         /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="expected"></param>
         /// <param name="additionalSources"></param>
-        /// <param name="verifyCodeAction"></param>
+        /// <param name="codeActionTitle"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
@@ -60,21 +59,20 @@ namespace Roslynator.Testing
             string source,
             string expected,
             IEnumerable<string> additionalSources = null,
-            Action<CodeAction> verifyCodeAction = null,
+            string codeActionTitle = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
             TextWithSpans result = TextParser.FindSpansAndRemove(source, comparer: LinePositionSpanInfoComparer.IndexDescending);
 
+            var state = new RefactoringTestState(result.Text, expected, ImmutableArray.CreateRange(result.Spans, f => f.Span));
+
+            state = state.Update(state.Source, state.Expected, additionalSources, codeActionTitle, equivalenceKey, state.Spans);
+
             await VerifyRefactoringAsync(
-                source: result.Text,
-                expected: expected,
-                spans: result.Spans.Select(f => f.Span),
-                additionalSources: additionalSources,
-                verifyCodeAction: verifyCodeAction ,
-                equivalenceKey: equivalenceKey,
-                options: options,
+                state,
+                options,
                 cancellationToken: cancellationToken);
         }
 
@@ -84,7 +82,7 @@ namespace Roslynator.Testing
         /// <param name="source">Source text that contains placeholder <c>[||]</c> to be replaced with <paramref name="sourceData"/> and <paramref name="expectedData"/>.</param>
         /// <param name="sourceData"></param>
         /// <param name="expectedData"></param>
-        /// <param name="verifyCodeAction"></param>
+        /// <param name="codeActionTitle"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
@@ -92,113 +90,84 @@ namespace Roslynator.Testing
             string source,
             string sourceData,
             string expectedData,
-            Action<CodeAction> verifyCodeAction = null,
+            string codeActionTitle = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
             TextWithSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
 
+            var state = new RefactoringTestState(result.Text, result.Expected, ImmutableArray.CreateRange(result.Spans, f => f.Span));
+
+            state = state.Update(state.Source, state.Expected, null, codeActionTitle, equivalenceKey, state.Spans);
+
             await VerifyRefactoringAsync(
-                source: result.Text,
-                expected: result.Expected,
-                spans: result.Spans.Select(f => f.Span),
-                verifyCodeAction: verifyCodeAction,
-                equivalenceKey: equivalenceKey,
-                options: options,
+                state,
+                options,
                 cancellationToken: cancellationToken);
         }
 
         internal async Task VerifyRefactoringAsync(
-            string source,
-            string expected,
-            IEnumerable<TextSpan> spans,
-            IEnumerable<string> additionalSources = null,
-            Action<CodeAction> verifyCodeAction = null,
-            string equivalenceKey = null,
+            RefactoringTestState state,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            using (IEnumerator<TextSpan> en = spans.GetEnumerator())
-            {
-                if (!en.MoveNext())
-                    Assert.True(false, "Span on which a refactoring should be invoked was not found.");
-
-                do
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    await VerifyRefactoringAsync(
-                        source: source,
-                        expected: expected,
-                        span: en.Current,
-                        additionalSources: additionalSources,
-                        verifyCodeAction: verifyCodeAction ,
-                        equivalenceKey: equivalenceKey,
-                        options: options,
-                        cancellationToken: cancellationToken);
-
-                } while (en.MoveNext());
-            }
-        }
-
-        internal async Task VerifyRefactoringAsync(
-            string source,
-            string expected,
-            TextSpan span,
-            IEnumerable<string> additionalSources = null,
-            Action<CodeAction> verifyCodeAction = null,
-            string equivalenceKey = null,
-            CodeVerificationOptions options = null,
-            CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
             options ??= Options;
 
-            using (Workspace workspace = new AdhocWorkspace())
+            ImmutableArray<TextSpan>.Enumerator en = state.Spans.GetEnumerator();
+
+            if (!en.MoveNext())
+                Assert.True(false, "Span on which a refactoring should be invoked was not found.");
+
+            do
             {
-                Document document = WorkspaceFactory.CreateDocument(workspace.CurrentSolution, source, additionalSources, options);
+                cancellationToken.ThrowIfCancellationRequested();
 
-                SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken);
+                using (Workspace workspace = new AdhocWorkspace())
+                {
+                    Document document = WorkspaceFactory.CreateDocument(workspace.CurrentSolution, state.Source, state.AdditionalFiles, options);
 
-                ImmutableArray<Diagnostic> compilerDiagnostics = semanticModel.GetDiagnostics(cancellationToken: cancellationToken);
+                    SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
-                VerifyCompilerDiagnostics(compilerDiagnostics, options);
-                CodeAction action = null;
+                    ImmutableArray<Diagnostic> compilerDiagnostics = semanticModel.GetDiagnostics(cancellationToken: cancellationToken);
 
-                var context = new CodeRefactoringContext(
-                    document,
-                    span,
-                    a =>
-                    {
-                        if (equivalenceKey == null
-                            || string.Equals(a.EquivalenceKey, equivalenceKey, StringComparison.Ordinal))
+                    VerifyCompilerDiagnostics(compilerDiagnostics, options);
+                    CodeAction action = null;
+
+                    var context = new CodeRefactoringContext(
+                        document,
+                        en.Current,
+                        a =>
                         {
-                            if (action == null)
-                                action = a;
-                        }
-                    },
-                    CancellationToken.None);
+                            if (state.EquivalenceKey == null
+                                || string.Equals(a.EquivalenceKey, state.EquivalenceKey, StringComparison.Ordinal))
+                            {
+                                if (action == null)
+                                    action = a;
+                            }
+                        },
+                        CancellationToken.None);
 
-                await RefactoringProvider.ComputeRefactoringsAsync(context);
+                    await RefactoringProvider.ComputeRefactoringsAsync(context);
 
-                Assert.True(action != null, "No code refactoring has been registered.");
+                    Assert.True(action != null, "No code refactoring has been registered.");
 
-                document = await VerifyAndApplyCodeActionAsync(document, action, verifyCodeAction);
+                    document = await VerifyAndApplyCodeActionAsync(document, action, state.Title);
 
-                semanticModel = await document.GetSemanticModelAsync(cancellationToken);
+                    semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
-                ImmutableArray<Diagnostic> newCompilerDiagnostics = semanticModel.GetDiagnostics(cancellationToken: cancellationToken);
+                    ImmutableArray<Diagnostic> newCompilerDiagnostics = semanticModel.GetDiagnostics(cancellationToken: cancellationToken);
 
-                VerifyCompilerDiagnostics(newCompilerDiagnostics, options);
+                    VerifyCompilerDiagnostics(newCompilerDiagnostics, options);
 
-                VerifyNoNewCompilerDiagnostics(compilerDiagnostics, newCompilerDiagnostics, options);
+                    VerifyNoNewCompilerDiagnostics(compilerDiagnostics, newCompilerDiagnostics, options);
 
-                string actual = await document.ToFullStringAsync(simplify: true, format: true, cancellationToken);
+                    string actual = await document.ToFullStringAsync(simplify: true, format: true, cancellationToken);
 
-                Assert.Equal(expected, actual);
-            }
+                    Assert.Equal(state.Expected, actual);
+                }
+
+            } while (en.MoveNext());
         }
 
         /// <summary>
@@ -216,33 +185,18 @@ namespace Roslynator.Testing
         {
             TextWithSpans result = TextParser.FindSpansAndRemove(source, comparer: LinePositionSpanInfoComparer.IndexDescending);
 
+            var state = new RefactoringTestState(result.Text, result.Expected, ImmutableArray.CreateRange(result.Spans, f => f.Span));
+
+            state = state.Update(state.Source, state.Expected, null, null, equivalenceKey, state.Spans);
+
             await VerifyNoRefactoringAsync(
-                source: result.Text,
-                spans: result.Spans.Select(f => f.Span),
-                equivalenceKey: equivalenceKey,
-                options: options,
+                state,
+                options,
                 cancellationToken: cancellationToken);
         }
 
         internal async Task VerifyNoRefactoringAsync(
-            string source,
-            TextSpan span,
-            string equivalenceKey = null,
-            CodeVerificationOptions options = null,
-            CancellationToken cancellationToken = default)
-        {
-            await VerifyNoRefactoringAsync(
-                source,
-                ImmutableArray.Create(span),
-                equivalenceKey: equivalenceKey,
-                options,
-                cancellationToken);
-        }
-
-        internal async Task VerifyNoRefactoringAsync(
-            string source,
-            IEnumerable<TextSpan> spans,
-            string equivalenceKey = null,
+            RefactoringTestState state,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
@@ -252,7 +206,7 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                Document document = WorkspaceFactory.CreateDocument(workspace.CurrentSolution, source, options);
+                Document document = WorkspaceFactory.CreateDocument(workspace.CurrentSolution, state.Source, state.AdditionalFiles, options);
 
                 SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
@@ -260,32 +214,31 @@ namespace Roslynator.Testing
 
                 VerifyCompilerDiagnostics(compilerDiagnostics, options);
 
-                using (IEnumerator<TextSpan> en = spans.GetEnumerator())
+                ImmutableArray<TextSpan>.Enumerator en = state.Spans.GetEnumerator();
+
+                if (!en.MoveNext())
+                    Assert.True(false, "Span on which a refactoring should be invoked was not found.");
+
+                do
                 {
-                    if (!en.MoveNext())
-                        Assert.True(false, "Span on which a refactoring should be invoked was not found.");
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                    do
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-
-                        var context = new CodeRefactoringContext(
-                            document,
-                            en.Current,
-                            a =>
+                    var context = new CodeRefactoringContext(
+                        document,
+                        en.Current,
+                        a =>
+                        {
+                            if (state.EquivalenceKey == null
+                                || string.Equals(a.EquivalenceKey, state.EquivalenceKey, StringComparison.Ordinal))
                             {
-                                if (equivalenceKey == null
-                                    || string.Equals(a.EquivalenceKey, equivalenceKey, StringComparison.Ordinal))
-                                {
-                                    Assert.True(false, "No code refactoring expected.");
-                                }
-                            },
-                            CancellationToken.None);
+                                Assert.True(false, "No code refactoring expected.");
+                            }
+                        },
+                        CancellationToken.None);
 
-                        await RefactoringProvider.ComputeRefactoringsAsync(context);
+                    await RefactoringProvider.ComputeRefactoringsAsync(context);
 
-                    } while (en.MoveNext());
-                }
+                } while (en.MoveNext());
             }
         }
     }
