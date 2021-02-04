@@ -104,11 +104,11 @@ namespace Roslynator.Testing
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            TextParserResult result = TextParser.GetSpans(source);
+            TextWithSpans result = TextParser.FindSpansAndRemove(source);
 
             await VerifyDiagnosticAsync(
                 result.Text,
-                result.Spans.Select(f => CreateDiagnostic(f.Span, f.LineSpan)),
+                result.Spans.Select(f => CreateDiagnostic(f)),
                 additionalSources: null,
                 verifyDiagnostic: verifyDiagnostic,
                 options: options,
@@ -130,28 +130,14 @@ namespace Roslynator.Testing
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            (TextSpan span, string text) = TextParser.ReplaceEmptySpan(source, sourceData);
+            TextWithSpans result = TextParser.FindSpansAndReplace(source, sourceData);
 
-            TextParserResult result = TextParser.GetSpans(text);
-
-            if (result.Spans.Any())
-            {
-                await VerifyDiagnosticAsync(
-                    result.Text,
-                    result.Spans.Select(f => f.Span),
-                    verifyDiagnostic: verifyDiagnostic,
-                    options: options,
-                    cancellationToken: cancellationToken);
-            }
-            else
-            {
-                await VerifyDiagnosticAsync(
-                    text,
-                    span,
-                    verifyDiagnostic: verifyDiagnostic,
-                    options: options,
-                    cancellationToken: cancellationToken);
-            }
+            await VerifyDiagnosticAsync(
+                result.Text,
+                result.Spans.Select(f => CreateDiagnostic(f)),
+                verifyDiagnostic: verifyDiagnostic,
+                options: options,
+                cancellationToken: cancellationToken);
         }
 
         internal async Task VerifyDiagnosticAsync(
@@ -279,10 +265,10 @@ namespace Roslynator.Testing
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            (_, string text) = TextParser.ReplaceEmptySpan(source, sourceData);
+            TextWithSpans result = TextParser.FindSpansAndReplace(source, sourceData);
 
             await VerifyNoDiagnosticAsync(
-                source: text,
+                source: result.Text,
                 additionalSources: null,
                 options: options,
                 cancellationToken);
@@ -488,6 +474,11 @@ namespace Roslynator.Testing
             LinePositionSpan lineSpan = span.ToLinePositionSpan(source);
 
             return CreateDiagnostic(span, lineSpan);
+        }
+
+        private protected Diagnostic CreateDiagnostic(LinePositionSpanInfo lineSpanInfo)
+        {
+            return CreateDiagnostic(lineSpanInfo.Span, lineSpanInfo.LineSpan);
         }
 
         private protected Diagnostic CreateDiagnostic(TextSpan span, LinePositionSpan lineSpan)

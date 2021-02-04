@@ -71,9 +71,9 @@ namespace Roslynator.Testing
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            TextParserResult result = TextParser.GetSpans(source);
+            TextWithSpans result = TextParser.FindSpansAndRemove(source);
 
-            IEnumerable<Diagnostic> diagnostics = result.Spans.Select(f => CreateDiagnostic(f.Span, f.LineSpan));
+            IEnumerable<Diagnostic> diagnostics = result.Spans.Select(f => CreateDiagnostic(f));
 
             string[] additionalSources = additionalData?.Select(f => f.source).ToArray() ?? Array.Empty<string>();
 
@@ -89,7 +89,7 @@ namespace Roslynator.Testing
                 result.Text,
                 expected,
                 additionalData,
-                verifyCodeAction: verifyCodeAction ,
+                verifyCodeAction: verifyCodeAction,
                 equivalenceKey: equivalenceKey,
                 options,
                 cancellationToken);
@@ -112,9 +112,9 @@ namespace Roslynator.Testing
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            TextParserResult result = TextParser.GetSpans(source);
+            TextWithSpans result = TextParser.FindSpansAndRemove(source);
 
-            IEnumerable<Diagnostic> diagnostics = result.Spans.Select(f => CreateDiagnostic(f.Span, f.LineSpan));
+            IEnumerable<Diagnostic> diagnostics = result.Spans.Select(f => CreateDiagnostic(f));
 
             string[] additionalSources = additionalData?.Select(f => f.source).ToArray() ?? Array.Empty<string>();
 
@@ -155,24 +155,13 @@ namespace Roslynator.Testing
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            (TextSpan span, string source2, string expected) = TextParser.ReplaceEmptySpan(source, sourceData, expectedData);
+            TextWithSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
 
-            TextParserResult result = TextParser.GetSpans(source2);
+            IEnumerable<Diagnostic> diagnostics = result.Spans.Select(f => CreateDiagnostic(f));
 
-            if (result.Spans.Any())
-            {
-                IEnumerable<Diagnostic> diagnostics = result.Spans.Select(f => CreateDiagnostic(f.Span, f.LineSpan));
+            await VerifyDiagnosticAsync(result.Text, diagnostics, additionalSources: null, verifyDiagnostic: verifyDiagnostic, options: options, cancellationToken);
 
-                await VerifyDiagnosticAsync(result.Text, diagnostics, additionalSources: null, verifyDiagnostic: verifyDiagnostic, options: options, cancellationToken);
-
-                await VerifyFixAsync(result.Text, expected, additionalData: null, verifyCodeAction: verifyCodeAction , equivalenceKey: equivalenceKey, options: options, cancellationToken: cancellationToken);
-            }
-            else
-            {
-                await VerifyDiagnosticAsync(source2, span, verifyDiagnostic: verifyDiagnostic, options, cancellationToken);
-
-                await VerifyFixAsync(source2, expected, additionalData: null, verifyCodeAction: verifyCodeAction , equivalenceKey: equivalenceKey, options: options, cancellationToken: cancellationToken);
-            }
+            await VerifyFixAsync(result.Text, result.Expected, additionalData: null, verifyCodeAction: verifyCodeAction, equivalenceKey: equivalenceKey, options: options, cancellationToken: cancellationToken);
         }
 
         internal async Task VerifyFixAsync(
@@ -184,12 +173,12 @@ namespace Roslynator.Testing
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            (_, string source2, string expected) = TextParser.ReplaceEmptySpan(source, sourceData, expectedData);
+            TextWithSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
 
             await VerifyFixAsync(
-                source: source2,
-                expected: expected,
-                verifyCodeAction: verifyCodeAction ,
+                source: result.Text,
+                expected: result.Expected,
+                verifyCodeAction: verifyCodeAction,
                 equivalenceKey: equivalenceKey,
                 options: options,
                 cancellationToken: cancellationToken);

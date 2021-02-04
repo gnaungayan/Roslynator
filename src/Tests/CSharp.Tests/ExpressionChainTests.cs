@@ -38,7 +38,7 @@ class C
         string s = [|a + b + c|];
     }
 }";
-            TextParserResult result = TextParser.GetSpans(s);
+            TextWithSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             var be2 = (BinaryExpressionSyntax)be.Left;
@@ -62,7 +62,7 @@ class C
         string s = a + b + [|c + d|];
     }
 }";
-            TextParserResult result = TextParser.GetSpans(s);
+            TextWithSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             var be2 = (BinaryExpressionSyntax)be.Left;
@@ -85,7 +85,7 @@ class C
         string s = a + [|b + c|] + d;
     }
 }";
-            TextParserResult result = TextParser.GetSpans(s);
+            TextWithSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             be = (BinaryExpressionSyntax)be.Left;
@@ -109,7 +109,7 @@ class C
         string s = a + [|b|];
     }
 }";
-            TextParserResult result = TextParser.GetSpans(s);
+            TextWithSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
 
@@ -130,7 +130,7 @@ class C
         string s = [|a|] + b;
     }
 }";
-            TextParserResult result = TextParser.GetSpans(s);
+            TextWithSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
 
@@ -165,7 +165,7 @@ class C
         string s = [|a + b + c|];
     }
 }";
-            TextParserResult result = TextParser.GetSpans(s);
+            TextWithSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             var be2 = (BinaryExpressionSyntax)be.Left;
@@ -189,7 +189,7 @@ class C
         string s = a + b + [|c + d|];
     }
 }";
-            TextParserResult result = TextParser.GetSpans(s);
+            TextWithSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             var be2 = (BinaryExpressionSyntax)be.Left;
@@ -212,7 +212,7 @@ class C
         string s = a + [|b + c|] + d;
     }
 }";
-            TextParserResult result = TextParser.GetSpans(s);
+            TextWithSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             be = (BinaryExpressionSyntax)be.Left;
@@ -236,7 +236,7 @@ class C
         string s = a + [|b|];
     }
 }";
-            TextParserResult result = TextParser.GetSpans(s);
+            TextWithSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
 
@@ -257,7 +257,7 @@ class C
         string s = [|a|] + b;
     }
 }";
-            TextParserResult result = TextParser.GetSpans(s);
+            TextWithSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
 

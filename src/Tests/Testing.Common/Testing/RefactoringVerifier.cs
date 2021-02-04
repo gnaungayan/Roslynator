@@ -65,7 +65,7 @@ namespace Roslynator.Testing
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            TextParserResult result = TextParser.GetSpans(source, LinePositionSpanInfoComparer.IndexDescending);
+            TextWithSpans result = TextParser.FindSpansAndRemove(source, comparer: LinePositionSpanInfoComparer.IndexDescending);
 
             await VerifyRefactoringAsync(
                 source: result.Text,
@@ -97,32 +97,16 @@ namespace Roslynator.Testing
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            (TextSpan span, string source2, string expected) = TextParser.ReplaceEmptySpan(source, sourceData, expectedData);
+            TextWithSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
 
-            TextParserResult result = TextParser.GetSpans(source2, LinePositionSpanInfoComparer.IndexDescending);
-
-            if (result.Spans.Any())
-            {
-                await VerifyRefactoringAsync(
-                    source: result.Text,
-                    expected: expected,
-                    spans: result.Spans.Select(f => f.Span),
-                    verifyCodeAction: verifyCodeAction ,
-                    equivalenceKey: equivalenceKey,
-                    options: options,
-                    cancellationToken: cancellationToken);
-            }
-            else
-            {
-                await VerifyRefactoringAsync(
-                    source: source2,
-                    expected: expected,
-                    span: span,
-                    verifyCodeAction: verifyCodeAction ,
-                    equivalenceKey: equivalenceKey,
-                    options: options,
-                    cancellationToken: cancellationToken);
-            }
+            await VerifyRefactoringAsync(
+                source: result.Text,
+                expected: result.Expected,
+                spans: result.Spans.Select(f => f.Span),
+                verifyCodeAction: verifyCodeAction,
+                equivalenceKey: equivalenceKey,
+                options: options,
+                cancellationToken: cancellationToken);
         }
 
         internal async Task VerifyRefactoringAsync(
@@ -230,7 +214,7 @@ namespace Roslynator.Testing
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            TextParserResult result = TextParser.GetSpans(source, LinePositionSpanInfoComparer.IndexDescending);
+            TextWithSpans result = TextParser.FindSpansAndRemove(source, comparer: LinePositionSpanInfoComparer.IndexDescending);
 
             await VerifyNoRefactoringAsync(
                 source: result.Text,

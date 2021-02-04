@@ -1,10 +1,8 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text;
-using Microsoft.CodeAnalysis.Text;
 using Roslynator.Text;
 
 namespace Roslynator.Testing.Text
@@ -172,45 +170,6 @@ namespace Roslynator.Testing.Text
 
                 sb.Append(s, lastPos, i - lastPos);
             }
-        }
-
-        public override (TextSpan span, string text) ReplaceEmptySpan(string s, string replacement)
-        {
-            int index = s.IndexOf(OpenCloseTokens, StringComparison.Ordinal);
-
-            if (index == -1)
-                Assert.True(false, "Text span is invalid or missing.");
-
-            var span = new TextSpan(index, replacement.Length);
-
-            string result = Replace(s, index, replacement);
-
-            return (span, result);
-        }
-
-        public override (TextSpan span, string text1, string text2) ReplaceEmptySpan(string s, string replacement1, string replacement2)
-        {
-            int index = s.IndexOf(OpenCloseTokens, StringComparison.Ordinal);
-
-            if (index == -1)
-                Assert.True(false, "Text span is invalid or missing.");
-
-            var span = new TextSpan(index, replacement1.Length);
-
-            string result1 = Replace(s, index, replacement1);
-            string result2 = Replace(s, index, replacement2);
-
-            return (span, result1, result2);
-        }
-
-        private static string Replace(string s, int index, string replacement)
-        {
-            StringBuilder sb = StringBuilderCache.GetInstance(s.Length - TokensLength + replacement.Length)
-                .Append(s, 0, index)
-                .Append(replacement)
-                .Append(s, index + TokensLength, s.Length - index - TokensLength);
-
-            return StringBuilderCache.GetStringAndFree(sb);
         }
     }
 }

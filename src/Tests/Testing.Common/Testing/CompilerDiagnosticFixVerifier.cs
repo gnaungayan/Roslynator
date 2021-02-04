@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Roslynator.Testing.Text;
 
 namespace Roslynator.Testing
 {
@@ -72,11 +73,11 @@ namespace Roslynator.Testing
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            (_, string source2, string expected) = TextParser.ReplaceEmptySpan(source, sourceData, expectedData);
+            TextWithSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
 
             await VerifyFixAsync(
-                source: source2,
-                expected: expected,
+                source: result.Text,
+                expected: result.Expected,
                 verifyCodeAction: verifyCodeAction,
                 equivalenceKey: equivalenceKey,
                 options: options,
