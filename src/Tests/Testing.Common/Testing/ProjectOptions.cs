@@ -24,10 +24,6 @@ namespace Roslynator.Testing
 
         public abstract string DefaultDocumentName { get; }
 
-        public virtual string DefaultProjectName => "TestProject";
-
-        public virtual string DefaultAssemblyName => DefaultProjectName;
-
         /// <summary>
         /// Gets a common parse options.
         /// </summary>

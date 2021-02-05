@@ -310,7 +310,7 @@ namespace A.B
         }
     }
 }
-", additionalSources: new[] { @"
+", additionalFiles: new[] { @"
 namespace A.B
 {
     class C2

@@ -410,7 +410,7 @@ namespace System.Runtime.Serialization
     internal class DataMemberAttribute : Attribute
     {
     }
-}");
+}", options: Options.AddAllowedCompilerDiagnosticId("CS0436"));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseReadOnlyAutoProperty)]

@@ -11,7 +11,7 @@ namespace Roslynator.Testing.CSharp
 {
     public static class ExpressionChainTests
     {
-        private static TextParser TextParser { get; } = new DefaultTextParser(XunitAssert.Instance);
+        private static TextParser TextParser { get; } = new TextParser(XunitAssert.Instance);
 
         [Fact]
         public static void TestExpressionChainEnumerator()
@@ -38,7 +38,7 @@ class C
         string s = [|a + b + c|];
     }
 }";
-            TextWithSpans result = TextParser.FindSpansAndRemove(s);
+            TextAndSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             var be2 = (BinaryExpressionSyntax)be.Left;
@@ -62,7 +62,7 @@ class C
         string s = a + b + [|c + d|];
     }
 }";
-            TextWithSpans result = TextParser.FindSpansAndRemove(s);
+            TextAndSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             var be2 = (BinaryExpressionSyntax)be.Left;
@@ -85,7 +85,7 @@ class C
         string s = a + [|b + c|] + d;
     }
 }";
-            TextWithSpans result = TextParser.FindSpansAndRemove(s);
+            TextAndSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             be = (BinaryExpressionSyntax)be.Left;
@@ -109,7 +109,7 @@ class C
         string s = a + [|b|];
     }
 }";
-            TextWithSpans result = TextParser.FindSpansAndRemove(s);
+            TextAndSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
 
@@ -130,7 +130,7 @@ class C
         string s = [|a|] + b;
     }
 }";
-            TextWithSpans result = TextParser.FindSpansAndRemove(s);
+            TextAndSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
 
@@ -165,7 +165,7 @@ class C
         string s = [|a + b + c|];
     }
 }";
-            TextWithSpans result = TextParser.FindSpansAndRemove(s);
+            TextAndSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             var be2 = (BinaryExpressionSyntax)be.Left;
@@ -189,7 +189,7 @@ class C
         string s = a + b + [|c + d|];
     }
 }";
-            TextWithSpans result = TextParser.FindSpansAndRemove(s);
+            TextAndSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             var be2 = (BinaryExpressionSyntax)be.Left;
@@ -212,7 +212,7 @@ class C
         string s = a + [|b + c|] + d;
     }
 }";
-            TextWithSpans result = TextParser.FindSpansAndRemove(s);
+            TextAndSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             be = (BinaryExpressionSyntax)be.Left;
@@ -236,7 +236,7 @@ class C
         string s = a + [|b|];
     }
 }";
-            TextWithSpans result = TextParser.FindSpansAndRemove(s);
+            TextAndSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
 
@@ -257,7 +257,7 @@ class C
         string s = [|a|] + b;
     }
 }";
-            TextWithSpans result = TextParser.FindSpansAndRemove(s);
+            TextAndSpans result = TextParser.FindSpansAndRemove(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
 

@@ -50,25 +50,27 @@ namespace Roslynator.Testing
         /// </summary>
         /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="expected"></param>
-        /// <param name="additionalSources"></param>
-        /// <param name="codeActionTitle"></param>
+        /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyRefactoringAsync(
             string source,
             string expected,
-            IEnumerable<string> additionalSources = null,
-            string codeActionTitle = null,
+            IEnumerable<string> additionalFiles = null,
             string equivalenceKey = null,
             ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            TextWithSpans result = TextParser.FindSpansAndRemove(source, comparer: LinePositionSpanInfoComparer.IndexDescending);
+            TextAndSpans result = TextParser.FindSpansAndRemove(source, comparer: LinePositionSpanInfoComparer.IndexDescending);
 
-            var state = new RefactoringTestState(result.Text, expected, ImmutableArray.CreateRange(result.Spans, f => f.Span));
-
-            state = state.Update(state.Source, state.Expected, additionalSources, codeActionTitle, equivalenceKey, state.Spans);
+            var state = new RefactoringTestState(
+                result.Text,
+                expected,
+                AdditionalFile.CreateRange(additionalFiles),
+                null,
+                equivalenceKey,
+                ImmutableArray.CreateRange(result.Spans, f => f.Span));
 
             await VerifyRefactoringAsync(
                 state,
@@ -82,7 +84,6 @@ namespace Roslynator.Testing
         /// <param name="source">Source text that contains placeholder <c>[||]</c> to be replaced with <paramref name="sourceData"/> and <paramref name="expectedData"/>.</param>
         /// <param name="sourceData"></param>
         /// <param name="expectedData"></param>
-        /// <param name="codeActionTitle"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
@@ -90,16 +91,20 @@ namespace Roslynator.Testing
             string source,
             string sourceData,
             string expectedData,
-            string codeActionTitle = null,
+            IEnumerable<string> additionalFiles = null,
             string equivalenceKey = null,
             ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            TextWithSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
+            TextAndSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
 
-            var state = new RefactoringTestState(result.Text, result.Expected, ImmutableArray.CreateRange(result.Spans, f => f.Span));
-
-            state = state.Update(state.Source, state.Expected, null, codeActionTitle, equivalenceKey, state.Spans);
+            var state = new RefactoringTestState(
+                result.Text,
+                result.Expected,
+                AdditionalFile.CreateRange(additionalFiles),
+                null,
+                equivalenceKey,
+                ImmutableArray.CreateRange(result.Spans, f => f.Span));
 
             await VerifyRefactoringAsync(
                 state,
@@ -125,13 +130,13 @@ namespace Roslynator.Testing
 
                 using (Workspace workspace = new AdhocWorkspace())
                 {
-                    Document document = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
+                    (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                     SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
                     ImmutableArray<Diagnostic> compilerDiagnostics = semanticModel.GetDiagnostics(cancellationToken: cancellationToken);
 
-                    VerifyCompilerDiagnostics(compilerDiagnostics, state);
+                    VerifyCompilerDiagnostics(compilerDiagnostics, options);
                     CodeAction action = null;
 
                     var context = new CodeRefactoringContext(
@@ -158,9 +163,9 @@ namespace Roslynator.Testing
 
                     ImmutableArray<Diagnostic> newCompilerDiagnostics = semanticModel.GetDiagnostics(cancellationToken: cancellationToken);
 
-                    VerifyCompilerDiagnostics(newCompilerDiagnostics, state);
+                    VerifyCompilerDiagnostics(newCompilerDiagnostics, options);
 
-                    VerifyNoNewCompilerDiagnostics(compilerDiagnostics, newCompilerDiagnostics, state);
+                    VerifyNoNewCompilerDiagnostics(compilerDiagnostics, newCompilerDiagnostics, options);
 
                     string actual = await document.ToFullStringAsync(simplify: true, format: true, cancellationToken);
 
@@ -183,11 +188,15 @@ namespace Roslynator.Testing
             ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            TextWithSpans result = TextParser.FindSpansAndRemove(source, comparer: LinePositionSpanInfoComparer.IndexDescending);
+            TextAndSpans result = TextParser.FindSpansAndRemove(source, comparer: LinePositionSpanInfoComparer.IndexDescending);
 
-            var state = new RefactoringTestState(result.Text, result.Expected, ImmutableArray.CreateRange(result.Spans, f => f.Span));
-
-            state = state.Update(state.Source, state.Expected, null, null, equivalenceKey, state.Spans);
+            var state = new RefactoringTestState(
+                result.Text,
+                result.Expected,
+                null,
+                null,
+                equivalenceKey,
+                ImmutableArray.CreateRange(result.Spans, f => f.Span));
 
             await VerifyNoRefactoringAsync(
                 state,
@@ -206,13 +215,13 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                Document document = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
+                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                 SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
                 ImmutableArray<Diagnostic> compilerDiagnostics = semanticModel.GetDiagnostics(cancellationToken: cancellationToken);
 
-                VerifyCompilerDiagnostics(compilerDiagnostics, state);
+                VerifyCompilerDiagnostics(compilerDiagnostics, options);
 
                 ImmutableArray<TextSpan>.Enumerator en = state.Spans.GetEnumerator();
 

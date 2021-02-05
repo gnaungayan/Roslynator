@@ -54,26 +54,27 @@ namespace Roslynator.Testing
         /// </summary>
         /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="expected"></param>
-        /// <param name="additionalData"></param>
-        /// <param name="codeActionTitle"></param>
+        /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAndFixAsync(
             string source,
             string expected,
-            IEnumerable<(string source, string expected)> additionalData = null,
+            IEnumerable<(string source, string expected)> additionalFiles = null,
             string equivalenceKey = null,
             ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            TextWithSpans result = TextParser.FindSpansAndRemove(source, expected);
+            TextAndSpans result = TextParser.FindSpansAndRemove(source);
 
-            IEnumerable<Diagnostic> diagnostics = result.Spans.Select(f => CreateDiagnostic(f));
-
-            string[] additionalSources = additionalData?.Select(f => f.source).ToArray() ?? Array.Empty<string>();
-
-            var state = new DiagnosticTestState(result.Text, result.Expected, additionalData, null, equivalenceKey: equivalenceKey, ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
+            var state = new DiagnosticTestState(
+                result.Text,
+                expected,
+                AdditionalFile.CreateRange(additionalFiles),
+                null,
+                equivalenceKey: equivalenceKey,
+                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
 
             await VerifyDiagnosticAsync(state, options, cancellationToken);
 
@@ -84,20 +85,26 @@ namespace Roslynator.Testing
         /// Verifies that specified source will produce diagnostic and that the diagnostic will not be fixed with the <see cref="FixProvider"/>.
         /// </summary>
         /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
-        /// <param name="additionalData"></param>
+        /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAndNoFixAsync(
             string source,
-            IEnumerable<(string source, string expected)> additionalData = null,
+            IEnumerable<(string source, string expected)> additionalFiles = null,
             string equivalenceKey = null,
             ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            TextWithSpans result = TextParser.FindSpansAndRemove(source);
+            TextAndSpans result = TextParser.FindSpansAndRemove(source);
 
-            var state = new DiagnosticTestState(source, null, additionalData, null, equivalenceKey: equivalenceKey, ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
+            var state = new DiagnosticTestState(
+                result.Text,
+                null,
+                AdditionalFile.CreateRange(additionalFiles),
+                null,
+                equivalenceKey: equivalenceKey,
+                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
 
             await VerifyDiagnosticAsync(state, options, cancellationToken);
 
@@ -110,6 +117,7 @@ namespace Roslynator.Testing
         /// <param name="source">Source text that contains placeholder <c>[||]</c> to be replaced with <paramref name="sourceData"/> and <paramref name="expectedData"/>.</param>
         /// <param name="sourceData"></param>
         /// <param name="expectedData"></param>
+        /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
@@ -117,13 +125,20 @@ namespace Roslynator.Testing
             string source,
             string sourceData,
             string expectedData,
+            IEnumerable<(string source, string expected)> additionalFiles = null,
             string equivalenceKey = null,
             ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            TextWithSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
+            TextAndSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
 
-            var state = new DiagnosticTestState(result.Text, result.Expected, default(IEnumerable<string>), null, equivalenceKey: equivalenceKey, ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
+            var state = new DiagnosticTestState(
+                result.Text,
+                result.Expected,
+                AdditionalFile.CreateRange(additionalFiles),
+                null,
+                equivalenceKey: equivalenceKey,
+                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
 
             await VerifyDiagnosticAsync(state, options: options, cancellationToken: cancellationToken);
 
@@ -134,13 +149,20 @@ namespace Roslynator.Testing
             string source,
             string sourceData,
             string expectedData,
+            IEnumerable<(string source, string expected)> additionalFiles = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            TextWithSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
+            TextAndSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
 
-            var state = new DiagnosticTestState(result.Text, result.Expected, default(IEnumerable<string>), null, equivalenceKey, ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
+            var state = new DiagnosticTestState(
+                result.Text,
+                result.Expected,
+                AdditionalFile.CreateRange(additionalFiles),
+                null,
+                equivalenceKey,
+                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
 
             await VerifyFixAsync(
                 source: result.Text,
@@ -153,14 +175,20 @@ namespace Roslynator.Testing
         internal async Task VerifyFixAsync(
             string source,
             string expected,
-            IEnumerable<(string source, string expected)> additionalData = null,
+            IEnumerable<(string source, string expected)> additionalFiles = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            TextWithSpans result = TextParser.FindSpansAndRemove(source, expected);
+            TextAndSpans result = TextParser.FindSpansAndRemove(source);
 
-            var state = new DiagnosticTestState(result.Text, result.Expected, additionalData, null, equivalenceKey, ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
+            var state = new DiagnosticTestState(
+                result.Text,
+                expected,
+                AdditionalFile.CreateRange(additionalFiles),
+                null,
+                equivalenceKey,
+                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
 
             await VerifyFixAsync(
                 source: result.Text,
@@ -187,13 +215,9 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                Document document = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
+                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                 Project project = document.Project;
-
-                ImmutableArray<ExpectedDocument> expectedDocuments = (state.AdditionalFiles2 != null)
-                    ? ProjectHelpers.AddAdditionalDocuments(state.AdditionalFiles2, options, ref project)
-                    : ImmutableArray<ExpectedDocument>.Empty;
 
                 document = project.GetDocument(document.Id);
 
@@ -201,7 +225,7 @@ namespace Roslynator.Testing
 
                 ImmutableArray<Diagnostic> compilerDiagnostics = compilation.GetDiagnostics(cancellationToken);
 
-                VerifyCompilerDiagnostics(compilerDiagnostics, state);
+                VerifyCompilerDiagnostics(compilerDiagnostics, options);
 
                 compilation = UpdateCompilation(compilation);
 
@@ -268,9 +292,9 @@ namespace Roslynator.Testing
 
                     ImmutableArray<Diagnostic> newCompilerDiagnostics = compilation.GetDiagnostics(cancellationToken);
 
-                    VerifyCompilerDiagnostics(newCompilerDiagnostics, state);
+                    VerifyCompilerDiagnostics(newCompilerDiagnostics, options);
 
-                    VerifyNoNewCompilerDiagnostics(compilerDiagnostics, newCompilerDiagnostics, state);
+                    VerifyNoNewCompilerDiagnostics(compilerDiagnostics, newCompilerDiagnostics, options);
 
                     compilation = UpdateCompilation(compilation);
 
@@ -292,20 +316,26 @@ namespace Roslynator.Testing
         /// Verifies that specified source does not contains diagnostic that can be fixed with the <see cref="FixProvider"/>.
         /// </summary>
         /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
-        /// <param name="additionalSources"></param>
+        /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyNoFixAsync(
             string source,
-            IEnumerable<string> additionalSources = null,
+            IEnumerable<string> additionalFiles = null,
             string equivalenceKey = null,
             ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            TextWithSpans result = TextParser.FindSpansAndRemove(source);
+            TextAndSpans result = TextParser.FindSpansAndRemove(source);
 
-            var state = new DiagnosticTestState(result.Text, result.Expected, additionalSources, null, equivalenceKey, ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
+            var state = new DiagnosticTestState(
+                result.Text,
+                result.Expected,
+                AdditionalFile.CreateRange(additionalFiles),
+                null,
+                equivalenceKey,
+                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
 
             await VerifyNoFixAsync(
                 state,
@@ -316,9 +346,7 @@ namespace Roslynator.Testing
         /// <summary>
         /// Verifies that specified source does not contains diagnostic that can be fixed with the <see cref="FixProvider"/>.
         /// </summary>
-        /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
-        /// <param name="additionalSources"></param>
-        /// <param name="equivalenceKey">Code action's equivalence key.</param>
+        /// <param name="state"></param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyNoFixAsync(
@@ -332,13 +360,13 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                Document document = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
+                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                 Compilation compilation = await document.Project.GetCompilationAsync(cancellationToken);
 
                 ImmutableArray<Diagnostic> compilerDiagnostics = compilation.GetDiagnostics(cancellationToken);
 
-                VerifyCompilerDiagnostics(compilerDiagnostics, state);
+                VerifyCompilerDiagnostics(compilerDiagnostics, options);
 
                 compilation = UpdateCompilation(compilation);
 

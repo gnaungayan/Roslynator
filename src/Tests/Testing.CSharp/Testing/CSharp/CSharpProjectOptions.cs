@@ -72,18 +72,32 @@ namespace Roslynator.Testing
                     .AddProject("TestProject", "TestProject", LanguageNames.CSharp);
 
                 compilationOptions = ((CSharpCompilationOptions)project.CompilationOptions)
+                    .WithAllowUnsafe(true)
                     .WithOutputKind(OutputKind.DynamicallyLinkedLibrary);
 
                 parseOptions = ((CSharpParseOptions)project.ParseOptions);
 
                 parseOptions = parseOptions
-                    .WithLanguageVersion(LanguageVersion.LatestMajor);
+                    .WithLanguageVersion(LanguageVersion.CSharp9)
+                    .WithPreprocessorSymbols(parseOptions.PreprocessorSymbolNames.Concat(new[] { "DEBUG" }));
             }
 
             return new CSharpProjectOptions(
-                compilationOptions: compilationOptions,
                 parseOptions: parseOptions,
-                metadataReferences: RuntimeMetadataReference.MetadataReferences.Select(f => f.Value).ToImmutableArray());
+                compilationOptions: compilationOptions,
+                metadataReferences: RuntimeMetadataReference.MetadataReferences.Select(f => f.Value).ToImmutableArray(),
+                allowedCompilerDiagnosticIds: ImmutableArray.Create(
+                    "CS0067", // Event is never used
+                    "CS0168", // Variable is declared but never used
+                    "CS0169", // Field is never used
+                    "CS0219", // Variable is assigned but its value is never used
+                    "CS0414", // Field is assigned but its value is never used
+                    "CS0649", // Field is never assigned to, and will always have its default value null
+                    "CS0660", // Type defines operator == or operator != but does not override Object.Equals(object o)
+                    "CS0661", // Type defines operator == or operator != but does not override Object.GetHashCode()
+                    "CS8019", // Unnecessary using directive
+                    "CS8321" // The local function is declared but never used
+                ));
         }
 
         internal static CSharpProjectOptions Default_CSharp5

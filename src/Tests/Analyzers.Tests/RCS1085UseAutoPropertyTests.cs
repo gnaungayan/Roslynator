@@ -452,7 +452,7 @@ partial class C
         _f = null;
     }
 }
-", additionalSources: new[]
+", additionalFiles: new[]
 { @"
 partial class C
 {

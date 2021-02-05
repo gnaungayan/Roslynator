@@ -18,7 +18,7 @@ namespace Roslynator.Testing
         public RefactoringTestState(
             string source,
             string expected,
-            IEnumerable<string> additionalFiles,
+            IEnumerable<AdditionalFile> additionalFiles,
             string title,
             string equivalenceKey,
             IEnumerable<TextSpan> spans) : base(source, expected, additionalFiles, title, equivalenceKey)
@@ -31,7 +31,7 @@ namespace Roslynator.Testing
         public RefactoringTestState Update(
             string source,
             string expected,
-            IEnumerable<string> additionalFiles,
+            IEnumerable<AdditionalFile> additionalFiles,
             string title,
             string equivalenceKey,
             ImmutableArray<TextSpan> spans)

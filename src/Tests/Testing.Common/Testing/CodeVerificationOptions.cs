@@ -11,6 +11,7 @@ using static Roslynator.RuntimeMetadataReference;
 
 namespace Roslynator.Testing
 {
+    //TODO: del
     /// <summary>
     /// Represents a set of options for code verifications.
     /// </summary>
