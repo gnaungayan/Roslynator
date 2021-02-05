@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.CodeFixes;
-using Roslynator.Testing.CSharp;
+using Roslynator.Testing;
 using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
@@ -18,7 +18,7 @@ namespace Roslynator.CSharp.Analysis.Tests
 
         public override CodeFixProvider FixProvider { get; } = new MemberDeclarationCodeFixProvider();
 
-        public override CSharpCodeVerificationOptions Options
+        public override CSharpProjectOptions Options
         {
             get { return base.Options.WithEnabled(AnalyzerOptions.RemoveAccessibilityModifiers); }
         }

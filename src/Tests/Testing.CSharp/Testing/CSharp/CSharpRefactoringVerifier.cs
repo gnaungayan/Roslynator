@@ -11,18 +11,12 @@ namespace Roslynator.Testing.CSharp
         /// Initializes a new instance of <see cref="CSharpRefactoringVerifier"/>.
         /// </summary>
         /// <param name="assert"></param>
-        protected CSharpRefactoringVerifier(IAssert assert) : base(CSharpWorkspaceFactory.Instance, assert)
+        protected CSharpRefactoringVerifier(IAssert assert) : base(assert)
         {
         }
 
-        /// <summary>
-        /// Gets a code verification options.
-        /// </summary>
-        new public virtual CSharpCodeVerificationOptions Options => CSharpCodeVerificationOptions.Default;
+        new public virtual CSharpProjectOptions Options => CSharpProjectOptions.Default;
 
-        /// <summary>
-        /// Gets a common code verification options.
-        /// </summary>
-        protected override CodeVerificationOptions CommonOptions => Options;
+        protected override ProjectOptions CommonOptions => Options;
     }
 }

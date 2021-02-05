@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.CodeFixes;
+using Roslynator.Testing;
 using Roslynator.Testing.CSharp;
 using Xunit;
 
@@ -18,7 +19,7 @@ namespace Roslynator.CSharp.Analysis.Tests
 
         public override CodeFixProvider FixProvider { get; } = new ConvertAnonymousFunctionToMethodGroupOrViceVersaCodeFixProvider();
 
-        public override CSharpCodeVerificationOptions Options
+        public override CSharpProjectOptions Options
         {
             get { return base.Options.WithEnabled(AnalyzerOptions.ConvertMethodGroupToAnonymousFunction); }
         }

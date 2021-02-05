@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Threading.Tasks;
+using Roslynator.Testing;
 using Roslynator.Testing.CSharp;
 using Xunit;
 
@@ -10,7 +11,7 @@ namespace Roslynator.CSharp.Refactorings.Tests
     {
         public override string RefactoringId { get; } = RefactoringIdentifiers.AddParameterToInterfaceMember;
 
-        public override CSharpCodeVerificationOptions Options
+        public override CSharpProjectOptions Options
         {
             get { return base.Options.AddAllowedCompilerDiagnosticIds(new[] { "CS0535", "CS0539" }); }
         }

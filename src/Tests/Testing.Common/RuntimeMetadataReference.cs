@@ -14,6 +14,7 @@ namespace Roslynator
 
         private static ImmutableArray<string> _defaultAssemblyNames;
         private static ImmutableDictionary<string, string> _trustedPlatformAssemblyMap;
+        private static ImmutableDictionary<string, MetadataReference> _metadataReferences;
 
         internal static ImmutableArray<string> DefaultAssemblyNames
         {
@@ -62,6 +63,23 @@ namespace Roslynator
                         .ToString()
                         .Split(';')
                         .ToImmutableDictionary(f => Path.GetFileName(f));
+                }
+            }
+        }
+
+        internal static ImmutableDictionary<string, MetadataReference> MetadataReferences
+        {
+            get
+            {
+                if (_metadataReferences == null)
+                    Interlocked.CompareExchange(ref _metadataReferences, CreateMetadataReferences(), null);
+
+                return _metadataReferences;
+
+                static ImmutableDictionary<string, MetadataReference> CreateMetadataReferences()
+                {
+                    return TrustedPlatformAssemblyMap
+                        .ToImmutableDictionary(f => f.Key, f => (MetadataReference)MetadataReference.CreateFromFile(f.Value));
                 }
             }
         }

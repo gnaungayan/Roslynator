@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.Formatting.CodeFixes.CSharp;
-using Roslynator.Testing.CSharp;
+using Roslynator.Testing;
 using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
@@ -18,7 +18,7 @@ namespace Roslynator.Formatting.CSharp.Tests
 
         public override CodeFixProvider FixProvider { get; } = new AddEmptyLineBeforeAndAfterUsingDirectiveListCodeFixProvider();
 
-        public override CSharpCodeVerificationOptions Options
+        public override CSharpProjectOptions Options
         {
             get { return base.Options.AddAllowedCompilerDiagnosticId("CS0430"); }
         }

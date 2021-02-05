@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Analysis.MakeMemberReadOnly;
 using Roslynator.CSharp.CodeFixes;
-using Roslynator.Testing.CSharp;
+using Roslynator.Testing;
 using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
@@ -458,7 +458,7 @@ class C
 {
     public string P { get; private set; }
 }
-", options: CSharpCodeVerificationOptions.Default_CSharp5);
+", options: CSharpProjectOptions.Default_CSharp5);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseReadOnlyAutoProperty)]

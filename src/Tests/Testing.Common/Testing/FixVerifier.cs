@@ -23,7 +23,7 @@ namespace Roslynator.Testing
     {
         private ImmutableArray<string> _fixableDiagnosticIds;
 
-        internal FixVerifier(WorkspaceFactory workspaceFactory, IAssert assert) : base(workspaceFactory, assert)
+        internal FixVerifier(IAssert assert) : base(assert)
         {
         }
 
@@ -63,32 +63,21 @@ namespace Roslynator.Testing
             string source,
             string expected,
             IEnumerable<(string source, string expected)> additionalData = null,
-            string codeActionTitle = null,
             string equivalenceKey = null,
-            CodeVerificationOptions options = null,
+            ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
-            TextWithSpans result = TextParser.FindSpansAndRemove(source);
+            TextWithSpans result = TextParser.FindSpansAndRemove(source, expected);
 
             IEnumerable<Diagnostic> diagnostics = result.Spans.Select(f => CreateDiagnostic(f));
 
             string[] additionalSources = additionalData?.Select(f => f.source).ToArray() ?? Array.Empty<string>();
 
-            await VerifyDiagnosticAsync(
-                result.Text,
-                diagnostics,
-                additionalSources: additionalSources,
-                options: options,
-                cancellationToken: cancellationToken);
+            var state = new DiagnosticTestState(result.Text, result.Expected, additionalData, null, equivalenceKey: equivalenceKey, ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
 
-            await VerifyFixAsync(
-                result.Text,
-                expected,
-                additionalData,
-                codeActionTitle: codeActionTitle,
-                equivalenceKey: equivalenceKey,
-                options,
-                cancellationToken);
+            await VerifyDiagnosticAsync(state, options, cancellationToken);
+
+            await VerifyFixAsync(state, options, cancellationToken);
         }
 
         /// <summary>
@@ -103,28 +92,16 @@ namespace Roslynator.Testing
             string source,
             IEnumerable<(string source, string expected)> additionalData = null,
             string equivalenceKey = null,
-            CodeVerificationOptions options = null,
+            ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
             TextWithSpans result = TextParser.FindSpansAndRemove(source);
 
-            IEnumerable<Diagnostic> diagnostics = result.Spans.Select(f => CreateDiagnostic(f));
+            var state = new DiagnosticTestState(source, null, additionalData, null, equivalenceKey: equivalenceKey, ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
 
-            string[] additionalSources = additionalData?.Select(f => f.source).ToArray() ?? Array.Empty<string>();
+            await VerifyDiagnosticAsync(state, options, cancellationToken);
 
-            await VerifyDiagnosticAsync(
-                result.Text,
-                diagnostics,
-                additionalSources: additionalSources,
-                options: options,
-                cancellationToken: cancellationToken);
-
-            await VerifyNoFixAsync(
-                source: result.Text,
-                additionalSources: additionalSources,
-                equivalenceKey: equivalenceKey,
-                options: options,
-                cancellationToken: cancellationToken);
+            await VerifyNoFixAsync(state, options, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -141,33 +118,33 @@ namespace Roslynator.Testing
             string sourceData,
             string expectedData,
             string equivalenceKey = null,
-            CodeVerificationOptions options = null,
+            ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
             TextWithSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
 
-            IEnumerable<Diagnostic> diagnostics = result.Spans.Select(f => CreateDiagnostic(f));
+            var state = new DiagnosticTestState(result.Text, result.Expected, default(IEnumerable<string>), null, equivalenceKey: equivalenceKey, ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
 
-            await VerifyDiagnosticAsync(result.Text, diagnostics, additionalSources: null, options: options, cancellationToken: cancellationToken);
+            await VerifyDiagnosticAsync(state, options: options, cancellationToken: cancellationToken);
 
-            await VerifyFixAsync(result.Text, result.Expected, additionalData: null, equivalenceKey: equivalenceKey, options: options, cancellationToken: cancellationToken);
+            await VerifyFixAsync(state, options: options, cancellationToken: cancellationToken);
         }
 
         internal async Task VerifyFixAsync(
             string source,
             string sourceData,
             string expectedData,
-            string codeActionTitle,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
             CancellationToken cancellationToken = default)
         {
             TextWithSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
 
+            var state = new DiagnosticTestState(result.Text, result.Expected, default(IEnumerable<string>), null, equivalenceKey, ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
+
             await VerifyFixAsync(
                 source: result.Text,
                 expected: result.Expected,
-                codeActionTitle: codeActionTitle,
                 equivalenceKey: equivalenceKey,
                 options: options,
                 cancellationToken: cancellationToken);
@@ -177,9 +154,25 @@ namespace Roslynator.Testing
             string source,
             string expected,
             IEnumerable<(string source, string expected)> additionalData = null,
-            string codeActionTitle = null,
             string equivalenceKey = null,
             CodeVerificationOptions options = null,
+            CancellationToken cancellationToken = default)
+        {
+            TextWithSpans result = TextParser.FindSpansAndRemove(source, expected);
+
+            var state = new DiagnosticTestState(result.Text, result.Expected, additionalData, null, equivalenceKey, ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
+
+            await VerifyFixAsync(
+                source: result.Text,
+                expected: result.Expected,
+                equivalenceKey: equivalenceKey,
+                options: options,
+                cancellationToken: cancellationToken);
+        }
+
+        internal async Task VerifyFixAsync(
+            DiagnosticTestState state,
+            ProjectOptions options,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -194,12 +187,12 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                Document document = WorkspaceFactory.CreateDocument(workspace.CurrentSolution, source, options);
+                Document document = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                 Project project = document.Project;
 
-                ImmutableArray<ExpectedDocument> expectedDocuments = (additionalData != null)
-                    ? WorkspaceFactory.AddAdditionalDocuments(additionalData, ref project)
+                ImmutableArray<ExpectedDocument> expectedDocuments = (state.AdditionalFiles2 != null)
+                    ? ProjectHelpers.AddAdditionalDocuments(state.AdditionalFiles2, options, ref project)
                     : ImmutableArray<ExpectedDocument>.Empty;
 
                 document = project.GetDocument(document.Id);
@@ -208,7 +201,7 @@ namespace Roslynator.Testing
 
                 ImmutableArray<Diagnostic> compilerDiagnostics = compilation.GetDiagnostics(cancellationToken);
 
-                VerifyCompilerDiagnostics(compilerDiagnostics, options);
+                VerifyCompilerDiagnostics(compilerDiagnostics, state);
 
                 compilation = UpdateCompilation(compilation);
 
@@ -254,7 +247,7 @@ namespace Roslynator.Testing
                         (a, d) =>
                         {
                             if (action == null
-                                && (equivalenceKey == null || string.Equals(a.EquivalenceKey, equivalenceKey, StringComparison.Ordinal))
+                                && (state.EquivalenceKey == null || string.Equals(a.EquivalenceKey, state.EquivalenceKey, StringComparison.Ordinal))
                                 && d.Contains(diagnostic))
                             {
                                 action = a;
@@ -269,15 +262,15 @@ namespace Roslynator.Testing
 
                     fixRegistered = true;
 
-                    document = await VerifyAndApplyCodeActionAsync(document, action, codeActionTitle);
+                    document = await VerifyAndApplyCodeActionAsync(document, action, state.Title);
 
                     compilation = await document.Project.GetCompilationAsync(cancellationToken);
 
                     ImmutableArray<Diagnostic> newCompilerDiagnostics = compilation.GetDiagnostics(cancellationToken);
 
-                    VerifyCompilerDiagnostics(newCompilerDiagnostics, options);
+                    VerifyCompilerDiagnostics(newCompilerDiagnostics, state);
 
-                    VerifyNoNewCompilerDiagnostics(compilerDiagnostics, newCompilerDiagnostics, options);
+                    VerifyNoNewCompilerDiagnostics(compilerDiagnostics, newCompilerDiagnostics, state);
 
                     compilation = UpdateCompilation(compilation);
 
@@ -288,7 +281,7 @@ namespace Roslynator.Testing
 
                 string actual = await document.ToFullStringAsync(simplify: true, format: true, cancellationToken);
 
-                Assert.Equal(expected, actual);
+                Assert.Equal(state.Expected, actual);
 
                 if (expectedDocuments.Any())
                     await VerifyAdditionalDocumentsAsync(document.Project, expectedDocuments, cancellationToken);
@@ -307,7 +300,30 @@ namespace Roslynator.Testing
             string source,
             IEnumerable<string> additionalSources = null,
             string equivalenceKey = null,
-            CodeVerificationOptions options = null,
+            ProjectOptions options = null,
+            CancellationToken cancellationToken = default)
+        {
+            TextWithSpans result = TextParser.FindSpansAndRemove(source);
+
+            var state = new DiagnosticTestState(result.Text, result.Expected, additionalSources, null, equivalenceKey, ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
+
+            await VerifyNoFixAsync(
+                state,
+                options: options,
+                cancellationToken: cancellationToken);
+        }
+
+        /// <summary>
+        /// Verifies that specified source does not contains diagnostic that can be fixed with the <see cref="FixProvider"/>.
+        /// </summary>
+        /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
+        /// <param name="additionalSources"></param>
+        /// <param name="equivalenceKey">Code action's equivalence key.</param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
+        public async Task VerifyNoFixAsync(
+            DiagnosticTestState state,
+            ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -316,13 +332,13 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                Document document = WorkspaceFactory.CreateDocument(workspace.CurrentSolution, source, additionalSources, options);
+                Document document = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                 Compilation compilation = await document.Project.GetCompilationAsync(cancellationToken);
 
                 ImmutableArray<Diagnostic> compilerDiagnostics = compilation.GetDiagnostics(cancellationToken);
 
-                VerifyCompilerDiagnostics(compilerDiagnostics, options);
+                VerifyCompilerDiagnostics(compilerDiagnostics, state);
 
                 compilation = UpdateCompilation(compilation);
 
@@ -343,7 +359,7 @@ namespace Roslynator.Testing
                         diagnostic,
                         (a, d) =>
                         {
-                            if ((equivalenceKey == null || string.Equals(a.EquivalenceKey, equivalenceKey, StringComparison.Ordinal))
+                            if ((state.EquivalenceKey == null || string.Equals(a.EquivalenceKey, state.EquivalenceKey, StringComparison.Ordinal))
                                 && d.Contains(diagnostic))
                             {
                                 Assert.True(false, "No code fix expected.");

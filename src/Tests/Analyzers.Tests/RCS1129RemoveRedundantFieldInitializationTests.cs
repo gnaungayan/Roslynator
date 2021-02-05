@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.CodeFixes;
-using Roslynator.Testing.CSharp;
+using Roslynator.Testing;
 using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
@@ -295,7 +295,7 @@ class C
 {
     string _f = null!;
 }
-", options: CSharpCodeVerificationOptions.Default.WithParseOptions(CSharpCodeVerificationOptions.Default.ParseOptions.WithLanguageVersion(LanguageVersion.Preview)));
+", options: CSharpProjectOptions.Default.WithParseOptions(CSharpProjectOptions.Default.ParseOptions.WithLanguageVersion(LanguageVersion.Preview)));
         }
     }
 }

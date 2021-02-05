@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.CodeFixes;
+using Roslynator.Testing;
 using Roslynator.Testing.CSharp;
 using Xunit;
 
@@ -121,7 +122,7 @@ class C
         string? s = p;
     }
 }
-", options: CSharpCodeVerificationOptions.Default_NullableReferenceTypes);
+", options: CSharpProjectOptions.Default_NullableReferenceTypes);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseExplicitTypeInsteadOfVarWhenTypeIsNotObvious)]
@@ -147,7 +148,7 @@ class C
         string s = p;
     }
 }
-", options: CSharpCodeVerificationOptions.Default_NullableReferenceTypes.AddAllowedCompilerDiagnosticId("CS8632"));
+", options: CSharpProjectOptions.Default_NullableReferenceTypes.AddAllowedCompilerDiagnosticId("CS8632"));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseExplicitTypeInsteadOfVarWhenTypeIsNotObvious)]

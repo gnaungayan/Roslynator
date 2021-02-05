@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.CodeFixes;
-using Roslynator.Testing.CSharp;
+using Roslynator.Testing;
 using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
@@ -144,7 +144,7 @@ class C
         s = s ?? """";
     }
 }
-", options: CSharpCodeVerificationOptions.Default_CSharp6);
+", options: CSharpProjectOptions.Default_CSharp6);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseCompoundAssignment)]
@@ -161,7 +161,7 @@ class C
         return x ?? (x2 = M());
     }
 }
-", options: CSharpCodeVerificationOptions.Default_CSharp7_3);
+", options: CSharpProjectOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseCompoundAssignment)]
@@ -177,7 +177,7 @@ class C
         return x ?? (x = M());
     }
 }
-", options: CSharpCodeVerificationOptions.Default_CSharp7_3);
+", options: CSharpProjectOptions.Default_CSharp7_3);
         }
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.CodeFixes;
-using Roslynator.Testing.CSharp;
+using Roslynator.Testing;
 using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
@@ -72,7 +72,7 @@ class C
         }
     }
 }
-", options: CSharpCodeVerificationOptions.Default_CSharp5);
+", options: CSharpProjectOptions.Default_CSharp5);
         }
     }
 }

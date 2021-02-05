@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 
@@ -8,23 +9,35 @@ using Microsoft.CodeAnalysis;
 
 namespace Roslynator.Testing
 {
-    public abstract class DiagnosticTestState : TestState
+    public class DiagnosticTestState : TestState
     {
-        protected DiagnosticTestState(string source, string expected, ImmutableArray<Diagnostic> diagnostics)
-            : base(source, expected)
+        public DiagnosticTestState(string source, string expected, IEnumerable<Diagnostic> diagnostics)
+            : this(source, expected, default(IEnumerable<string>), null, null, diagnostics)
         {
-            Diagnostics = diagnostics;
         }
 
-        protected DiagnosticTestState(
+        public DiagnosticTestState(
             string source,
             string expected,
-            ImmutableArray<string> additionalFiles,
+            IEnumerable<string> additionalFiles,
             string title,
             string equivalenceKey,
-            ImmutableArray<Diagnostic> diagnostics) : base(source, expected, additionalFiles, title, equivalenceKey)
+            IEnumerable<Diagnostic> diagnostics) : base(source, expected, additionalFiles, title, equivalenceKey)
         {
-            Diagnostics = diagnostics;
+            Diagnostics = diagnostics?.ToImmutableArray() ?? ImmutableArray<Diagnostic>.Empty;
+        }
+
+        public DiagnosticTestState(
+            string source,
+            string expected,
+            IEnumerable<(string, string)> additionalFiles,
+            string title,
+            string equivalenceKey,
+            IEnumerable<Diagnostic> diagnostics) : base(source, expected, null, title, equivalenceKey)
+        {
+            Diagnostics = diagnostics?.ToImmutableArray() ?? ImmutableArray<Diagnostic>.Empty;
+
+            AdditionalFiles2 = additionalFiles;
         }
 
         public ImmutableArray<Diagnostic> Diagnostics { get; }
@@ -32,5 +45,7 @@ namespace Roslynator.Testing
         public string DiagnosticMessage { get; }
 
         public IFormatProvider FormatProvider { get; }
+
+        public IEnumerable<(string, string)> AdditionalFiles2 { get; }
     }
 }

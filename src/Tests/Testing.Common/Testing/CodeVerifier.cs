@@ -19,9 +19,8 @@ namespace Roslynator.Testing
     /// </summary>
     public abstract class CodeVerifier
     {
-        internal CodeVerifier(WorkspaceFactory workspaceFactory, IAssert assert)
+        internal CodeVerifier(IAssert assert)
         {
-            WorkspaceFactory = workspaceFactory;
             Assert = assert;
             TextParser = new DefaultTextParser(Assert);
         }
@@ -29,14 +28,12 @@ namespace Roslynator.Testing
         /// <summary>
         /// Gets a common code verification options.
         /// </summary>
-        protected abstract CodeVerificationOptions CommonOptions { get; }
+        protected abstract ProjectOptions CommonOptions { get; }
 
         /// <summary>
         /// Gets a code verification options.
         /// </summary>
-        public CodeVerificationOptions Options => CommonOptions;
-
-        internal WorkspaceFactory WorkspaceFactory { get; }
+        public ProjectOptions Options => CommonOptions;
 
         /// <summary>
         /// Gets a test assertions.
@@ -52,6 +49,48 @@ namespace Roslynator.Testing
             DiagnosticSeverity maxAllowedSeverity = options.AllowedCompilerDiagnosticSeverity;
 
             ImmutableArray<string> allowedDiagnosticIds = options.AllowedCompilerDiagnosticIds;
+
+            if (IsAny())
+            {
+                IEnumerable<Diagnostic> notAllowed = diagnostics
+                    .Where(f => f.Severity > maxAllowedSeverity && !allowedDiagnosticIds.Any(id => id == f.Id));
+
+                Assert.True(false, $"No compiler diagnostics with severity higher than '{maxAllowedSeverity}' expected{notAllowed.ToDebugString()}");
+            }
+
+            bool IsAny()
+            {
+                foreach (Diagnostic diagnostic in diagnostics)
+                {
+                    if (diagnostic.Severity > maxAllowedSeverity
+                        && !IsAllowed(diagnostic))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            bool IsAllowed(Diagnostic diagnostic)
+            {
+                foreach (string diagnosticId in allowedDiagnosticIds)
+                {
+                    if (diagnostic.Id == diagnosticId)
+                        return true;
+                }
+
+                return false;
+            }
+        }
+
+        internal void VerifyCompilerDiagnostics(
+            ImmutableArray<Diagnostic> diagnostics,
+            TestState state)
+        {
+            DiagnosticSeverity maxAllowedSeverity = state.AllowedCompilerDiagnosticSeverity;
+
+            ImmutableArray<string> allowedDiagnosticIds = state.AllowedCompilerDiagnosticIds;
 
             if (IsAny())
             {
@@ -143,6 +182,62 @@ namespace Roslynator.Testing
             }
         }
 
+        internal void VerifyNoNewCompilerDiagnostics(
+            ImmutableArray<Diagnostic> diagnostics,
+            ImmutableArray<Diagnostic> newDiagnostics,
+            TestState state)
+        {
+            ImmutableArray<string> allowedDiagnosticIds = state.AllowedCompilerDiagnosticIds;
+
+            if (allowedDiagnosticIds.IsDefault)
+                allowedDiagnosticIds = ImmutableArray<string>.Empty;
+
+            if (IsAnyNewCompilerDiagnostic())
+            {
+                IEnumerable<Diagnostic> diff = newDiagnostics
+                    .Where(diagnostic => !allowedDiagnosticIds.Any(id => id == diagnostic.Id))
+                    .Except(diagnostics, DiagnosticDeepEqualityComparer.Instance);
+
+                Assert.True(false, $"Code fix introduced new compiler diagnostic(s).{diff.ToDebugString()}");
+            }
+
+            bool IsAnyNewCompilerDiagnostic()
+            {
+                foreach (Diagnostic newDiagnostic in newDiagnostics)
+                {
+                    if (!IsAllowed(newDiagnostic)
+                        && !EqualsAny(newDiagnostic))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            bool IsAllowed(Diagnostic diagnostic)
+            {
+                foreach (string diagnosticId in allowedDiagnosticIds)
+                {
+                    if (diagnostic.Id == diagnosticId)
+                        return true;
+                }
+
+                return false;
+            }
+
+            bool EqualsAny(Diagnostic newDiagnostic)
+            {
+                foreach (Diagnostic diagnostic in diagnostics)
+                {
+                    if (DiagnosticDeepEqualityComparer.Instance.Equals(diagnostic, newDiagnostic))
+                        return true;
+                }
+
+                return false;
+            }
+        }
+
         internal async Task VerifyAdditionalDocumentsAsync(
             Project project,
             ImmutableArray<ExpectedDocument> expectedDocuments,
@@ -175,14 +270,15 @@ namespace Roslynator.Testing
                 .GetDocument(document.Id);
         }
 
-        internal void VerifyDiagnosticMessage(Diagnostic diagnostic, string expectedMessage, IFormatProvider formatProvider = null)
-        {
-            Assert.Equal(expectedMessage, diagnostic.GetMessage(formatProvider));
-        }
+        //TODO: x
+        //internal void VerifyDiagnosticMessage(Diagnostic diagnostic, string expectedMessage, IFormatProvider formatProvider = null)
+        //{
+        //    Assert.Equal(expectedMessage, diagnostic.GetMessage(formatProvider));
+        //}
 
-        internal void VerifyCodeActionTitle(CodeAction codeAction, string expectedTitle)
-        {
-            Assert.Equal(expectedTitle, codeAction.Title);
-        }
+        //internal void VerifyCodeActionTitle(CodeAction codeAction, string expectedTitle)
+        //{
+        //    Assert.Equal(expectedTitle, codeAction.Title);
+        //}
     }
 }

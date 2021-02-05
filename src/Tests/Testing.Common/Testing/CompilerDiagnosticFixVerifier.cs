@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,7 +22,7 @@ namespace Roslynator.Testing
     {
         private ImmutableArray<string> _fixableDiagnosticIds;
 
-        internal CompilerDiagnosticFixVerifier(WorkspaceFactory workspaceFactory, IAssert assert) : base(workspaceFactory, assert)
+        internal CompilerDiagnosticFixVerifier(IAssert assert) : base(assert)
         {
         }
 
@@ -60,7 +59,6 @@ namespace Roslynator.Testing
         /// <param name="source">Source text that contains placeholder <c>[||]</c> to be replaced with <paramref name="sourceData"/> and <paramref name="expectedData"/>.</param>
         /// <param name="sourceData"></param>
         /// <param name="expectedData"></param>
-        /// <param name="title"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
@@ -68,18 +66,16 @@ namespace Roslynator.Testing
             string source,
             string sourceData,
             string expectedData,
-            string title = null,
             string equivalenceKey = null,
-            CodeVerificationOptions options = null,
+            ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
             TextWithSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
 
+            var state = new CompilerDiagnosticFixTestState(result.Text, result.Expected, default(IEnumerable<string>), null, equivalenceKey);
+
             await VerifyFixAsync(
-                source: result.Text,
-                expected: result.Expected,
-                title: title,
-                equivalenceKey: equivalenceKey,
+                state,
                 options: options,
                 cancellationToken: cancellationToken);
         }
@@ -90,7 +86,6 @@ namespace Roslynator.Testing
         /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="expected"></param>
         /// <param name="additionalData"></param>
-        /// <param name="title"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
@@ -98,9 +93,25 @@ namespace Roslynator.Testing
             string source,
             string expected,
             IEnumerable<(string source, string expected)> additionalData = null,
-            string title = null,
             string equivalenceKey = null,
-            CodeVerificationOptions options = null,
+            ProjectOptions options = null,
+            CancellationToken cancellationToken = default)
+        {
+            TextWithSpans result = TextParser.FindSpansAndRemove(source, expected);
+
+            var state = new CompilerDiagnosticFixTestState(result.Text, result.Expected, additionalData, null, equivalenceKey: equivalenceKey);
+
+            await VerifyFixAsync(state, options, cancellationToken);
+        }
+
+        /// <summary>
+        /// Verifies that specified source will produce compiler diagnostic with ID specified in <see cref="DiagnosticId"/>.
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
+        public async Task VerifyFixAsync(
+            CompilerDiagnosticFixTestState state,
+            ProjectOptions options,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -112,12 +123,12 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                Document document = WorkspaceFactory.CreateDocument(workspace.CurrentSolution, source, options);
+                Document document = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                 Project project = document.Project;
 
-                ImmutableArray<ExpectedDocument> expectedDocuments = (additionalData != null)
-                    ? WorkspaceFactory.AddAdditionalDocuments(additionalData, ref project)
+                ImmutableArray<ExpectedDocument> expectedDocuments = (state.AdditionalFiles2 != null)
+                    ? ProjectHelpers.AddAdditionalDocuments(state.AdditionalFiles2, options, ref project)
                     : ImmutableArray<ExpectedDocument>.Empty;
 
                 document = project.GetDocument(document.Id);
@@ -140,7 +151,7 @@ namespace Roslynator.Testing
                         break;
 
                     if (previousDiagnostics.Any())
-                        VerifyNoNewCompilerDiagnostics(previousDiagnostics, diagnostics, options);
+                        VerifyNoNewCompilerDiagnostics(previousDiagnostics, diagnostics, state);
 
                     if (length == previousDiagnostics.Length
                         && !diagnostics.Except(previousDiagnostics, DiagnosticDeepEqualityComparer.Instance).Any())
@@ -166,8 +177,8 @@ namespace Roslynator.Testing
                             if (!d.Contains(diagnostic))
                                 return;
 
-                            if (equivalenceKey != null
-                                && !string.Equals(a.EquivalenceKey, equivalenceKey, StringComparison.Ordinal))
+                            if (state.EquivalenceKey != null
+                                && !string.Equals(a.EquivalenceKey, state.EquivalenceKey, StringComparison.Ordinal))
                             {
                                 return;
                             }
@@ -183,7 +194,7 @@ namespace Roslynator.Testing
 
                     fixRegistered = true;
 
-                    document = await VerifyAndApplyCodeActionAsync(document, action, title);
+                    document = await VerifyAndApplyCodeActionAsync(document, action, state.Title);
 
                     previousDiagnostics = diagnostics;
                 }
@@ -192,7 +203,7 @@ namespace Roslynator.Testing
 
                 string actual = await document.ToFullStringAsync(simplify: true, format: true, cancellationToken);
 
-                Assert.Equal(expected, actual);
+                Assert.Equal(state.Expected, actual);
 
                 if (expectedDocuments.Any())
                     await VerifyAdditionalDocumentsAsync(document.Project, expectedDocuments, cancellationToken);
@@ -228,7 +239,24 @@ namespace Roslynator.Testing
         public async Task VerifyNoFixAsync(
             string source,
             string equivalenceKey = null,
-            CodeVerificationOptions options = null,
+            ProjectOptions options = null,
+            CancellationToken cancellationToken = default)
+        {
+            TextWithSpans result = TextParser.FindSpansAndRemove(source);
+
+            var state = new CompilerDiagnosticFixTestState(result.Text, result.Expected, default(IEnumerable<string>), null, equivalenceKey: equivalenceKey);
+
+            await VerifyNoFixAsync(state, options, cancellationToken);
+        }
+
+        /// <summary>
+        /// Verifies that specified source will not produce compiler diagnostic with ID specified in <see cref="DiagnosticId"/>.
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
+        public async Task VerifyNoFixAsync(
+            CompilerDiagnosticFixTestState state,
+            ProjectOptions options,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -237,7 +265,7 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                Document document = WorkspaceFactory.CreateDocument(workspace.CurrentSolution, source, options);
+                Document document = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                 Compilation compilation = await document.Project.GetCompilationAsync(cancellationToken);
 
@@ -256,8 +284,8 @@ namespace Roslynator.Testing
                             if (!d.Contains(diagnostic))
                                 return;
 
-                            if (equivalenceKey != null
-                                && !string.Equals(a.EquivalenceKey, equivalenceKey, StringComparison.Ordinal))
+                            if (state.EquivalenceKey != null
+                                && !string.Equals(a.EquivalenceKey, state.EquivalenceKey, StringComparison.Ordinal))
                             {
                                 return;
                             }

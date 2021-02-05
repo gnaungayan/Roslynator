@@ -2,7 +2,7 @@
 
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CodeFixes;
-using Roslynator.Testing.CSharp;
+using Roslynator.Testing;
 using Xunit;
 
 namespace Roslynator.CSharp.CodeFixes.Tests
@@ -54,7 +54,7 @@ class C
         M(out string? abc);
     }
 }
-", equivalenceKey: EquivalenceKey.Create(DiagnosticId, "string?"), options: CSharpCodeVerificationOptions.Default_NullableReferenceTypes);
+", equivalenceKey: EquivalenceKey.Create(DiagnosticId, "string?"), options: CSharpProjectOptions.Default_NullableReferenceTypes);
         }
     }
 }

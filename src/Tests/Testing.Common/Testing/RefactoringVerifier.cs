@@ -20,7 +20,7 @@ namespace Roslynator.Testing
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public abstract class RefactoringVerifier : CodeVerifier
     {
-        internal RefactoringVerifier(WorkspaceFactory workspaceFactory, IAssert assert) : base(workspaceFactory, assert)
+        internal RefactoringVerifier(IAssert assert) : base(assert)
         {
         }
 
@@ -61,7 +61,7 @@ namespace Roslynator.Testing
             IEnumerable<string> additionalSources = null,
             string codeActionTitle = null,
             string equivalenceKey = null,
-            CodeVerificationOptions options = null,
+            ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
             TextWithSpans result = TextParser.FindSpansAndRemove(source, comparer: LinePositionSpanInfoComparer.IndexDescending);
@@ -92,7 +92,7 @@ namespace Roslynator.Testing
             string expectedData,
             string codeActionTitle = null,
             string equivalenceKey = null,
-            CodeVerificationOptions options = null,
+            ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
             TextWithSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
@@ -109,7 +109,7 @@ namespace Roslynator.Testing
 
         internal async Task VerifyRefactoringAsync(
             RefactoringTestState state,
-            CodeVerificationOptions options = null,
+            ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
             options ??= Options;
@@ -125,13 +125,13 @@ namespace Roslynator.Testing
 
                 using (Workspace workspace = new AdhocWorkspace())
                 {
-                    Document document = WorkspaceFactory.CreateDocument(workspace.CurrentSolution, state.Source, state.AdditionalFiles, options);
+                    Document document = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                     SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
                     ImmutableArray<Diagnostic> compilerDiagnostics = semanticModel.GetDiagnostics(cancellationToken: cancellationToken);
 
-                    VerifyCompilerDiagnostics(compilerDiagnostics, options);
+                    VerifyCompilerDiagnostics(compilerDiagnostics, state);
                     CodeAction action = null;
 
                     var context = new CodeRefactoringContext(
@@ -158,9 +158,9 @@ namespace Roslynator.Testing
 
                     ImmutableArray<Diagnostic> newCompilerDiagnostics = semanticModel.GetDiagnostics(cancellationToken: cancellationToken);
 
-                    VerifyCompilerDiagnostics(newCompilerDiagnostics, options);
+                    VerifyCompilerDiagnostics(newCompilerDiagnostics, state);
 
-                    VerifyNoNewCompilerDiagnostics(compilerDiagnostics, newCompilerDiagnostics, options);
+                    VerifyNoNewCompilerDiagnostics(compilerDiagnostics, newCompilerDiagnostics, state);
 
                     string actual = await document.ToFullStringAsync(simplify: true, format: true, cancellationToken);
 
@@ -180,7 +180,7 @@ namespace Roslynator.Testing
         public async Task VerifyNoRefactoringAsync(
             string source,
             string equivalenceKey = null,
-            CodeVerificationOptions options = null,
+            ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
             TextWithSpans result = TextParser.FindSpansAndRemove(source, comparer: LinePositionSpanInfoComparer.IndexDescending);
@@ -197,7 +197,7 @@ namespace Roslynator.Testing
 
         internal async Task VerifyNoRefactoringAsync(
             RefactoringTestState state,
-            CodeVerificationOptions options = null,
+            ProjectOptions options = null,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -206,13 +206,13 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                Document document = WorkspaceFactory.CreateDocument(workspace.CurrentSolution, state.Source, state.AdditionalFiles, options);
+                Document document = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                 SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
                 ImmutableArray<Diagnostic> compilerDiagnostics = semanticModel.GetDiagnostics(cancellationToken: cancellationToken);
 
-                VerifyCompilerDiagnostics(compilerDiagnostics, options);
+                VerifyCompilerDiagnostics(compilerDiagnostics, state);
 
                 ImmutableArray<TextSpan>.Enumerator en = state.Spans.GetEnumerator();
 

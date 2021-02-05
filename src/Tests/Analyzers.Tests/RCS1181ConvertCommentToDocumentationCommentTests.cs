@@ -237,8 +237,6 @@ class C
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertCommentToDocumentationComment)]
         public async Task TestNoDiagnostic_DocumentationComment_DocumentationModeIsEqualToNone()
         {
-            var options = (CSharpCodeVerificationOptions)Options;
-
             await VerifyNoDiagnosticAsync(@"
 class C
 {
@@ -249,14 +247,12 @@ class C
     {
     }
 }
-", options: options.WithParseOptions(options.ParseOptions.WithDocumentationMode(DocumentationMode.None)));
+", options: Options.WithParseOptions(Options.ParseOptions.WithDocumentationMode(DocumentationMode.None)));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertCommentToDocumentationComment)]
         public async Task TestNoDiagnostic_DocumentationCommentAndTrailingComment_DocumentationModeIsEqualToNone()
         {
-            var options = (CSharpCodeVerificationOptions)Options;
-
             await VerifyNoDiagnosticAsync(@"
 class C
 {
@@ -267,7 +263,7 @@ class C
     {
     }
 }
-", options: options.WithParseOptions(options.ParseOptions.WithDocumentationMode(DocumentationMode.None)));
+", options: Options.WithParseOptions(Options.ParseOptions.WithDocumentationMode(DocumentationMode.None)));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertCommentToDocumentationComment)]

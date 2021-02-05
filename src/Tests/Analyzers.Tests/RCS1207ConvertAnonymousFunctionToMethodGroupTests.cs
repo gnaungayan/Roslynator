@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.CodeFixes;
-using Roslynator.Testing.CSharp;
+using Roslynator.Testing;
 using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
@@ -253,7 +253,7 @@ class C
 
     private static ImmutableArray<int> M2(string s) => throw new NotImplementedException();
 }
-", options: CSharpCodeVerificationOptions.Default_CSharp7_3);
+", options: CSharpProjectOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertAnonymousFunctionToMethodGroupOrViceVersa)]

@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.CodeFixes;
+using Roslynator.Testing;
 using Roslynator.Testing.CSharp;
 using Xunit;
 
@@ -305,7 +306,7 @@ class C
     {
     }
 }
-", options: CSharpCodeVerificationOptions.Default_CSharp7);
+", options: CSharpProjectOptions.Default_CSharp7);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyDefaultExpression)]

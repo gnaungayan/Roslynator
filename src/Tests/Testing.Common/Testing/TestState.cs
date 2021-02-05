@@ -2,14 +2,15 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 
 #pragma warning disable RCS1223
 
 namespace Roslynator.Testing
 {
-    public abstract class TestState
+    public class TestState
     {
-        protected TestState(
+        public TestState(
             string source,
             string expected)
         {
@@ -17,7 +18,7 @@ namespace Roslynator.Testing
             Expected = expected;
         }
 
-        protected TestState(
+        public TestState(
             string source,
             string expected,
             IEnumerable<string> additionalFiles,
@@ -40,5 +41,21 @@ namespace Roslynator.Testing
         public string Title { get; }
 
         public string EquivalenceKey { get; }
+
+        public ImmutableDictionary<string, ReportDiagnostic> SpecificDiagnosticOptions { get; }
+
+        public DiagnosticSeverity AllowedCompilerDiagnosticSeverity { get; }
+
+        public ImmutableArray<string> AllowedCompilerDiagnosticIds { get; }
+
+        public ImmutableArray<string> AssemblyNames { get; }
+
+        public void EnableDiagnostic(DiagnosticDescriptor descriptor)
+        {
+        }
+
+        public void DisableDiagnostic(DiagnosticDescriptor descriptor)
+        {
+        }
     }
 }
