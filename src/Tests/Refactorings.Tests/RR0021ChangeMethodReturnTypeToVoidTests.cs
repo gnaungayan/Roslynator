@@ -2,6 +2,7 @@
 
 using System.Threading.Tasks;
 using Roslynator.Testing;
+using Roslynator.Testing.CSharp;
 using Xunit;
 
 namespace Roslynator.CSharp.Refactorings.Tests

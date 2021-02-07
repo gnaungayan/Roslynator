@@ -4,9 +4,10 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.CodeFixes;
-using Xunit;
 using Roslynator.CSharp.Analysis.UnusedMember;
+using Roslynator.CSharp.CodeFixes;
+using Roslynator.Testing.CSharp;
+using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {

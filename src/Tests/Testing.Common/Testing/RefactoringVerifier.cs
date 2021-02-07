@@ -25,25 +25,12 @@ namespace Roslynator.Testing
         }
 
         /// <summary>
-        /// ID of a refactoring that should be applied.
-        /// </summary>
-        public abstract string RefactoringId { get; }
-
-        /// <summary>
         /// <see cref="CodeRefactoringProvider"/> that provides a refactoring that should be applied.
         /// </summary>
         public abstract CodeRefactoringProvider RefactoringProvider { get; }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string DebuggerDisplay
-        {
-            get
-            {
-                return (!string.IsNullOrEmpty(RefactoringId))
-                    ? $"{RefactoringId} {RefactoringProvider.GetType().Name}"
-                    : $"{RefactoringProvider.GetType().Name}";
-            }
-        }
+        private string DebuggerDisplay => RefactoringProvider.GetType().Name;
 
         /// <summary>
         /// Verifies that a refactoring can be applied on a specified source code.
