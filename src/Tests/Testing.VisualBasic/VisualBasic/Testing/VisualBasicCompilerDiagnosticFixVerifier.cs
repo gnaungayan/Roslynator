@@ -10,8 +10,8 @@ namespace Roslynator.VisualBasic.Testing
         {
         }
 
-        new public virtual VisualBasicProjectOptions Options => VisualBasicProjectOptions.Default;
+        new public virtual VisualBasicProjectOptions ProjectOptions => VisualBasicProjectOptions.Default;
 
-        protected override ProjectOptions CommonOptions => Options;
+        protected override ProjectOptions CommonProjectOptions => ProjectOptions;
     }
 }

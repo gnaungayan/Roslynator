@@ -2,72 +2,61 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using Microsoft.CodeAnalysis.Text;
 
 #pragma warning disable RCS1223
 
 namespace Roslynator.Testing
 {
-    public class RefactoringTestState : TestState
+    public class CompilerDiagnosticFixTestState : TestState
     {
-        public RefactoringTestState(string source, string expectedSource, IEnumerable<TextSpan> spans)
-            : this(source, expectedSource, spans, null, null, null)
+        public CompilerDiagnosticFixTestState(string source, string expectedSource) : base(source, expectedSource)
         {
         }
 
-        public RefactoringTestState(
+        public CompilerDiagnosticFixTestState(
             string source,
             string expectedSource,
-            IEnumerable<TextSpan> spans,
             IEnumerable<AdditionalFile> additionalFiles,
             string codeActionTitle,
             string equivalenceKey) : base(source, expectedSource, additionalFiles, codeActionTitle, equivalenceKey)
         {
-            Spans = spans?.ToImmutableArray() ?? ImmutableArray<TextSpan>.Empty;
         }
 
-        public ImmutableArray<TextSpan> Spans { get; private set; }
-
-        protected RefactoringTestState(RefactoringTestState other)
+        protected CompilerDiagnosticFixTestState(CompilerDiagnosticFixTestState other)
             : this(
                 source: other.Source,
                 expectedSource: other.ExpectedSource,
-                spans: other.Spans,
                 additionalFiles: other.AdditionalFiles,
                 codeActionTitle: other.CodeActionTitle,
                 equivalenceKey: other.EquivalenceKey)
         {
         }
 
-        public RefactoringTestState Update(
+        public CompilerDiagnosticFixTestState Update(
             string source,
             string expectedSource,
-            IEnumerable<TextSpan> spans,
             IEnumerable<AdditionalFile> additionalFiles,
             string codeActionTitle,
             string equivalenceKey)
         {
-            return new RefactoringTestState(
+            return new CompilerDiagnosticFixTestState(
                 source: source,
                 expectedSource: expectedSource,
-                spans: spans,
                 additionalFiles: additionalFiles,
                 codeActionTitle: codeActionTitle,
                 equivalenceKey: equivalenceKey);
         }
 
-        public RefactoringTestState MaybeUpdate(
+        public CompilerDiagnosticFixTestState MaybeUpdate(
             string source = null,
             string expectedSource = null,
-            IEnumerable<TextSpan> spans = null,
             IEnumerable<AdditionalFile> additionalFiles = null,
             string codeActionTitle = null,
             string equivalenceKey = null)
         {
-            return new RefactoringTestState(
+            return new CompilerDiagnosticFixTestState(
                 source: source ?? Source,
                 expectedSource: expectedSource ?? ExpectedSource,
-                spans: spans ?? Spans,
                 additionalFiles: additionalFiles ?? AdditionalFiles,
                 codeActionTitle: codeActionTitle ?? CodeActionTitle,
                 equivalenceKey: equivalenceKey ?? EquivalenceKey);
@@ -83,34 +72,29 @@ namespace Roslynator.Testing
 
         protected override TestState CommonWithEquivalenceKey(string equivalenceKey) => WithEquivalenceKey(equivalenceKey);
 
-        new public RefactoringTestState WithSource(string source)
+        new public CompilerDiagnosticFixTestState WithSource(string source)
         {
-            return new RefactoringTestState(this) { Source = source };
+            return new CompilerDiagnosticFixTestState(this) { Source = source };
         }
 
-        new public RefactoringTestState WithExpectedSource(string expectedSource)
+        new public CompilerDiagnosticFixTestState WithExpectedSource(string expectedSource)
         {
-            return new RefactoringTestState(this) { ExpectedSource = expectedSource };
+            return new CompilerDiagnosticFixTestState(this) { ExpectedSource = expectedSource };
         }
 
-        public RefactoringTestState WithSpans(IEnumerable<TextSpan> spans)
+        new public CompilerDiagnosticFixTestState WithAdditionalFiles(IEnumerable<AdditionalFile> additionalFiles)
         {
-            return new RefactoringTestState(this) { Spans = spans?.ToImmutableArray() ?? ImmutableArray<TextSpan>.Empty };
+            return new CompilerDiagnosticFixTestState(this) { AdditionalFiles = additionalFiles?.ToImmutableArray() ?? ImmutableArray<AdditionalFile>.Empty };
         }
 
-        new public RefactoringTestState WithAdditionalFiles(IEnumerable<AdditionalFile> additionalFiles)
+        new public CompilerDiagnosticFixTestState WithCodeActionTitle(string codeActionTitle)
         {
-            return new RefactoringTestState(this) { AdditionalFiles = additionalFiles?.ToImmutableArray() ?? ImmutableArray<AdditionalFile>.Empty };
+            return new CompilerDiagnosticFixTestState(this) { CodeActionTitle = codeActionTitle };
         }
 
-        new public RefactoringTestState WithCodeActionTitle(string codeActionTitle)
+        new public CompilerDiagnosticFixTestState WithEquivalenceKey(string equivalenceKey)
         {
-            return new RefactoringTestState(this) { CodeActionTitle = codeActionTitle };
-        }
-
-        new public RefactoringTestState WithEquivalenceKey(string equivalenceKey)
-        {
-            return new RefactoringTestState(this) { EquivalenceKey = equivalenceKey };
+            return new CompilerDiagnosticFixTestState(this) { EquivalenceKey = equivalenceKey };
         }
     }
 }

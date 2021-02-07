@@ -174,7 +174,7 @@ class C
         (x ?? (x = new List<string>())).Add("""");
     }
 }
-", options: CSharpProjectOptions.Default_CSharp7_3);
+", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
         }
     }
 }

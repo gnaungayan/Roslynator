@@ -11,7 +11,7 @@ namespace Roslynator.CSharp.Refactorings.Tests
     {
         public override string RefactoringId { get; } = RefactoringIdentifiers.AddParameterToInterfaceMember;
 
-        public override CSharpProjectOptions Options
+        public override TestOptions Options
         {
             get { return base.Options.AddAllowedCompilerDiagnosticIds(new[] { "CS0535", "CS0539" }); }
         }

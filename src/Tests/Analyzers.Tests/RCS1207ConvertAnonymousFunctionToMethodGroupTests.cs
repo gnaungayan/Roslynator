@@ -253,7 +253,7 @@ class C
 
     private static ImmutableArray<int> M2(string s) => throw new NotImplementedException();
 }
-", options: CSharpProjectOptions.Default_CSharp7_3);
+", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertAnonymousFunctionToMethodGroupOrViceVersa)]

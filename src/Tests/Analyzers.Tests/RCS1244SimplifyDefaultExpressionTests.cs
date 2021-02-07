@@ -306,7 +306,7 @@ class C
     {
     }
 }
-", options: CSharpProjectOptions.Default_CSharp7);
+", projectOptions: CSharpProjectOptions.Default_CSharp7);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyDefaultExpression)]

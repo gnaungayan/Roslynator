@@ -165,79 +165,79 @@ namespace Roslynator.Testing
             }
         }
 
-        /// <summary>
-        /// Adds specified compiler diagnostic ID to the list of allowed compiler diagnostic IDs.
-        /// </summary>
-        /// <param name="diagnosticId"></param>
-        public CSharpProjectOptions AddAllowedCompilerDiagnosticId(string diagnosticId)
-        {
-            return WithAllowedCompilerDiagnosticIds(AllowedCompilerDiagnosticIds.Add(diagnosticId));
-        }
+        ///// <summary>
+        ///// Adds specified compiler diagnostic ID to the list of allowed compiler diagnostic IDs.
+        ///// </summary>
+        ///// <param name="diagnosticId"></param>
+        //public CSharpProjectOptions AddAllowedCompilerDiagnosticId(string diagnosticId)
+        //{
+        //    return WithAllowedCompilerDiagnosticIds(AllowedCompilerDiagnosticIds.Add(diagnosticId));
+        //}
 
-        /// <summary>
-        /// Adds a list of specified compiler diagnostic IDs to the list of allowed compiler diagnostic IDs.
-        /// </summary>
-        /// <param name="diagnosticIds"></param>
-        public CSharpProjectOptions AddAllowedCompilerDiagnosticIds(IEnumerable<string> diagnosticIds)
-        {
-            return WithAllowedCompilerDiagnosticIds(AllowedCompilerDiagnosticIds.AddRange(diagnosticIds));
-        }
+        ///// <summary>
+        ///// Adds a list of specified compiler diagnostic IDs to the list of allowed compiler diagnostic IDs.
+        ///// </summary>
+        ///// <param name="diagnosticIds"></param>
+        //public CSharpProjectOptions AddAllowedCompilerDiagnosticIds(IEnumerable<string> diagnosticIds)
+        //{
+        //    return WithAllowedCompilerDiagnosticIds(AllowedCompilerDiagnosticIds.AddRange(diagnosticIds));
+        //}
 
         /// <summary>
         /// Adds specified assembly name to the list of assembly names.
         /// </summary>
-        /// <param name="assemblyName"></param>
+        /// <param name="metadataReference"></param>
         public CSharpProjectOptions AddMetadataReferences(MetadataReference metadataReference)
         {
             return WithMetadataReferences(MetadataReferences.Add(metadataReference));
         }
 
-        internal CSharpProjectOptions WithEnabled(DiagnosticDescriptor descriptor)
-        {
-            var compilationOptions = (CSharpCompilationOptions)CompilationOptions.EnsureEnabled(descriptor);
+        //internal CSharpProjectOptions WithEnabled(DiagnosticDescriptor descriptor)
+        //{
+        //    var compilationOptions = (CSharpCompilationOptions)CompilationOptions.EnsureEnabled(descriptor);
 
-            return WithCompilationOptions(compilationOptions);
-        }
+        //    return WithCompilationOptions(compilationOptions);
+        //}
 
-        internal CSharpProjectOptions WithEnabled(DiagnosticDescriptor descriptor1, DiagnosticDescriptor descriptor2)
-        {
-            ImmutableDictionary<string, ReportDiagnostic> diagnosticOptions = CompilationOptions.SpecificDiagnosticOptions;
+        //internal CSharpProjectOptions WithEnabled(DiagnosticDescriptor descriptor1, DiagnosticDescriptor descriptor2)
+        //{
+        //    ImmutableDictionary<string, ReportDiagnostic> diagnosticOptions = CompilationOptions.SpecificDiagnosticOptions;
 
-            diagnosticOptions = diagnosticOptions
-                .SetItem(descriptor1.Id, descriptor1.DefaultSeverity.ToReportDiagnostic())
-                .SetItem(descriptor2.Id, descriptor2.DefaultSeverity.ToReportDiagnostic());
+        //    diagnosticOptions = diagnosticOptions
+        //        .SetItem(descriptor1.Id, descriptor1.DefaultSeverity.ToReportDiagnostic())
+        //        .SetItem(descriptor2.Id, descriptor2.DefaultSeverity.ToReportDiagnostic());
 
-            CSharpCompilationOptions compilationOptions = CompilationOptions.WithSpecificDiagnosticOptions(diagnosticOptions);
+        //    CSharpCompilationOptions compilationOptions = CompilationOptions.WithSpecificDiagnosticOptions(diagnosticOptions);
 
-            return WithCompilationOptions(compilationOptions);
-        }
+        //    return WithCompilationOptions(compilationOptions);
+        //}
 
-        internal CSharpProjectOptions WithDisabled(DiagnosticDescriptor descriptor)
-        {
-            var compilationOptions = (CSharpCompilationOptions)CompilationOptions.EnsureSuppressed(descriptor);
+        //internal CSharpProjectOptions WithDisabled(DiagnosticDescriptor descriptor)
+        //{
+        //    var compilationOptions = (CSharpCompilationOptions)CompilationOptions.EnsureSuppressed(descriptor);
 
-            return WithCompilationOptions(compilationOptions);
-        }
+        //    return WithCompilationOptions(compilationOptions);
+        //}
 #pragma warning disable CS1591
-        public CSharpProjectOptions WithAllowedCompilerDiagnosticIds(IEnumerable<string> allowedCompilerDiagnosticIds)
-        {
-            return new CSharpProjectOptions(
-                compilationOptions: CompilationOptions,
-                parseOptions: ParseOptions,
-                metadataReferences: MetadataReferences,
-                allowedCompilerDiagnosticSeverity: AllowedCompilerDiagnosticSeverity,
-                allowedCompilerDiagnosticIds: allowedCompilerDiagnosticIds);
-        }
+        //public CSharpProjectOptions WithAllowedCompilerDiagnosticIds(IEnumerable<string> allowedCompilerDiagnosticIds)
+        //{
+        //    return new CSharpProjectOptions(
+        //        compilationOptions: CompilationOptions,
+        //        parseOptions: ParseOptions,
+        //        metadataReferences: MetadataReferences,
+        //        allowedCompilerDiagnosticSeverity: AllowedCompilerDiagnosticSeverity,
+        //        allowedCompilerDiagnosticIds: allowedCompilerDiagnosticIds);
+        //}
 
-        public CSharpProjectOptions WithAllowedCompilerDiagnosticSeverity(DiagnosticSeverity allowedCompilerDiagnosticSeverity)
-        {
-            return new CSharpProjectOptions(
-                compilationOptions: CompilationOptions,
-                parseOptions: ParseOptions,
-                metadataReferences: MetadataReferences,
-                allowedCompilerDiagnosticSeverity: allowedCompilerDiagnosticSeverity,
-                allowedCompilerDiagnosticIds: AllowedCompilerDiagnosticIds);
-        }
+        //public CSharpProjectOptions WithAllowedCompilerDiagnosticSeverity(DiagnosticSeverity allowedCompilerDiagnosticSeverity)
+        //{
+        //    return new CSharpProjectOptions(
+        //        compilationOptions: CompilationOptions,
+        //        parseOptions: ParseOptions,
+        //        metadataReferences: MetadataReferences,
+        //        allowedCompilerDiagnosticSeverity: allowedCompilerDiagnosticSeverity,
+        //        allowedCompilerDiagnosticIds: AllowedCompilerDiagnosticIds);
+        //}
 
         public CSharpProjectOptions WithParseOptions(CSharpParseOptions parseOptions)
         {

@@ -218,7 +218,7 @@ class C
 {
     string P { get; } = null!;
 }
-", options: CSharpProjectOptions.Default.WithParseOptions(CSharpProjectOptions.Default.ParseOptions.WithLanguageVersion(LanguageVersion.Preview)));
+", projectOptions: CSharpProjectOptions.Default.WithParseOptions(CSharpProjectOptions.Default.ParseOptions.WithLanguageVersion(LanguageVersion.Preview)));
         }
     }
 }

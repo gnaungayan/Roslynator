@@ -247,7 +247,7 @@ class C
     {
     }
 }
-", options: Options.WithParseOptions(Options.ParseOptions.WithDocumentationMode(DocumentationMode.None)));
+", projectOptions: ProjectOptions.WithParseOptions(ProjectOptions.ParseOptions.WithDocumentationMode(DocumentationMode.None)));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertCommentToDocumentationComment)]
@@ -263,7 +263,7 @@ class C
     {
     }
 }
-", options: Options.WithParseOptions(Options.ParseOptions.WithDocumentationMode(DocumentationMode.None)));
+", projectOptions: ProjectOptions.WithParseOptions(ProjectOptions.ParseOptions.WithDocumentationMode(DocumentationMode.None)));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertCommentToDocumentationComment)]

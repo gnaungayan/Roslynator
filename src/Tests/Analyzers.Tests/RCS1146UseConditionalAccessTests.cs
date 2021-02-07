@@ -875,7 +875,7 @@ class C
         }
     }
 }
-", options: CSharpProjectOptions.Default_CSharp5);
+", projectOptions: CSharpProjectOptions.Default_CSharp5);
         }
     }
 }

@@ -97,11 +97,13 @@ namespace Roslynator.Testing
         /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="additionalFiles"></param>
         /// <param name="options"></param>
+        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAsync(
             string source,
             IEnumerable<string> additionalFiles = null,
-            ProjectOptions options = null,
+            TestOptions options = null,
+            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             TextAndSpans result = TextParser.FindSpansAndRemove(source);
@@ -109,14 +111,17 @@ namespace Roslynator.Testing
             var state = new DiagnosticTestState(
                 result.Text,
                 null,
+                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)),
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
-                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
+                null,
+                null);
 
             await VerifyDiagnosticAsync(
                 state,
                 options: options,
+                projectOptions: projectOptions,
                 cancellationToken: cancellationToken);
         }
 
@@ -127,12 +132,14 @@ namespace Roslynator.Testing
         /// <param name="sourceData"></param>
         /// <param name="additionalFiles"></param>
         /// <param name="options"></param>
+        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAsync(
             string source,
             string sourceData,
             IEnumerable<string> additionalFiles = null,
-            ProjectOptions options = null,
+            TestOptions options = null,
+            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             TextAndSpans result = TextParser.FindSpansAndReplace(source, sourceData);
@@ -140,14 +147,17 @@ namespace Roslynator.Testing
             var state = new DiagnosticTestState(
                 source,
                 null,
+                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)),
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
-                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
+                null,
+                null);
 
             await VerifyDiagnosticAsync(
                 state,
                 options: options,
+                projectOptions: projectOptions,
                 cancellationToken: cancellationToken);
         }
 
@@ -155,20 +165,24 @@ namespace Roslynator.Testing
             string source,
             TextSpan span,
             IEnumerable<string> additionalFiles = null,
-            ProjectOptions options = null,
+            TestOptions options = null,
+            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var state = new DiagnosticTestState(
                 source,
                 null,
+                ImmutableArray.Create(CreateDiagnostic(source, span)),
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
-                ImmutableArray.Create(CreateDiagnostic(source, span)));
+                null,
+                null);
 
             await VerifyDiagnosticAsync(
                 state,
                 options: options,
+                projectOptions: projectOptions,
                 cancellationToken: cancellationToken);
         }
 
@@ -176,20 +190,24 @@ namespace Roslynator.Testing
             string source,
             IEnumerable<TextSpan> spans,
             IEnumerable<string> additionalFiles = null,
-            ProjectOptions options = null,
+            TestOptions options = null,
+            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var state = new DiagnosticTestState(
                 source,
                 null,
+                spans.Select(span => CreateDiagnostic(source, span)).ToImmutableArray(),
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
-                spans.Select(span => CreateDiagnostic(source, span)).ToImmutableArray());
+                null,
+                null);
 
             await VerifyDiagnosticAsync(
                 state,
                 options: options,
+                projectOptions: projectOptions,
                 cancellationToken: cancellationToken);
         }
 
@@ -197,20 +215,24 @@ namespace Roslynator.Testing
             string source,
             Diagnostic expectedDiagnostic,
             IEnumerable<string> additionalFiles = null,
-            ProjectOptions options = null,
+            TestOptions options = null,
+            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var state = new DiagnosticTestState(
                 source,
                 null,
+                ImmutableArray.Create(expectedDiagnostic),
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
-                ImmutableArray.Create(expectedDiagnostic));
+                null,
+                null);
 
             await VerifyDiagnosticAsync(
                 state,
                 options: options,
+                projectOptions: projectOptions,
                 cancellationToken: cancellationToken);
         }
 
@@ -218,35 +240,41 @@ namespace Roslynator.Testing
             string source,
             IEnumerable<Diagnostic> expectedDiagnostics,
             IEnumerable<string> additionalFiles = null,
-            ProjectOptions options = null,
+            TestOptions options = null,
+            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var state = new DiagnosticTestState(
                 source,
                 null,
+                expectedDiagnostics,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
-                expectedDiagnostics);
+                null,
+                null);
 
             await VerifyDiagnosticAsync(
                 state,
                 options,
+                projectOptions,
                 cancellationToken);
         }
 
         internal async Task VerifyDiagnosticAsync(
             DiagnosticTestState state,
-            ProjectOptions options = null,
+            TestOptions options = null,
+            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             options ??= Options;
+            projectOptions ??= ProjectOptions;
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
+                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
 
                 Compilation compilation = await document.Project.GetCompilationAsync(cancellationToken);
 
@@ -304,12 +332,14 @@ namespace Roslynator.Testing
         /// <param name="sourceData"></param>
         /// <param name="additionalFiles"></param>
         /// <param name="options"></param>
+        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyNoDiagnosticAsync(
             string source,
             string sourceData,
             IEnumerable<string> additionalFiles = null,
-            ProjectOptions options = null,
+            TestOptions options = null,
+            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             TextAndSpans result = TextParser.FindSpansAndReplace(source, sourceData);
@@ -317,14 +347,17 @@ namespace Roslynator.Testing
             var state = new DiagnosticTestState(
                 result.Text,
                 result.Expected,
+                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)),
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
-                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
+                null,
+                null);
 
             await VerifyNoDiagnosticAsync(
                 state,
                 options: options,
+                projectOptions: projectOptions,
                 cancellationToken);
         }
 
@@ -334,11 +367,13 @@ namespace Roslynator.Testing
         /// <param name="source"></param>
         /// <param name="additionalFiles"></param>
         /// <param name="options"></param>
+        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyNoDiagnosticAsync(
             string source,
             IEnumerable<string> additionalFiles = null,
-            ProjectOptions options = null,
+            TestOptions options = null,
+            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             TextAndSpans result = TextParser.FindSpansAndRemove(source);
@@ -346,14 +381,17 @@ namespace Roslynator.Testing
             var state = new DiagnosticTestState(
                 result.Text,
                 result.Expected,
+                diagnostics: ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)),
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
-                diagnostics: ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)));
+                null,
+                null);
 
             await VerifyNoDiagnosticAsync(
                 state,
                 options: options,
+                projectOptions: projectOptions,
                 cancellationToken);
         }
 
@@ -362,22 +400,25 @@ namespace Roslynator.Testing
         /// </summary>
         /// <param name="state"></param>
         /// <param name="options"></param>
+        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyNoDiagnosticAsync(
             DiagnosticTestState state,
-            ProjectOptions options = null,
+            TestOptions options = null,
+            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             options ??= Options;
+            projectOptions ??= ProjectOptions;
 
             if (SupportedDiagnostics.IndexOf(Descriptor, DiagnosticDescriptorComparer.Id) == -1)
                   Assert.True(false, $"Diagnostic \"{Descriptor.Id}\" is not supported by analyzer(s) {string.Join(", ", Analyzers.Select(f => f.GetType().Name))}.");
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
+                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
 
                 Compilation compilation = await document.Project.GetCompilationAsync(cancellationToken);
 
@@ -438,7 +479,7 @@ namespace Roslynator.Testing
                         VerifyDiagnostic(
                             actualEnumerator.Current,
                             expectedDiagnostic,
-                            state.DiagnosticMessage,
+                            state.Message,
                             state.FormatProvider,
                             checkAdditionalLocations: checkAdditionalLocations);
                     }
@@ -567,7 +608,7 @@ namespace Roslynator.Testing
 
         internal Diagnostic CreateDiagnostic(TextSpan span, LinePositionSpan lineSpan)
         {
-            Location location = Location.Create(Options.DefaultDocumentName, span, lineSpan);
+            Location location = Location.Create(ProjectOptions.DefaultDocumentName, span, lineSpan);
 
             return Diagnostic.Create(Descriptor, location);
         }

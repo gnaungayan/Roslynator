@@ -18,7 +18,7 @@ namespace Roslynator.CSharp.Analysis.Tests
 
         public override CodeFixProvider FixProvider { get; } = new MemberDeclarationCodeFixProvider();
 
-        public override CSharpProjectOptions Options
+        public override TestOptions Options
         {
             get { return base.Options.WithEnabled(AnalyzerOptions.RemoveAccessibilityModifiers); }
         }

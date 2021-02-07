@@ -458,7 +458,7 @@ class C
 {
     public string P { get; private set; }
 }
-", options: CSharpProjectOptions.Default_CSharp5);
+", projectOptions: CSharpProjectOptions.Default_CSharp5);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseReadOnlyAutoProperty)]

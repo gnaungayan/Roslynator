@@ -2,6 +2,7 @@
 
 namespace Roslynator.Testing.CSharp
 {
+    //TODO: internal
     public class XunitAssert : IAssert
     {
         public static XunitAssert Instance { get; } = new XunitAssert();

@@ -122,7 +122,7 @@ class C
         string? s = p;
     }
 }
-", options: CSharpProjectOptions.Default_NullableReferenceTypes);
+", projectOptions: CSharpProjectOptions.Default_NullableReferenceTypes);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseExplicitTypeInsteadOfVarWhenTypeIsNotObvious)]
@@ -148,7 +148,9 @@ class C
         string s = p;
     }
 }
-", options: CSharpProjectOptions.Default_NullableReferenceTypes.AddAllowedCompilerDiagnosticId("CS8632"));
+",
+options: Options.AddAllowedCompilerDiagnosticId("CS8632"),
+projectOptions: CSharpProjectOptions.Default_NullableReferenceTypes);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseExplicitTypeInsteadOfVarWhenTypeIsNotObvious)]

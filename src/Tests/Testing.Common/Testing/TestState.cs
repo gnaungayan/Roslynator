@@ -7,53 +7,56 @@ using System.Collections.Immutable;
 
 namespace Roslynator.Testing
 {
-    public class TestState
+    public abstract class TestState
     {
-        public TestState(string source, string expected)
+        protected TestState(string source, string expectedSource)
         {
             Source = source;
-            Expected = expected;
+            ExpectedSource = expectedSource;
         }
 
-        public TestState(
+        protected TestState(
             string source,
-            string expected,
+            string expectedSource,
             IEnumerable<AdditionalFile> additionalFiles,
-            string title,
+            string codeActionTitle,
             string equivalenceKey)
         {
             Source = source;
-            Expected = expected;
+            ExpectedSource = expectedSource;
             AdditionalFiles = additionalFiles?.ToImmutableArray() ?? ImmutableArray<AdditionalFile>.Empty;
-            Title = title;
+            CodeActionTitle = codeActionTitle;
             EquivalenceKey = equivalenceKey;
         }
 
-        public string Source { get; }
+        protected abstract TestState CommonWithSource(string source);
 
-        public string Expected { get; }
+        protected abstract TestState CommonWithExpectedSource(string expectedSource);
 
-        public ImmutableArray<AdditionalFile> AdditionalFiles { get; }
+        protected abstract TestState CommonWithAdditionalFiles(IEnumerable<AdditionalFile> additionalFiles);
 
-        public string Title { get; }
+        protected abstract TestState CommonWithCodeActionTitle(string codeActionTitle);
 
-        public string EquivalenceKey { get; }
+        protected abstract TestState CommonWithEquivalenceKey(string equivalenceKey);
 
-        //TODO: 
-        //public ImmutableDictionary<string, ReportDiagnostic> SpecificDiagnosticOptions { get; }
+        public TestState WithSource(string source) => CommonWithSource(source);
 
-        //public DiagnosticSeverity AllowedCompilerDiagnosticSeverity { get; }
+        public TestState WithExpectedSource(string expectedSource) => CommonWithExpectedSource(expectedSource);
 
-        //public ImmutableArray<string> AllowedCompilerDiagnosticIds { get; }
+        public TestState WithAdditionalFiles(IEnumerable<AdditionalFile> additionalFiles) => CommonWithAdditionalFiles(additionalFiles);
 
-        //public ImmutableArray<string> AssemblyNames { get; }
+        public TestState WithCodeActionTitle(string codeActionTitle) => CommonWithCodeActionTitle(codeActionTitle);
 
-        //public void EnableDiagnostic(DiagnosticDescriptor descriptor)
-        //{
-        //}
+        public TestState WithEquivalenceKey(string equivalenceKey) => CommonWithEquivalenceKey(equivalenceKey);
 
-        //public void DisableDiagnostic(DiagnosticDescriptor descriptor)
-        //{
-        //}
+        public string Source { get; protected set; }
+
+        public string ExpectedSource { get; protected set; }
+
+        public ImmutableArray<AdditionalFile> AdditionalFiles { get; protected set; }
+
+        public string CodeActionTitle { get; protected set; }
+
+        public string EquivalenceKey { get; protected set; }
     }
 }

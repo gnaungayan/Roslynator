@@ -4,9 +4,9 @@ using Roslynator.Testing.CSharp;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public abstract class AbstractCSharpFixVerifier : CSharpFixVerifier
+    public abstract class AbstractCSharpFixVerifier : XunitCSharpFixVerifier
     {
-        protected AbstractCSharpFixVerifier() : base(XunitAssert.Instance)
+        protected AbstractCSharpFixVerifier()
         {
         }
     }

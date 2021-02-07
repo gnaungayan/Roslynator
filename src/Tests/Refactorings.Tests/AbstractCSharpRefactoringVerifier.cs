@@ -5,9 +5,9 @@ using Roslynator.Testing.CSharp;
 
 namespace Roslynator.CSharp.Refactorings.Tests
 {
-    public abstract class AbstractCSharpRefactoringVerifier : CSharpRefactoringVerifier
+    public abstract class AbstractCSharpRefactoringVerifier : XunitCSharpRefactoringVerifier
     {
-        protected AbstractCSharpRefactoringVerifier() : base(XunitAssert.Instance)
+        protected AbstractCSharpRefactoringVerifier()
         {
         }
 

@@ -144,7 +144,7 @@ class C
         s = s ?? """";
     }
 }
-", options: CSharpProjectOptions.Default_CSharp6);
+", projectOptions: CSharpProjectOptions.Default_CSharp6);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseCompoundAssignment)]
@@ -161,7 +161,7 @@ class C
         return x ?? (x2 = M());
     }
 }
-", options: CSharpProjectOptions.Default_CSharp7_3);
+", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseCompoundAssignment)]
@@ -177,7 +177,7 @@ class C
         return x ?? (x = M());
     }
 }
-", options: CSharpProjectOptions.Default_CSharp7_3);
+", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
         }
     }
 }

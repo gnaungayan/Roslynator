@@ -8,18 +8,13 @@ namespace Roslynator.Testing.CSharp
     /// <summary>
     /// Represents verifier for a C# diagnostic produced by <see cref="DiagnosticAnalyzer"/> and a code fix provided by <see cref="CodeFixProvider"/>.
     /// </summary>
-    public abstract class CSharpFixVerifier : FixVerifier
+    public abstract class XunitCSharpFixVerifier : CSharpFixVerifier
     {
         /// <summary>
         /// Initializes a new instance of <see cref="CSharpFixVerifier"/>.
         /// </summary>
-        /// <param name="assert"></param>
-        protected CSharpFixVerifier(IAssert assert) : base(assert)
+        protected XunitCSharpFixVerifier() : base(XunitAssert.Instance)
         {
         }
-
-        new public virtual CSharpProjectOptions ProjectOptions => CSharpProjectOptions.Default;
-
-        protected override ProjectOptions CommonProjectOptions => ProjectOptions;
     }
 }

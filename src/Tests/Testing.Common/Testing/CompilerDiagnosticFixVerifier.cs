@@ -63,6 +63,7 @@ namespace Roslynator.Testing
         /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
+        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyFixAsync(
             string source,
@@ -70,12 +71,13 @@ namespace Roslynator.Testing
             string expectedData,
             IEnumerable<(string source, string expected)> additionalFiles = null,
             string equivalenceKey = null,
-            ProjectOptions options = null,
+            TestOptions options = null,
+            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             TextAndSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
 
-            var state = new TestState(
+            var state = new CompilerDiagnosticFixTestState(
                 result.Text,
                 result.Expected,
                 AdditionalFile.CreateRange(additionalFiles),
@@ -85,6 +87,7 @@ namespace Roslynator.Testing
             await VerifyFixAsync(
                 state,
                 options: options,
+                projectOptions: projectOptions,
                 cancellationToken: cancellationToken);
         }
 
@@ -96,25 +99,31 @@ namespace Roslynator.Testing
         /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
+        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyFixAsync(
             string source,
             string expected,
             IEnumerable<(string source, string expected)> additionalFiles = null,
             string equivalenceKey = null,
-            ProjectOptions options = null,
+            TestOptions options = null,
+            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             TextAndSpans result = TextParser.FindSpansAndRemove(source);
 
-            var state = new TestState(
+            var state = new CompilerDiagnosticFixTestState(
                 result.Text,
                 expected,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 equivalenceKey: equivalenceKey);
 
-            await VerifyFixAsync(state, options, cancellationToken);
+            await VerifyFixAsync(
+                state,
+                options: options,
+                projectOptions,
+                cancellationToken);
         }
 
         /// <summary>
@@ -122,22 +131,25 @@ namespace Roslynator.Testing
         /// </summary>
         /// <param name="state"></param>
         /// <param name="options"></param>
+        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyFixAsync(
-            TestState state,
-            ProjectOptions options,
+            CompilerDiagnosticFixTestState state,
+            TestOptions options = null,
+            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             options ??= Options;
+            projectOptions ??= ProjectOptions;
 
             if (!FixableDiagnosticIds.Contains(DiagnosticId))
                 Assert.True(false, $"Code fix provider '{FixProvider.GetType().Name}' cannot fix diagnostic '{DiagnosticId}'.");
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
+                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
 
                 Project project = document.Project;
 
@@ -204,7 +216,7 @@ namespace Roslynator.Testing
 
                     fixRegistered = true;
 
-                    document = await VerifyAndApplyCodeActionAsync(document, action, state.Title);
+                    document = await VerifyAndApplyCodeActionAsync(document, action, state.CodeActionTitle);
 
                     previousDiagnostics = diagnostics;
                 }
@@ -213,7 +225,7 @@ namespace Roslynator.Testing
 
                 string actual = await document.ToFullStringAsync(simplify: true, format: true, cancellationToken);
 
-                Assert.Equal(state.Expected, actual);
+                Assert.Equal(state.ExpectedSource, actual);
 
                 if (expectedDocuments.Any())
                     await VerifyAdditionalDocumentsAsync(document.Project, expectedDocuments, cancellationToken);
@@ -246,24 +258,30 @@ namespace Roslynator.Testing
         /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
+        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyNoFixAsync(
             string source,
             IEnumerable<string> additionalFiles = null,
             string equivalenceKey = null,
-            ProjectOptions options = null,
+            TestOptions options = null,
+            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             TextAndSpans result = TextParser.FindSpansAndRemove(source);
 
-            var state = new TestState(
+            var state = new CompilerDiagnosticFixTestState(
                 result.Text,
                 result.Expected,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 equivalenceKey: equivalenceKey);
 
-            await VerifyNoFixAsync(state, options, cancellationToken);
+            await VerifyNoFixAsync(
+                state,
+                options,
+                projectOptions,
+                cancellationToken);
         }
 
         /// <summary>
@@ -271,19 +289,22 @@ namespace Roslynator.Testing
         /// </summary>
         /// <param name="state"></param>
         /// <param name="options"></param>
+        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyNoFixAsync(
-            TestState state,
-            ProjectOptions options,
+            CompilerDiagnosticFixTestState state,
+            TestOptions options = null,
+            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             options ??= Options;
+            projectOptions ??= ProjectOptions;
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
+                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
 
                 Compilation compilation = await document.Project.GetCompilationAsync(cancellationToken);
 

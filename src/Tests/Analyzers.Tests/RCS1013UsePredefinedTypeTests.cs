@@ -97,7 +97,7 @@ class C
     {
     }
 }
-", options: CSharpProjectOptions.Default_NullableReferenceTypes);
+", projectOptions: CSharpProjectOptions.Default_NullableReferenceTypes);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UsePredefinedType)]

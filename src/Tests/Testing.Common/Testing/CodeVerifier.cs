@@ -27,12 +27,12 @@ namespace Roslynator.Testing
         /// <summary>
         /// Gets a common code verification options.
         /// </summary>
-        protected abstract ProjectOptions CommonOptions { get; }
+        protected abstract ProjectOptions CommonProjectOptions { get; }
 
         /// <summary>
         /// Gets a code verification options.
         /// </summary>
-        public ProjectOptions Options => CommonOptions;
+        public ProjectOptions ProjectOptions => CommonProjectOptions;
 
         /// <summary>
         /// Gets a test assertions.
@@ -41,9 +41,25 @@ namespace Roslynator.Testing
 
         internal TextParser TextParser { get; }
 
+        public virtual TestOptions Options { get; } = new TestOptions(
+            allowedCompilerDiagnosticSeverity: DiagnosticSeverity.Info,
+            allowedCompilerDiagnosticIds: ImmutableArray.Create(
+                    "CS0067", // Event is never used
+                    "CS0168", // Variable is declared but never used
+                    "CS0169", // Field is never used
+                    "CS0219", // Variable is assigned but its value is never used
+                    "CS0414", // Field is assigned but its value is never used
+                    "CS0649", // Field is never assigned to, and will always have its default value null
+                    "CS0660", // Type defines operator == or operator != but does not override Object.Equals(object o)
+                    "CS0661", // Type defines operator == or operator != but does not override Object.GetHashCode()
+                    "CS8019", // Unnecessary using directive
+                    "CS8321" // The local function is declared but never used
+            ),
+            specificDiagnosticOptions: null);
+
         internal void VerifyCompilerDiagnostics(
             ImmutableArray<Diagnostic> diagnostics,
-            ProjectOptions options)
+            TestOptions options)
         {
             DiagnosticSeverity maxAllowedSeverity = options.AllowedCompilerDiagnosticSeverity;
 
@@ -86,7 +102,7 @@ namespace Roslynator.Testing
         internal void VerifyNoNewCompilerDiagnostics(
             ImmutableArray<Diagnostic> diagnostics,
             ImmutableArray<Diagnostic> newDiagnostics,
-            ProjectOptions options)
+            TestOptions options)
         {
             ImmutableArray<string> allowedDiagnosticIds = options.AllowedCompilerDiagnosticIds;
 

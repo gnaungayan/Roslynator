@@ -18,7 +18,7 @@ namespace Roslynator.Formatting.CSharp.Tests
 
         public override CodeFixProvider FixProvider { get; } = new AddEmptyLineBeforeAndAfterUsingDirectiveListCodeFixProvider();
 
-        public override CSharpProjectOptions Options
+        public override TestOptions Options
         {
             get { return base.Options.AddAllowedCompilerDiagnosticId("CS0430"); }
         }

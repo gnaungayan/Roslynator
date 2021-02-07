@@ -13,8 +13,8 @@ namespace Roslynator.CSharp.Analysis.Tests
 {
     public class RCS1016ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLineTests : AbstractCSharpFixVerifier
     {
-        private CSharpProjectOptions _options_ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine;
-        private CSharpProjectOptions _options_ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine;
+        private TestOptions _options_ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine;
+        private TestOptions _options_ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine;
 
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.ConvertBlockBodyToExpressionBodyOrViceVersa;
 
@@ -22,15 +22,15 @@ namespace Roslynator.CSharp.Analysis.Tests
 
         public override CodeFixProvider FixProvider { get; } = new ConvertBlockBodyToExpressionBodyOrViceVersaCodeFixProvider();
 
-        public override CSharpProjectOptions Options
+        public override TestOptions Options
         {
             get { return base.Options.WithEnabled(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine); }
         }
 
-        private CSharpProjectOptions Options_ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine
+        private TestOptions Options_ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine
             => _options_ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine ??= Options.WithEnabled(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine);
 
-        private CSharpProjectOptions Options_ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine
+        private TestOptions Options_ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine
             => _options_ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine ??= Options.WithEnabled(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine);
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertBlockBodyToExpressionBodyOrViceVersa)]
