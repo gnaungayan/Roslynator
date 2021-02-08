@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1244SimplifyDefaultExpressionTests : AbstractCSharpFixVerifier
+    public class RCS1244SimplifyDefaultExpressionTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.SimplifyDefaultExpression;
 

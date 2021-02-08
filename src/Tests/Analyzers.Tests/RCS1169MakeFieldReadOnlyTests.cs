@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1169MakeFieldReadOnlyTests : AbstractCSharpFixVerifier
+    public class RCS1169MakeFieldReadOnlyTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.MakeFieldReadOnly;
 

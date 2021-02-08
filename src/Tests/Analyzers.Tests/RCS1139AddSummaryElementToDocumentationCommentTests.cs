@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1139AddSummaryElementToDocumentationCommentTests : AbstractCSharpFixVerifier
+    public class RCS1139AddSummaryElementToDocumentationCommentTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddSummaryElementToDocumentationComment;
 

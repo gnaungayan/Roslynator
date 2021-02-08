@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1192UnnecessaryUsageOfVerbatimStringLiteralTests : AbstractCSharpFixVerifier
+    public class RCS1192UnnecessaryUsageOfVerbatimStringLiteralTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UnnecessaryUsageOfVerbatimStringLiteral;
 

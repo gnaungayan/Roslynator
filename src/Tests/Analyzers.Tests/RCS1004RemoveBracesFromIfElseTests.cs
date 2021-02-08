@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1004RemoveBracesFromIfElseTests : AbstractCSharpFixVerifier
+    public class RCS1004RemoveBracesFromIfElseTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveBracesFromIfElse;
 

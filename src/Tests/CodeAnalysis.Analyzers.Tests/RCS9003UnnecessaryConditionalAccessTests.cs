@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS9003UnnecessaryConditionalAccessTests : AbstractCSharpFixVerifier
+    public class RCS9003UnnecessaryConditionalAccessTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UnnecessaryConditionalAccess;
 

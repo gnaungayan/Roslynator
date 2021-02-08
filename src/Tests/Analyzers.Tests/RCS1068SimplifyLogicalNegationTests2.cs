@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1068SimplifyLogicalNegationTests2 : AbstractCSharpFixVerifier
+    public class RCS1068SimplifyLogicalNegationTests2 : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.SimplifyLogicalNegation;
 

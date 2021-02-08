@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1156UseStringLengthInsteadOfComparisonWithEmptyStringTests : AbstractCSharpFixVerifier
+    public class RCS1156UseStringLengthInsteadOfComparisonWithEmptyStringTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseStringLengthInsteadOfComparisonWithEmptyString;
 

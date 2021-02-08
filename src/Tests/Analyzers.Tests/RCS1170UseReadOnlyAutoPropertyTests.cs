@@ -12,7 +12,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1170UseReadOnlyAutoPropertyTests : AbstractCSharpFixVerifier
+    public class RCS1170UseReadOnlyAutoPropertyTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseReadOnlyAutoProperty;
 

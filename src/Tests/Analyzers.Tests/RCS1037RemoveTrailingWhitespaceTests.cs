@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1037RemoveTrailingWhitespaceTests : AbstractCSharpFixVerifier
+    public class RCS1037RemoveTrailingWhitespaceTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveTrailingWhitespace;
 

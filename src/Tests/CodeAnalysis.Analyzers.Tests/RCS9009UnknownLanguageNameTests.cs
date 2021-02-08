@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS9009UnknownLanguageNameTests : AbstractCSharpFixVerifier
+    public class RCS9009UnknownLanguageNameTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UnknownLanguageName;
 

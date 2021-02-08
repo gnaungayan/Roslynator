@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0024AddNewLineAfterSwitchLabelTests : AbstractCSharpFixVerifier
+    public class RCS0024AddNewLineAfterSwitchLabelTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddNewLineAfterSwitchLabel;
 

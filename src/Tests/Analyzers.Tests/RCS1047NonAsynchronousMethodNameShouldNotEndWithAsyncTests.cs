@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1047NonAsynchronousMethodNameShouldNotEndWithAsyncTests : AbstractCSharpFixVerifier
+    public class RCS1047NonAsynchronousMethodNameShouldNotEndWithAsyncTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.NonAsynchronousMethodNameShouldNotEndWithAsync;
 

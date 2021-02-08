@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1123AddParenthesesWhenNecessaryTests : AbstractCSharpFixVerifier
+    public class RCS1123AddParenthesesWhenNecessaryTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddParenthesesWhenNecessary;
 

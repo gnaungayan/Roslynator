@@ -12,7 +12,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1129RemoveRedundantFieldInitializationTests : AbstractCSharpFixVerifier
+    public class RCS1129RemoveRedundantFieldInitializationTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveRedundantFieldInitialization;
 

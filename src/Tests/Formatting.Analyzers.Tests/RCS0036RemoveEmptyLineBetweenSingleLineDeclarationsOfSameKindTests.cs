@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0036RemoveEmptyLineBetweenSingleLineDeclarationsOfSameKindTests : AbstractCSharpFixVerifier
+    public class RCS0036RemoveEmptyLineBetweenSingleLineDeclarationsOfSameKindTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveEmptyLineBetweenSingleLineDeclarationsOfSameKind;
 

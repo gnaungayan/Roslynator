@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0046UseSpacesInsteadOfTabTests : AbstractCSharpFixVerifier
+    public class RCS0046UseSpacesInsteadOfTabTests : AbstractCSharpDiagnosticVerifier
     {
         private readonly ReplaceTabWithSpacesCodeFixProvider _fixProvider = new ReplaceTabWithSpacesCodeFixProvider();
 

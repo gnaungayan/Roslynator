@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1066RemoveEmptyFinallyClauseTests : AbstractCSharpFixVerifier
+    public class RCS1066RemoveEmptyFinallyClauseTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveEmptyFinallyClause;
 

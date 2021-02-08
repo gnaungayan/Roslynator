@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1044RemoveOriginalExceptionFromThrowStatementTests : AbstractCSharpFixVerifier
+    public class RCS1044RemoveOriginalExceptionFromThrowStatementTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveOriginalExceptionFromThrowStatement;
 

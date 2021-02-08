@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1080UseCountOrLengthPropertyInsteadOfAnyMethodTests : AbstractCSharpFixVerifier
+    public class RCS1080UseCountOrLengthPropertyInsteadOfAnyMethodTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseCountOrLengthPropertyInsteadOfAnyMethod;
 

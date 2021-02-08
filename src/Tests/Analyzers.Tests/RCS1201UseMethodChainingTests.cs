@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1201UseMethodChainingTests : AbstractCSharpFixVerifier
+    public class RCS1201UseMethodChainingTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseMethodChaining;
 

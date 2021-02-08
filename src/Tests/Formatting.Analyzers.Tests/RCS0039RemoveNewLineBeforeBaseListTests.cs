@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0039RemoveNewLineBeforeBaseListTests : AbstractCSharpFixVerifier
+    public class RCS0039RemoveNewLineBeforeBaseListTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveNewLineBeforeBaseList;
 

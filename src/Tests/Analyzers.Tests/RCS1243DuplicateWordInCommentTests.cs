@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1243DuplicateWordInCommentTests : AbstractCSharpFixVerifier
+    public class RCS1243DuplicateWordInCommentTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.DuplicateWordInComment;
 

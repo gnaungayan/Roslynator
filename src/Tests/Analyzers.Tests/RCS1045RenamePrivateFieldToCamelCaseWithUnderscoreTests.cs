@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1045RenamePrivateFieldToCamelCaseWithUnderscoreTests : AbstractCSharpFixVerifier
+    public class RCS1045RenamePrivateFieldToCamelCaseWithUnderscoreTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RenamePrivateFieldToCamelCaseWithUnderscore;
 

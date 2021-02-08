@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1013UsePredefinedTypeTests : AbstractCSharpFixVerifier
+    public class RCS1013UsePredefinedTypeTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UsePredefinedType;
 

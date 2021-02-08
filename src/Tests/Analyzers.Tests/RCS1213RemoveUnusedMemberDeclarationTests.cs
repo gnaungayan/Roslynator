@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1213RemoveUnusedMemberDeclarationTests : AbstractCSharpFixVerifier
+    public class RCS1213RemoveUnusedMemberDeclarationTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveUnusedMemberDeclaration;
 

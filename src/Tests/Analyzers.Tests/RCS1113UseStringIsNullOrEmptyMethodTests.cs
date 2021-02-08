@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1113UseStringIsNullOrEmptyMethodTests : AbstractCSharpFixVerifier
+    public class RCS1113UseStringIsNullOrEmptyMethodTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseStringIsNullOrEmptyMethod;
 

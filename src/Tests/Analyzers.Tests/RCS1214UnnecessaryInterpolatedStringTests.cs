@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1214UnnecessaryInterpolatedStringTests : AbstractCSharpFixVerifier
+    public class RCS1214UnnecessaryInterpolatedStringTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UnnecessaryInterpolatedString;
 

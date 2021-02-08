@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1237UseBitShiftOperatorTests : AbstractCSharpFixVerifier
+    public class RCS1237UseBitShiftOperatorTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseBitShiftOperator;
 

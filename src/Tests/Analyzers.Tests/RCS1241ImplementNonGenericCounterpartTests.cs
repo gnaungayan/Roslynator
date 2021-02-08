@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1241ImplementNonGenericCounterpartTests : AbstractCSharpFixVerifier
+    public class RCS1241ImplementNonGenericCounterpartTests : AbstractCSharpDiagnosticVerifier
     {
         private static readonly ImplementNonGenericCounterpartCodeFixProvider _fixProvider = new ImplementNonGenericCounterpartCodeFixProvider();
 

@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1016ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLineTests : AbstractCSharpFixVerifier
+    public class RCS1016ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLineTests : AbstractCSharpDiagnosticVerifier
     {
         private TestOptions _options_ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine;
         private TestOptions _options_ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine;

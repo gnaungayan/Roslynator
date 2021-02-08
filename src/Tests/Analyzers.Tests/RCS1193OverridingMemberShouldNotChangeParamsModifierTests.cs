@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1193OverridingMemberShouldNotChangeParamsModifierTests : AbstractCSharpFixVerifier
+    public class RCS1193OverridingMemberShouldNotChangeParamsModifierTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.OverridingMemberShouldNotChangeParamsModifier;
 

@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0004AddEmptyLineBeforeClosingBraceOfDoStatementTests : AbstractCSharpFixVerifier
+    public class RCS0004AddEmptyLineBeforeClosingBraceOfDoStatementTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddEmptyLineBeforeClosingBraceOfDoStatement;
 

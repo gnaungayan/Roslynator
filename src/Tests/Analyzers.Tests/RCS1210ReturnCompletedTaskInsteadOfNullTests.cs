@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1210ReturnCompletedTaskInsteadOfNullTests : AbstractCSharpFixVerifier
+    public class RCS1210ReturnCompletedTaskInsteadOfNullTests : AbstractCSharpDiagnosticVerifier
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.ReturnCompletedTaskInsteadOfNull;
 
