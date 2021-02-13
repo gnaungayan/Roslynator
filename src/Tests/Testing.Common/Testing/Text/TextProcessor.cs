@@ -187,12 +187,9 @@ namespace Roslynator.Testing.Text
                 ? result.Text.Remove(result.Spans[0].Start.Index) + expectedData + result.Text.Substring(result.Spans[0].End.Index)
                 : null;
 
-            TextAndSpans result2 = FindSpansAndRemove(sourceData);
-
-            if (result2.Spans.Length > 1)
-                throw new InvalidOperationException("Text contains more than one span.");
-
             string source2 = sourceData;
+
+            TextAndSpans result2 = FindSpansAndRemove(sourceData);
 
             if (result2.Spans.Length == 0)
                 source2 = "[|" + sourceData + "|]";

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
-using Roslynator.Testing.CSharp;
 
 namespace Roslynator.Testing.CSharp
 {
