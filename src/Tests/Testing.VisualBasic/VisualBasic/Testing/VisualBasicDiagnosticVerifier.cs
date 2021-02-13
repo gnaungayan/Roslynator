@@ -6,7 +6,7 @@ namespace Roslynator.VisualBasic.Testing
 {
     public abstract class VisualBasicDiagnosticVerifier : DiagnosticVerifier
     {
-        protected VisualBasicDiagnosticVerifier(IAssert assert) : base(assert)
+        internal VisualBasicDiagnosticVerifier(IAssert assert) : base(assert)
         {
         }
 

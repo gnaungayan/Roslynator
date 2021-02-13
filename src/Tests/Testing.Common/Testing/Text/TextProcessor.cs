@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text;
@@ -7,18 +8,11 @@ using Roslynator.Text;
 
 namespace Roslynator.Testing.Text
 {
-    internal class TextParser
+    public static class TextProcessor
     {
-        public TextParser(IAssert assert)
+        public static TextAndSpans FindSpansAndRemove(string text, IComparer<LinePositionSpanInfo> comparer = null)
         {
-            Assert = assert;
-        }
-
-        public IAssert Assert { get; }
-
-        public TextParserResult GetSpans(string s, IComparer<LinePositionSpanInfo> comparer = null)
-        {
-            StringBuilder sb = StringBuilderCache.GetInstance(s.Length);
+            StringBuilder sb = StringBuilderCache.GetInstance(text.Length);
 
             var startPending = false;
             LinePositionInfo start = default;
@@ -30,12 +24,12 @@ namespace Roslynator.Testing.Text
             int line = 0;
             int column = 0;
 
-            int length = s.Length;
+            int length = text.Length;
 
             int i = 0;
             while (i < length)
             {
-                switch (s[i])
+                switch (text[i])
                 {
                     case '\r':
                         {
@@ -61,7 +55,7 @@ namespace Roslynator.Testing.Text
                             char nextChar = PeekNextChar();
                             if (nextChar == '|')
                             {
-                                sb.Append(s, lastPos, i - lastPos);
+                                sb.Append(text, lastPos, i - lastPos);
 
                                 var start2 = new LinePositionInfo(sb.Length, line, column);
 
@@ -121,14 +115,14 @@ namespace Roslynator.Testing.Text
             if (startPending
                 || stack?.Count > 0)
             {
-                Assert.True(false, "Text span is invalid.");
+                throw new InvalidOperationException("Text span is invalid.");
             }
 
-            sb.Append(s, lastPos, s.Length - lastPos);
+            sb.Append(text, lastPos, text.Length - lastPos);
 
             spans?.Sort(comparer ?? LinePositionSpanInfoComparer.Index);
 
-            return new TextParserResult(
+            return new TextAndSpans(
                 StringBuilderCache.GetStringAndFree(sb),
                 spans?.ToImmutableArray() ?? ImmutableArray<LinePositionSpanInfo>.Empty);
 
@@ -139,7 +133,7 @@ namespace Roslynator.Testing.Text
 
             char PeekChar(int offset)
             {
-                return (i + offset >= s.Length) ? '\0' : s[i + offset];
+                return (i + offset >= text.Length) ? '\0' : text[i + offset];
             }
 
             void CloseSpan()
@@ -154,7 +148,7 @@ namespace Roslynator.Testing.Text
                 }
                 else
                 {
-                    Assert.True(false, "Text span is invalid.");
+                    throw new InvalidOperationException("Text span is invalid.");
                 }
 
                 var end = new LinePositionInfo(sb.Length + i - lastPos, line, column);
@@ -163,68 +157,51 @@ namespace Roslynator.Testing.Text
 
                 (spans ??= new List<LinePositionSpanInfo>()).Add(span);
 
-                sb.Append(s, lastPos, i - lastPos);
+                sb.Append(text, lastPos, i - lastPos);
             }
         }
 
-        public TextAndSpans FindSpansAndRemove(
-            string source,
-            IComparer<LinePositionSpanInfo> comparer = null)
-        {
-            TextParserResult result = GetSpans(source, comparer);
-
-            return new TextAndSpans(result.Text, null, result.Spans);
-        }
-
-        public TextAndSpans FindSpansAndReplace(
+        public static TextAndSpans FindSpansAndReplace(
             string source,
             string sourceData,
-            string expectedData = null,
             IComparer<LinePositionSpanInfo> comparer = null)
         {
-            TextParserResult result = GetSpans(source);
+            return FindSpansAndReplace(source, sourceData, expectedData: null, comparer);
+        }
 
-            if (result.Spans.Length != 1)
-            {
-                //TODO: error
-            }
+        public static TextAndSpans FindSpansAndReplace(
+            string source,
+            string sourceData,
+            string expectedData,
+            IComparer<LinePositionSpanInfo> comparer = null)
+        {
+            TextAndSpans result = FindSpansAndRemove(source);
+
+            if (result.Spans.Length == 0)
+                throw new InvalidOperationException("Text contains no span.");
+
+            if (result.Spans.Length > 1)
+                throw new InvalidOperationException("Text contains more than one span.");
 
             string expected2 = (expectedData != null)
                 ? result.Text.Remove(result.Spans[0].Start.Index) + expectedData + result.Text.Substring(result.Spans[0].End.Index)
                 : null;
 
-            TextParserResult result2 = GetSpans(sourceData);
+            TextAndSpans result2 = FindSpansAndRemove(sourceData);
 
             if (result2.Spans.Length > 1)
-            {
-                //TODO: error
-            }
+                throw new InvalidOperationException("Text contains more than one span.");
 
             string source2 = sourceData;
+
             if (result2.Spans.Length == 0)
-            {
-                //TODO: 
                 source2 = "[|" + sourceData + "|]";
-            }
 
             source2 = result.Text.Remove(result.Spans[0].Start.Index) + source2 + result.Text.Substring(result.Spans[0].End.Index);
 
-            result = GetSpans(source2, comparer);
+            result = FindSpansAndRemove(source2, comparer);
 
             return new TextAndSpans(result.Text, expected2, result.Spans);
-        }
-
-        public readonly struct TextParserResult
-        {
-            public TextParserResult(string text, ImmutableArray<LinePositionSpanInfo> spans)
-            {
-                Text = text;
-                Spans = spans;
-            }
-
-            public string Text { get; }
-
-            public ImmutableArray<LinePositionSpanInfo> Spans { get; }
         }
     }
 }

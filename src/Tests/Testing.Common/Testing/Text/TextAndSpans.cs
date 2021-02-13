@@ -4,8 +4,13 @@ using System.Collections.Immutable;
 
 namespace Roslynator.Testing.Text
 {
-    internal readonly struct TextAndSpans
+    public readonly struct TextAndSpans
     {
+        public TextAndSpans(string text, ImmutableArray<LinePositionSpanInfo> spans)
+            : this(text, null, spans)
+        {
+        }
+
         public TextAndSpans(string text, string expected, ImmutableArray<LinePositionSpanInfo> spans)
         {
             Text = text;

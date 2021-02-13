@@ -6,7 +6,7 @@ namespace Roslynator.VisualBasic.Testing
 {
     public abstract class VisualBasicRefactoringVerifier : RefactoringVerifier
     {
-        protected VisualBasicRefactoringVerifier(IAssert assert) : base(assert)
+        internal VisualBasicRefactoringVerifier(IAssert assert) : base(assert)
         {
         }
 

@@ -33,7 +33,7 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextParser.FindSpansAndRemove(source);
+            TextAndSpans result = TextProcessor.FindSpansAndRemove(source);
 
             var state = new DiagnosticTestState(
                 result.Text,
@@ -69,7 +69,7 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextParser.FindSpansAndReplace(source, sourceData);
+            TextAndSpans result = TextProcessor.FindSpansAndReplace(source, sourceData);
 
             var state = new DiagnosticTestState(
                 source,
@@ -205,7 +205,7 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextParser.FindSpansAndReplace(source, sourceData);
+            TextAndSpans result = TextProcessor.FindSpansAndReplace(source, sourceData);
 
             var state = new DiagnosticTestState(
                 result.Text,
@@ -239,7 +239,7 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextParser.FindSpansAndRemove(source);
+            TextAndSpans result = TextProcessor.FindSpansAndRemove(source);
 
             var state = new DiagnosticTestState(
                 result.Text,
@@ -277,7 +277,7 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextParser.FindSpansAndRemove(source);
+            TextAndSpans result = TextProcessor.FindSpansAndRemove(source);
 
             var state = new DiagnosticTestState(
                 result.Text,
@@ -311,7 +311,7 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextParser.FindSpansAndRemove(source);
+            TextAndSpans result = TextProcessor.FindSpansAndRemove(source);
 
             var state = new DiagnosticTestState(
                 result.Text,
@@ -349,7 +349,7 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
+            TextAndSpans result = TextProcessor.FindSpansAndReplace(source, sourceData, expectedData);
 
             var state = new DiagnosticTestState(
                 result.Text,
@@ -376,7 +376,7 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
+            TextAndSpans result = TextProcessor.FindSpansAndReplace(source, sourceData, expectedData);
 
             var state = new DiagnosticTestState(
                 result.Text,
@@ -406,7 +406,7 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextParser.FindSpansAndRemove(source);
+            TextAndSpans result = TextProcessor.FindSpansAndRemove(source);
 
             var state = new DiagnosticTestState(
                 result.Text,
@@ -442,7 +442,7 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextParser.FindSpansAndRemove(source);
+            TextAndSpans result = TextProcessor.FindSpansAndRemove(source);
 
             var state = new DiagnosticTestState(
                 result.Text,

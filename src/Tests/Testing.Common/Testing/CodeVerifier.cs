@@ -22,7 +22,6 @@ namespace Roslynator.Testing
         internal CodeVerifier(IAssert assert)
         {
             Assert = assert;
-            TextParser = new TextParser(Assert);
         }
 
         /// <summary>
@@ -39,8 +38,6 @@ namespace Roslynator.Testing
         /// Gets a test assertions.
         /// </summary>
         internal IAssert Assert { get; }
-
-        internal TextParser TextParser { get; }
 
         public virtual TestOptions Options { get; } = new TestOptions(
             allowedCompilerDiagnosticSeverity: DiagnosticSeverity.Info,
