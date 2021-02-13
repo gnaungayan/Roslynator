@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0029AddNewLineBeforeConstructorInitializerTests : AbstractCSharpDiagnosticVerifier
+    public class RCS0029AddNewLineBeforeConstructorInitializerTests : AbstractCSharpDiagnosticVerifier<AddNewLineBeforeConstructorInitializerAnalyzer, MemberDeclarationCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddNewLineBeforeConstructorInitializer;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new AddNewLineBeforeConstructorInitializerAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new MemberDeclarationCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddNewLineBeforeConstructorInitializer)]
         public async Task Test_ThisInitializer()

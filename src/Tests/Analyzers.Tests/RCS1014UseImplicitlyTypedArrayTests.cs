@@ -11,13 +11,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1014UseImplicitlyTypedArrayTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1014UseImplicitlyTypedArrayTests : AbstractCSharpDiagnosticVerifier<UseExplicitlyTypedArrayOrViceVersaAnalyzer, UseExplicitlyTypedArrayOrViceVersaCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseExplicitlyTypedArrayOrViceVersa;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UseExplicitlyTypedArrayOrViceVersaAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new UseExplicitlyTypedArrayOrViceVersaCodeFixProvider();
 
         public override TestOptions Options
         {

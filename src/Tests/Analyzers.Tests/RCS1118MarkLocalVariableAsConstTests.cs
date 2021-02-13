@@ -11,13 +11,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1118MarkLocalVariableAsConstTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1118MarkLocalVariableAsConstTests : AbstractCSharpDiagnosticVerifier<LocalDeclarationStatementAnalyzer, MarkLocalVariableAsConstCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.MarkLocalVariableAsConst;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new LocalDeclarationStatementAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new MarkLocalVariableAsConstCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.MarkLocalVariableAsConst)]
         public async Task Test_ConstantValue()

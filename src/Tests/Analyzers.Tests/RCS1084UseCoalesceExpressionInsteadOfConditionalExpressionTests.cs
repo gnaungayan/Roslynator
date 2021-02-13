@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1084UseCoalesceExpressionInsteadOfConditionalExpressionTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1084UseCoalesceExpressionInsteadOfConditionalExpressionTests : AbstractCSharpDiagnosticVerifier<SimplifyNullCheckAnalyzer, ConditionalExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseCoalesceExpressionInsteadOfConditionalExpression;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new SimplifyNullCheckAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new ConditionalExpressionCodeFixProvider();
 
         [Theory, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseCoalesceExpressionInsteadOfConditionalExpression)]
         [InlineData("s != null ? s : \"\"", "s ?? \"\"")]

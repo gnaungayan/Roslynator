@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1218SimplifyCodeBranchingTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1218SimplifyCodeBranchingTests : AbstractCSharpDiagnosticVerifier<SimplifyCodeBranchingAnalyzer, SimplifyCodeBranchingCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.SimplifyCodeBranching;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new SimplifyCodeBranchingAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new SimplifyCodeBranchingCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyCodeBranching)]
         public async Task Test_EmptyIf_Else_WithBraces()

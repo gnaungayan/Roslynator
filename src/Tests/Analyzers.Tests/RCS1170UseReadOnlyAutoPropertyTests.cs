@@ -12,13 +12,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1170UseReadOnlyAutoPropertyTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1170UseReadOnlyAutoPropertyTests : AbstractCSharpDiagnosticVerifier<MakeMemberReadOnlyAnalyzer, MemberDeclarationCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseReadOnlyAutoProperty;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new MakeMemberReadOnlyAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new MemberDeclarationCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseReadOnlyAutoProperty)]
         public async Task Test_InstanceProperty()

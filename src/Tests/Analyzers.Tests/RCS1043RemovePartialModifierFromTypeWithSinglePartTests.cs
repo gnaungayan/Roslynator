@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1043RemovePartialModifierFromTypeWithSinglePartTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1043RemovePartialModifierFromTypeWithSinglePartTests : AbstractCSharpDiagnosticVerifier<RemovePartialModifierFromTypeWithSinglePartAnalyzer, RemovePartialModifierFromTypeWithSinglePartCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemovePartialModifierFromTypeWithSinglePart;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new RemovePartialModifierFromTypeWithSinglePartAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new RemovePartialModifierFromTypeWithSinglePartCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.RemovePartialModifierFromTypeWithSinglePart)]
         public async Task Test_Class()

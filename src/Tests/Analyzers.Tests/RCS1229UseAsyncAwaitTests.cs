@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1229UseAsyncAwaitTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1229UseAsyncAwaitTests : AbstractCSharpDiagnosticVerifier<UseAsyncAwaitAnalyzer, UseAsyncAwaitCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseAsyncAwait;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UseAsyncAwaitAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new UseAsyncAwaitCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseAsyncAwait)]
         public async Task Test_Method_TaskOfT()

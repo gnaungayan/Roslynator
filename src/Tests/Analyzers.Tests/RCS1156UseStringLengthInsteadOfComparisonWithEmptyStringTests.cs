@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1156UseStringLengthInsteadOfComparisonWithEmptyStringTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1156UseStringLengthInsteadOfComparisonWithEmptyStringTests : AbstractCSharpDiagnosticVerifier<UseStringLengthInsteadOfComparisonWithEmptyStringAnalyzer, BinaryExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseStringLengthInsteadOfComparisonWithEmptyString;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UseStringLengthInsteadOfComparisonWithEmptyStringAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new BinaryExpressionCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseStringLengthInsteadOfComparisonWithEmptyString)]
         public async Task Test_ComparisonToEmptyString()

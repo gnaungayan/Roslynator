@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1233UseShortCircuitingOperatorTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1233UseShortCircuitingOperatorTests : AbstractCSharpDiagnosticVerifier<UseShortCircuitingOperatorAnalyzer, BinaryExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseShortCircuitingOperator;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UseShortCircuitingOperatorAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new BinaryExpressionCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseShortCircuitingOperator)]
         public async Task Test_Or()

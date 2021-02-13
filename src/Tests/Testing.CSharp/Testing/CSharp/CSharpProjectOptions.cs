@@ -22,10 +22,8 @@ namespace Roslynator.Testing
         public CSharpProjectOptions(
             CSharpCompilationOptions compilationOptions,
             CSharpParseOptions parseOptions,
-            IEnumerable<MetadataReference> metadataReferences,
-            DiagnosticSeverity allowedCompilerDiagnosticSeverity = DiagnosticSeverity.Info,
-            IEnumerable<string> allowedCompilerDiagnosticIds = null)
-            : base(metadataReferences, allowedCompilerDiagnosticSeverity, allowedCompilerDiagnosticIds)
+            IEnumerable<MetadataReference> metadataReferences)
+            : base(metadataReferences)
         {
             CompilationOptions = compilationOptions;
             ParseOptions = parseOptions;
@@ -72,32 +70,20 @@ namespace Roslynator.Testing
                     .AddProject("TestProject", "TestProject", LanguageNames.CSharp);
 
                 compilationOptions = ((CSharpCompilationOptions)project.CompilationOptions)
-                    .WithAllowUnsafe(true)
                     .WithOutputKind(OutputKind.DynamicallyLinkedLibrary);
 
                 parseOptions = ((CSharpParseOptions)project.ParseOptions);
 
                 parseOptions = parseOptions
-                    .WithLanguageVersion(LanguageVersion.CSharp9)
+                    .WithLanguageVersion(LanguageVersion.LatestMajor)
                     .WithPreprocessorSymbols(parseOptions.PreprocessorSymbolNames.Concat(new[] { "DEBUG" }));
             }
 
             return new CSharpProjectOptions(
-                parseOptions: parseOptions,
                 compilationOptions: compilationOptions,
-                metadataReferences: RuntimeMetadataReference.MetadataReferences.Select(f => f.Value).ToImmutableArray(),
-                allowedCompilerDiagnosticIds: ImmutableArray.Create(
-                    "CS0067", // Event is never used
-                    "CS0168", // Variable is declared but never used
-                    "CS0169", // Field is never used
-                    "CS0219", // Variable is assigned but its value is never used
-                    "CS0414", // Field is assigned but its value is never used
-                    "CS0649", // Field is never assigned to, and will always have its default value null
-                    "CS0660", // Type defines operator == or operator != but does not override Object.Equals(object o)
-                    "CS0661", // Type defines operator == or operator != but does not override Object.GetHashCode()
-                    "CS8019", // Unnecessary using directive
-                    "CS8321" // The local function is declared but never used
-                ));
+                parseOptions: parseOptions,
+                metadataReferences: RuntimeMetadataReference.MetadataReferences.Select(f => f.Value).ToImmutableArray()
+            );
         }
 
         internal static CSharpProjectOptions Default_CSharp5
@@ -192,61 +178,14 @@ namespace Roslynator.Testing
             return WithMetadataReferences(MetadataReferences.Add(metadataReference));
         }
 
-        //internal CSharpProjectOptions WithEnabled(DiagnosticDescriptor descriptor)
-        //{
-        //    var compilationOptions = (CSharpCompilationOptions)CompilationOptions.EnsureEnabled(descriptor);
-
-        //    return WithCompilationOptions(compilationOptions);
-        //}
-
-        //internal CSharpProjectOptions WithEnabled(DiagnosticDescriptor descriptor1, DiagnosticDescriptor descriptor2)
-        //{
-        //    ImmutableDictionary<string, ReportDiagnostic> diagnosticOptions = CompilationOptions.SpecificDiagnosticOptions;
-
-        //    diagnosticOptions = diagnosticOptions
-        //        .SetItem(descriptor1.Id, descriptor1.DefaultSeverity.ToReportDiagnostic())
-        //        .SetItem(descriptor2.Id, descriptor2.DefaultSeverity.ToReportDiagnostic());
-
-        //    CSharpCompilationOptions compilationOptions = CompilationOptions.WithSpecificDiagnosticOptions(diagnosticOptions);
-
-        //    return WithCompilationOptions(compilationOptions);
-        //}
-
-        //internal CSharpProjectOptions WithDisabled(DiagnosticDescriptor descriptor)
-        //{
-        //    var compilationOptions = (CSharpCompilationOptions)CompilationOptions.EnsureSuppressed(descriptor);
-
-        //    return WithCompilationOptions(compilationOptions);
-        //}
 #pragma warning disable CS1591
-        //public CSharpProjectOptions WithAllowedCompilerDiagnosticIds(IEnumerable<string> allowedCompilerDiagnosticIds)
-        //{
-        //    return new CSharpProjectOptions(
-        //        compilationOptions: CompilationOptions,
-        //        parseOptions: ParseOptions,
-        //        metadataReferences: MetadataReferences,
-        //        allowedCompilerDiagnosticSeverity: AllowedCompilerDiagnosticSeverity,
-        //        allowedCompilerDiagnosticIds: allowedCompilerDiagnosticIds);
-        //}
-
-        //public CSharpProjectOptions WithAllowedCompilerDiagnosticSeverity(DiagnosticSeverity allowedCompilerDiagnosticSeverity)
-        //{
-        //    return new CSharpProjectOptions(
-        //        compilationOptions: CompilationOptions,
-        //        parseOptions: ParseOptions,
-        //        metadataReferences: MetadataReferences,
-        //        allowedCompilerDiagnosticSeverity: allowedCompilerDiagnosticSeverity,
-        //        allowedCompilerDiagnosticIds: AllowedCompilerDiagnosticIds);
-        //}
 
         public CSharpProjectOptions WithParseOptions(CSharpParseOptions parseOptions)
         {
             return new CSharpProjectOptions(
                 compilationOptions: CompilationOptions,
                 parseOptions: parseOptions,
-                metadataReferences: MetadataReferences,
-                allowedCompilerDiagnosticSeverity: AllowedCompilerDiagnosticSeverity,
-                allowedCompilerDiagnosticIds: AllowedCompilerDiagnosticIds);
+                metadataReferences: MetadataReferences);
         }
 
         public CSharpProjectOptions WithCompilationOptions(CSharpCompilationOptions compilationOptions)
@@ -254,9 +193,7 @@ namespace Roslynator.Testing
             return new CSharpProjectOptions(
                 compilationOptions: compilationOptions,
                 parseOptions: ParseOptions,
-                metadataReferences: MetadataReferences,
-                allowedCompilerDiagnosticSeverity: AllowedCompilerDiagnosticSeverity,
-                allowedCompilerDiagnosticIds: AllowedCompilerDiagnosticIds);
+                metadataReferences: MetadataReferences);
         }
 
         public CSharpProjectOptions WithMetadataReferences(IEnumerable<MetadataReference> metadataReferences)
@@ -264,9 +201,7 @@ namespace Roslynator.Testing
             return new CSharpProjectOptions(
                 compilationOptions: CompilationOptions,
                 parseOptions: ParseOptions,
-                metadataReferences: metadataReferences,
-                allowedCompilerDiagnosticSeverity: AllowedCompilerDiagnosticSeverity,
-                allowedCompilerDiagnosticIds: AllowedCompilerDiagnosticIds);
+                metadataReferences: metadataReferences);
         }
 #pragma warning restore CS1591
     }

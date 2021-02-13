@@ -13,10 +13,8 @@ namespace Roslynator.Testing
         public VisualBasicProjectOptions(
             VisualBasicCompilationOptions compilationOptions,
             VisualBasicParseOptions parseOptions,
-            IEnumerable<MetadataReference> metadataReferences,
-            DiagnosticSeverity allowedCompilerDiagnosticSeverity = DiagnosticSeverity.Info,
-            IEnumerable<string> allowedCompilerDiagnosticIds = null)
-            : base(metadataReferences, allowedCompilerDiagnosticSeverity, allowedCompilerDiagnosticIds)
+            IEnumerable<MetadataReference> metadataReferences)
+            : base(metadataReferences)
         {
             CompilationOptions = compilationOptions;
             ParseOptions = parseOptions;
@@ -66,27 +64,9 @@ namespace Roslynator.Testing
         }
 
         /// <summary>
-        /// Adds specified compiler diagnostic ID to the list of allowed compiler diagnostic IDs.
-        /// </summary>
-        /// <param name="diagnosticId"></param>
-        public VisualBasicProjectOptions AddAllowedCompilerDiagnosticId(string diagnosticId)
-        {
-            return WithAllowedCompilerDiagnosticIds(AllowedCompilerDiagnosticIds.Add(diagnosticId));
-        }
-
-        /// <summary>
-        /// Adds a list of specified compiler diagnostic IDs to the list of allowed compiler diagnostic IDs.
-        /// </summary>
-        /// <param name="diagnosticIds"></param>
-        public VisualBasicProjectOptions AddAllowedCompilerDiagnosticIds(IEnumerable<string> diagnosticIds)
-        {
-            return WithAllowedCompilerDiagnosticIds(AllowedCompilerDiagnosticIds.AddRange(diagnosticIds));
-        }
-
-        /// <summary>
         /// Adds specified assembly name to the list of assembly names.
         /// </summary>
-        /// <param name="assemblyName"></param>
+        /// <param name="metadataReference"></param>
         public VisualBasicProjectOptions AddMetadataReferences(MetadataReference metadataReference)
         {
             return WithMetadataReferences(MetadataReferences.Add(metadataReference));
@@ -119,34 +99,13 @@ namespace Roslynator.Testing
             return WithCompilationOptions(compilationOptions);
         }
 #pragma warning disable CS1591
-        public VisualBasicProjectOptions WithAllowedCompilerDiagnosticIds(IEnumerable<string> allowedCompilerDiagnosticIds)
-        {
-            return new VisualBasicProjectOptions(
-                compilationOptions: CompilationOptions,
-                parseOptions: ParseOptions,
-                metadataReferences: MetadataReferences,
-                allowedCompilerDiagnosticSeverity: AllowedCompilerDiagnosticSeverity,
-                allowedCompilerDiagnosticIds: allowedCompilerDiagnosticIds);
-        }
-
-        public VisualBasicProjectOptions WithAllowedCompilerDiagnosticSeverity(DiagnosticSeverity allowedCompilerDiagnosticSeverity)
-        {
-            return new VisualBasicProjectOptions(
-                compilationOptions: CompilationOptions,
-                parseOptions: ParseOptions,
-                metadataReferences: MetadataReferences,
-                allowedCompilerDiagnosticSeverity: allowedCompilerDiagnosticSeverity,
-                allowedCompilerDiagnosticIds: AllowedCompilerDiagnosticIds);
-        }
 
         public VisualBasicProjectOptions WithParseOptions(VisualBasicParseOptions parseOptions)
         {
             return new VisualBasicProjectOptions(
                 compilationOptions: CompilationOptions,
                 parseOptions: parseOptions,
-                metadataReferences: MetadataReferences,
-                allowedCompilerDiagnosticSeverity: AllowedCompilerDiagnosticSeverity,
-                allowedCompilerDiagnosticIds: AllowedCompilerDiagnosticIds);
+                metadataReferences: MetadataReferences);
         }
 
         public VisualBasicProjectOptions WithCompilationOptions(VisualBasicCompilationOptions compilationOptions)
@@ -154,9 +113,7 @@ namespace Roslynator.Testing
             return new VisualBasicProjectOptions(
                 compilationOptions: compilationOptions,
                 parseOptions: ParseOptions,
-                metadataReferences: MetadataReferences,
-                allowedCompilerDiagnosticSeverity: AllowedCompilerDiagnosticSeverity,
-                allowedCompilerDiagnosticIds: AllowedCompilerDiagnosticIds);
+                metadataReferences: MetadataReferences);
         }
 
         public VisualBasicProjectOptions WithMetadataReferences(IEnumerable<MetadataReference> metadataReferences)
@@ -164,9 +121,7 @@ namespace Roslynator.Testing
             return new VisualBasicProjectOptions(
                 compilationOptions: CompilationOptions,
                 parseOptions: ParseOptions,
-                metadataReferences: metadataReferences,
-                allowedCompilerDiagnosticSeverity: AllowedCompilerDiagnosticSeverity,
-                allowedCompilerDiagnosticIds: AllowedCompilerDiagnosticIds);
+                metadataReferences: metadataReferences);
         }
 #pragma warning restore CS1591
     }

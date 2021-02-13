@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1085UseAutoPropertyTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1085UseAutoPropertyTests : AbstractCSharpDiagnosticVerifier<UseAutoPropertyAnalyzer, UseAutoPropertyCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseAutoProperty;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UseAutoPropertyAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new UseAutoPropertyCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseAutoProperty)]
         public async Task Test_Property()

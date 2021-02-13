@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1049SimplifyBooleanComparisonTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1049SimplifyBooleanComparisonTests : AbstractCSharpDiagnosticVerifier<BooleanLiteralAnalyzer, BinaryExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.SimplifyBooleanComparison;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new BooleanLiteralAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new BinaryExpressionCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyBooleanComparison)]
         public async Task Test()

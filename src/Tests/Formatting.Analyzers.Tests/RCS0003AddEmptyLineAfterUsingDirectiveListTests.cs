@@ -11,13 +11,9 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0003AddEmptyLineAfterUsingDirectiveListTests : AbstractCSharpDiagnosticVerifier
+    public class RCS0003AddEmptyLineAfterUsingDirectiveListTests : AbstractCSharpDiagnosticVerifier<AddEmptyLineAfterUsingDirectiveListAnalyzer, AddEmptyLineBeforeAndAfterUsingDirectiveListCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddEmptyLineAfterUsingDirectiveList;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new AddEmptyLineAfterUsingDirectiveListAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new AddEmptyLineBeforeAndAfterUsingDirectiveListCodeFixProvider();
 
         public override TestOptions Options
         {

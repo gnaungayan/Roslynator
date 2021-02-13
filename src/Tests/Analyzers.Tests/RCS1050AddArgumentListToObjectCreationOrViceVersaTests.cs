@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1050AddArgumentListToObjectCreationOrViceVersaTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1050AddArgumentListToObjectCreationOrViceVersaTests : AbstractCSharpDiagnosticVerifier<AddArgumentListToObjectCreationOrViceVersaAnalyzer, AddArgumentListToObjectCreationOrViceVersaCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddArgumentListToObjectCreationOrViceVersa;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new AddArgumentListToObjectCreationOrViceVersaAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new AddArgumentListToObjectCreationOrViceVersaCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddArgumentListToObjectCreationOrViceVersa)]
         public async Task Test_AddArgumentList()

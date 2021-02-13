@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1187UseConstantInsteadOfFieldTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1187UseConstantInsteadOfFieldTests : AbstractCSharpDiagnosticVerifier<UseConstantInsteadOfFieldAnalyzer, MemberDeclarationCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseConstantInsteadOfField;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UseConstantInsteadOfFieldAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new MemberDeclarationCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseConstantInsteadOfField)]
         public async Task TestNoDiagnostic_AssignmentInInStaticConstructor()

@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1239UseForStatementInsteadOfWhileStatementTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1239UseForStatementInsteadOfWhileStatementTests : AbstractCSharpDiagnosticVerifier<UseForStatementInsteadOfWhileStatementAnalyzer, WhileStatementCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseForStatementInsteadOfWhileStatement;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UseForStatementInsteadOfWhileStatementAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new WhileStatementCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseForStatementInsteadOfWhileStatement)]
         public async Task Test()

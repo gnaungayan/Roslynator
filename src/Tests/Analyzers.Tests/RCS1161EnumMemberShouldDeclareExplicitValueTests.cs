@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1161EnumShouldDeclareExplicitValuesTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1161EnumShouldDeclareExplicitValuesTests : AbstractCSharpDiagnosticVerifier<EnumShouldDeclareExplicitValuesAnalyzer, EnumDeclarationCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.EnumShouldDeclareExplicitValues;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new EnumShouldDeclareExplicitValuesAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new EnumDeclarationCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.EnumShouldDeclareExplicitValues)]
         public async Task Test_AllValues()

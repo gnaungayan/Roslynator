@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0036RemoveEmptyLineBetweenSingleLineDeclarationsOfSameKindTests : AbstractCSharpDiagnosticVerifier
+    public class RCS0036RemoveEmptyLineBetweenSingleLineDeclarationsOfSameKindTests : AbstractCSharpDiagnosticVerifier<EmptyLineBetweenDeclarationsAnalyzer, EmptyLineBetweenDeclarationsCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveEmptyLineBetweenSingleLineDeclarationsOfSameKind;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new EmptyLineBetweenDeclarationsAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new EmptyLineBetweenDeclarationsCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.RemoveEmptyLineBetweenSingleLineDeclarationsOfSameKind)]
         public async Task Test_Properties()

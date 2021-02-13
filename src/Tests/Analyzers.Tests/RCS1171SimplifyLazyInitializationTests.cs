@@ -11,13 +11,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1171SimplifyLazyInitializationTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1171SimplifyLazyInitializationTests : AbstractCSharpDiagnosticVerifier<SimplifyLazyInitializationAnalyzer, BlockCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.SimplifyLazyInitialization;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new SimplifyLazyInitializationAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new BlockCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyLazyInitialization)]
         public async Task Test_IfWithBraces()

@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1089UseUnaryOperatorInsteadOfAssignmentTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1089UseUnaryOperatorInsteadOfAssignmentTests : AbstractCSharpDiagnosticVerifier<UseUnaryOperatorInsteadOfAssignmentAnalyzer, AssignmentExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseUnaryOperatorInsteadOfAssignment;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UseUnaryOperatorInsteadOfAssignmentAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new AssignmentExpressionCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseUnaryOperatorInsteadOfAssignment)]
         public async Task Test_PostIncrement()

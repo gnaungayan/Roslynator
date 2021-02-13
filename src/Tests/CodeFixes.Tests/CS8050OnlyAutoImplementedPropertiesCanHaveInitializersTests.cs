@@ -7,11 +7,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.CodeFixes.Tests
 {
-    public class CS8050OnlyAutoImplementedPropertiesCanHaveInitializersTests : AbstractCSharpCompilerDiagnosticFixVerifier
+    public class CS8050OnlyAutoImplementedPropertiesCanHaveInitializersTests : AbstractCSharpCompilerDiagnosticFixVerifier<RemovePropertyOrFieldInitializerCodeFixProvider>
     {
         public override string DiagnosticId { get; } = CompilerDiagnosticIdentifiers.OnlyAutoImplementedPropertiesCanHaveInitializers;
-
-        public override CodeFixProvider FixProvider { get; } = new RemovePropertyOrFieldInitializerCodeFixProvider();
 
         [Fact, Trait(Traits.CodeFix, CompilerDiagnosticIdentifiers.OnlyAutoImplementedPropertiesCanHaveInitializers)]
         public async Task Test()

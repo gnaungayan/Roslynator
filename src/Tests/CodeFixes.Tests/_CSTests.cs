@@ -7,11 +7,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.CodeFixes.Tests
 {
-    public class CSTests : AbstractCSharpCompilerDiagnosticFixVerifier
+    public class CSTests : AbstractCSharpCompilerDiagnosticFixVerifier<AddBodyCodeFixProvider>
     {
         public override string DiagnosticId { get; } = CompilerDiagnosticIdentifiers.OperatorCannotBeAppliedToOperands;
-
-        public override CodeFixProvider FixProvider { get; }
 
         //[Fact, Trait(Traits.CodeFix, CompilerDiagnosticIdentifiers.OperatorCannotBeAppliedToOperands)]
         public async Task Test()

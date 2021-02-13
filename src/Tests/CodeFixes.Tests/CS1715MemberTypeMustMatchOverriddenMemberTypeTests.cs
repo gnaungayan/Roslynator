@@ -7,11 +7,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.CodeFixes.Tests
 {
-    public class CS1715MemberTypeMustMatchOverriddenMemberTypeTests : AbstractCSharpCompilerDiagnosticFixVerifier
+    public class CS1715MemberTypeMustMatchOverriddenMemberTypeTests : AbstractCSharpCompilerDiagnosticFixVerifier<MemberDeclarationCodeFixProvider>
     {
         public override string DiagnosticId { get; } = CompilerDiagnosticIdentifiers.MemberTypeMustMatchOverriddenMemberType;
-
-        public override CodeFixProvider FixProvider { get; } = new MemberDeclarationCodeFixProvider();
 
         [Fact, Trait(Traits.CodeFix, CompilerDiagnosticIdentifiers.MemberTypeMustMatchOverriddenMemberType)]
         public async Task TestFix()

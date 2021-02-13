@@ -7,11 +7,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.CodeFixes.Tests
 {
-    public class CS0177OutParameterMustBeAssignedToBeforeControlLeavesCurrentMethodTests : AbstractCSharpCompilerDiagnosticFixVerifier
+    public class CS0177OutParameterMustBeAssignedToBeforeControlLeavesCurrentMethodTests : AbstractCSharpCompilerDiagnosticFixVerifier<AssignDefaultValueToOutParameterCodeFixProvider>
     {
         public override string DiagnosticId { get; } = CompilerDiagnosticIdentifiers.OutParameterMustBeAssignedToBeforeControlLeavesCurrentMethod;
-
-        public override CodeFixProvider FixProvider { get; } = new AssignDefaultValueToOutParameterCodeFixProvider();
 
         [Fact, Trait(Traits.CodeFix, CompilerDiagnosticIdentifiers.OutParameterMustBeAssignedToBeforeControlLeavesCurrentMethod)]
         public async Task Test_VoidMethodWithTwoOutParameters()

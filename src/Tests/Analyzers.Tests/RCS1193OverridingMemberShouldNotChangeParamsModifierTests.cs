@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1193OverridingMemberShouldNotChangeParamsModifierTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1193OverridingMemberShouldNotChangeParamsModifierTests : AbstractCSharpDiagnosticVerifier<OverridingMemberShouldNotChangeParamsModifierAnalyzer, ParameterCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.OverridingMemberShouldNotChangeParamsModifier;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new OverridingMemberShouldNotChangeParamsModifierAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new ParameterCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.OverridingMemberShouldNotChangeParamsModifier)]
         public async Task Test_WithoutParams()

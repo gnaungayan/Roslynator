@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS9003UnnecessaryConditionalAccessTests : AbstractCSharpDiagnosticVerifier
+    public class RCS9003UnnecessaryConditionalAccessTests : AbstractCSharpDiagnosticVerifier<UnnecessaryConditionalAccessAnalyzer, ConditionalAccessExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UnnecessaryConditionalAccess;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UnnecessaryConditionalAccessAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new ConditionalAccessExpressionCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UnnecessaryConditionalAccess)]
         public async Task Test()

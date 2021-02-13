@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1190JoinStringExpressionsTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1190JoinStringExpressionsTests : AbstractCSharpDiagnosticVerifier<JoinStringExpressionsAnalyzer, BinaryExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.JoinStringExpressions;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new JoinStringExpressionsAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new BinaryExpressionCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.JoinStringExpressions)]
         public async Task Test_Literal_Regular()

@@ -11,16 +11,12 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1016ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLineTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1016ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLineTests : AbstractCSharpDiagnosticVerifier<ConvertBlockBodyToExpressionBodyOrViceVersaAnalyzer, ConvertBlockBodyToExpressionBodyOrViceVersaCodeFixProvider>
     {
         private TestOptions _options_ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine;
         private TestOptions _options_ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine;
 
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.ConvertBlockBodyToExpressionBodyOrViceVersa;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new ConvertBlockBodyToExpressionBodyOrViceVersaAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new ConvertBlockBodyToExpressionBodyOrViceVersaCodeFixProvider();
 
         public override TestOptions Options
         {

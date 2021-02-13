@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1199UnnecessaryNullCheckTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1199UnnecessaryNullCheckTests : AbstractCSharpDiagnosticVerifier<UnnecessaryNullCheckAnalyzer, BinaryExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UnnecessaryNullCheck;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UnnecessaryNullCheckAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new BinaryExpressionCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UnnecessaryNullCheck)]
         public async Task Test_HasValue_Bool()

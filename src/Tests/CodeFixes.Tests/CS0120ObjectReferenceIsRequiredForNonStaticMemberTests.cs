@@ -7,11 +7,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.CodeFixes.Tests
 {
-    public class CS0120ObjectReferenceIsRequiredForNonStaticMemberTests : AbstractCSharpCompilerDiagnosticFixVerifier
+    public class CS0120ObjectReferenceIsRequiredForNonStaticMemberTests : AbstractCSharpCompilerDiagnosticFixVerifier<ObjectReferenceIsRequiredForNonStaticMemberCodeFixProvider>
     {
         public override string DiagnosticId { get; } = CompilerDiagnosticIdentifiers.ObjectReferenceIsRequiredForNonStaticMember;
-
-        public override CodeFixProvider FixProvider { get; } = new ObjectReferenceIsRequiredForNonStaticMemberCodeFixProvider();
 
         [Fact, Trait(Traits.CodeFix, CompilerDiagnosticIdentifiers.ObjectReferenceIsRequiredForNonStaticMember)]
         public async Task Test_MakeContainingMethodNonStatic()

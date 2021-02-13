@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1045RenamePrivateFieldToCamelCaseWithUnderscoreTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1045RenamePrivateFieldToCamelCaseWithUnderscoreTests : AbstractCSharpDiagnosticVerifier<RenamePrivateFieldAnalyzer, RenamePrivateFieldToCamelCaseWithUnderscoreCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RenamePrivateFieldToCamelCaseWithUnderscore;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new RenamePrivateFieldAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new RenamePrivateFieldToCamelCaseWithUnderscoreCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.RenamePrivateFieldToCamelCaseWithUnderscore)]
         public async Task Test_Lowercase()

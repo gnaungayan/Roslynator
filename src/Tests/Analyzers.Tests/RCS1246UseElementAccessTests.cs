@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1246UseElementAccessTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1246UseElementAccessTests : AbstractCSharpDiagnosticVerifier<InvocationExpressionAnalyzer, OptimizeLinqMethodCallCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseElementAccess;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new InvocationExpressionAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new OptimizeLinqMethodCallCodeFixProvider();
 
         [Theory, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseElementAccess)]
         [InlineData("((List<object>)x).[|First()|]", "((List<object>)x)[0]")]

@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1232OrderElementsInDocumentationCommentTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1232OrderElementsInDocumentationCommentTests : AbstractCSharpDiagnosticVerifier<SingleLineDocumentationCommentTriviaAnalyzer, OrderElementsInDocumentationCommentCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.OrderElementsInDocumentationComment;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new SingleLineDocumentationCommentTriviaAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new OrderElementsInDocumentationCommentCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.OrderElementsInDocumentationComment)]
         public async Task Test_Parameters()

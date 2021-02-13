@@ -11,13 +11,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1018RemoveAccessibilityModifiersTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1018RemoveAccessibilityModifiersTests : AbstractCSharpDiagnosticVerifier<AddAccessibilityModifiersOrViceVersaAnalyzer, MemberDeclarationCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddAccessibilityModifiersOrViceVersa;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new AddAccessibilityModifiersOrViceVersaAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new MemberDeclarationCodeFixProvider();
 
         public override TestOptions Options
         {

@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1041RemoveEmptyInitializerTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1041RemoveEmptyInitializerTests : AbstractCSharpDiagnosticVerifier<RemoveEmptyInitializerAnalyzer, RemoveEmptyInitializerCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveEmptyInitializer;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new RemoveEmptyInitializerAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new RemoveEmptyInitializerCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.RemoveEmptyInitializer)]
         public async Task Test()

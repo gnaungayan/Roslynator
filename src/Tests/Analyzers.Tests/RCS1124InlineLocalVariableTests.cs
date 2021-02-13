@@ -8,17 +8,11 @@ using Roslynator.CSharp.CodeFixes;
 using Roslynator.Testing.CSharp;
 using Xunit;
 
-#pragma warning disable RCS1090
-
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1124InlineLocalVariableTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1124InlineLocalVariableTests : AbstractCSharpDiagnosticVerifier<InlineLocalVariableAnalyzer, LocalDeclarationStatementCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.InlineLocalVariable;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new InlineLocalVariableAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new LocalDeclarationStatementCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.InlineLocalVariable)]
         public async Task Test_LocalDeclaration()

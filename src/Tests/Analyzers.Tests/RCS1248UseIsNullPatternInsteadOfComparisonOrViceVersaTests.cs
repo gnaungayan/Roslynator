@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1248UseIsNullPatternInsteadOfComparisonOrViceVersaTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1248UseIsNullPatternInsteadOfComparisonOrViceVersaTests : AbstractCSharpDiagnosticVerifier<UseIsNullPatternInsteadOfComparisonOrViceVersaAnalyzer, UseIsNullPatternInsteadOfComparisonOrViceVersaCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseIsNullPatternInsteadOfComparisonOrViceVersa;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UseIsNullPatternInsteadOfComparisonOrViceVersaAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new UseIsNullPatternInsteadOfComparisonOrViceVersaCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseIsNullPatternInsteadOfComparisonOrViceVersa)]
         public async Task Test_EqualsToNull()

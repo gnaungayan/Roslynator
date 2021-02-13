@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1157CompositeEnumValueContainsUndefinedFlagTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1157CompositeEnumValueContainsUndefinedFlagTests : AbstractCSharpDiagnosticVerifier<EnumSymbolAnalyzer, CompositeEnumValueContainsUndefinedFlagCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.CompositeEnumValueContainsUndefinedFlag;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new EnumSymbolAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new CompositeEnumValueContainsUndefinedFlagCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.CompositeEnumValueContainsUndefinedFlag)]
         public async Task Test()

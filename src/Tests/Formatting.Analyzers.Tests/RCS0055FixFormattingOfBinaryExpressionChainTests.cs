@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0055FixFormattingOfBinaryExpressionChainTests : AbstractCSharpDiagnosticVerifier
+    public class RCS0055FixFormattingOfBinaryExpressionChainTests : AbstractCSharpDiagnosticVerifier<FixFormattingOfBinaryExpressionChainAnalyzer, FixFormattingOfBinaryExpressionChainCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.FixFormattingOfBinaryExpressionChain;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new FixFormattingOfBinaryExpressionChainAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new FixFormattingOfBinaryExpressionChainCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.FixFormattingOfBinaryExpressionChain)]
         public async Task Test_NotWrapped()

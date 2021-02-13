@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS9009UnknownLanguageNameTests : AbstractCSharpDiagnosticVerifier
+    public class RCS9009UnknownLanguageNameTests : AbstractCSharpDiagnosticVerifier<NamedTypeSymbolAnalyzer, AttributeArgumentCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UnknownLanguageName;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new NamedTypeSymbolAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new AttributeArgumentCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UnknownLanguageName)]
         public async Task Test_DiagnosticAnalyzer()

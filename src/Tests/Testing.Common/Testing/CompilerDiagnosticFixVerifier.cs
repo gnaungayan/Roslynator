@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
@@ -10,7 +9,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
-using Roslynator.Testing.Text;
 
 namespace Roslynator.Testing
 {
@@ -18,35 +16,34 @@ namespace Roslynator.Testing
     /// Represents a verifier for compiler diagnostic.
     /// </summary>
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
-    public abstract class CompilerDiagnosticFixVerifier : CodeVerifier
+    public abstract class CompilerDiagnosticFixVerifier<TFixProvider> : CodeVerifier
+        where TFixProvider : CodeFixProvider, new()
     {
-        private ImmutableArray<string> _fixableDiagnosticIds;
-
         internal CompilerDiagnosticFixVerifier(IAssert assert) : base(assert)
         {
         }
 
-        /// <summary>
-        /// Gets an <see cref="CodeFixProvider"/> that should fix a diagnostic.
-        /// </summary>
-        public abstract CodeFixProvider FixProvider { get; }
+        ///// <summary>
+        ///// Gets an <see cref="CodeFixProvider"/> that should fix a diagnostic.
+        ///// </summary>
+        //public abstract CodeFixProvider FixProvider { get; }
 
-        internal ImmutableArray<string> FixableDiagnosticIds
-        {
-            get
-            {
-                if (_fixableDiagnosticIds.IsDefault)
-                    ImmutableInterlocked.InterlockedInitialize(ref _fixableDiagnosticIds, FixProvider.FixableDiagnosticIds);
+        //internal ImmutableArray<string> FixableDiagnosticIds
+        //{
+        //    get
+        //    {
+        //        if (_fixableDiagnosticIds.IsDefault)
+        //            ImmutableInterlocked.InterlockedInitialize(ref _fixableDiagnosticIds, FixProvider.FixableDiagnosticIds);
 
-                return _fixableDiagnosticIds;
-            }
-        }
+        //        return _fixableDiagnosticIds;
+        //    }
+        //}
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string DebuggerDisplay
-        {
-            get { return $"{FixProvider.GetType().Name}"; }
-        }
+        //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        //private string DebuggerDisplay
+        //{
+        //    get { return $"{FixProvider.GetType().Name}"; }
+        //}
 
         /// <summary>
         /// Verifies that specified source will produce compiler diagnostic with ID specified in <see cref="DiagnosticId"/>.
@@ -66,8 +63,11 @@ namespace Roslynator.Testing
             options ??= Options;
             projectOptions ??= ProjectOptions;
 
-            if (!FixableDiagnosticIds.Contains(state.DiagnosticId))
-                Assert.True(false, $"Code fix provider '{FixProvider.GetType().Name}' cannot fix diagnostic '{state.DiagnosticId}'.");
+            TFixProvider fixProvider = Activator.CreateInstance<TFixProvider>();
+            ImmutableArray<string> fixableDiagnosticIds = fixProvider.FixableDiagnosticIds;
+
+            if (!fixableDiagnosticIds.Contains(state.DiagnosticId))
+                Assert.True(false, $"Code fix provider '{fixProvider.GetType().Name}' cannot fix diagnostic '{state.DiagnosticId}'.");
 
             using (Workspace workspace = new AdhocWorkspace())
             {
@@ -131,7 +131,7 @@ namespace Roslynator.Testing
                         },
                         CancellationToken.None);
 
-                    await FixProvider.RegisterCodeFixesAsync(context);
+                    await fixProvider.RegisterCodeFixesAsync(context);
 
                     if (action == null)
                         break;
@@ -191,6 +191,9 @@ namespace Roslynator.Testing
             options ??= Options;
             projectOptions ??= ProjectOptions;
 
+            TFixProvider fixProvider = Activator.CreateInstance<TFixProvider>();
+            ImmutableArray<string> fixableDiagnosticIds = fixProvider.FixableDiagnosticIds;
+
             using (Workspace workspace = new AdhocWorkspace())
             {
                 (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
@@ -201,7 +204,7 @@ namespace Roslynator.Testing
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    if (!FixableDiagnosticIds.Contains(diagnostic.Id))
+                    if (!fixableDiagnosticIds.Contains(diagnostic.Id))
                         continue;
 
                     var context = new CodeFixContext(
@@ -222,7 +225,7 @@ namespace Roslynator.Testing
                         },
                         CancellationToken.None);
 
-                    await FixProvider.RegisterCodeFixesAsync(context);
+                    await fixProvider.RegisterCodeFixesAsync(context);
                 }
             }
         }

@@ -10,15 +10,16 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1241ImplementNonGenericCounterpartTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1241ImplementNonGenericCounterpartTests : AbstractCSharpDiagnosticVerifier<NamedTypeSymbolAnalyzer, ImplementNonGenericCounterpartCodeFixProvider>
     {
-        private static readonly ImplementNonGenericCounterpartCodeFixProvider _fixProvider = new ImplementNonGenericCounterpartCodeFixProvider();
-
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.ImplementNonGenericCounterpart;
 
-        protected override DiagnosticAnalyzer Analyzer { get; } = new NamedTypeSymbolAnalyzer();
+        private readonly string _explicitEquivalenceKey;
 
-        public override CodeFixProvider FixProvider { get; } = _fixProvider;
+        public RCS1241ImplementNonGenericCounterpartTests()
+        {
+            _explicitEquivalenceKey = new ImplementNonGenericCounterpartCodeFixProvider().ExplicitEquivalenceKey;
+        }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ImplementNonGenericCounterpart)]
         public async Task Test_IComparable()
@@ -107,7 +108,7 @@ public abstract class Comparable : IComparable<C>, IComparable
         throw new ArgumentException("""", nameof(obj));
     }
 }
-", equivalenceKey: _fixProvider.ExplicitEquivalenceKey);
+", equivalenceKey: _explicitEquivalenceKey);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ImplementNonGenericCounterpart)]
@@ -223,7 +224,7 @@ public abstract class Comparer : IComparer<C>, IComparer
         throw new ArgumentException("""", nameof(x));
     }
 }
-", equivalenceKey: _fixProvider.ExplicitEquivalenceKey);
+", equivalenceKey: _explicitEquivalenceKey);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ImplementNonGenericCounterpart)]
@@ -367,7 +368,7 @@ public abstract class EqualityComparer : IEqualityComparer<C>, IEqualityComparer
         throw new ArgumentException("""", nameof(obj));
     }
 }
-", equivalenceKey: _fixProvider.ExplicitEquivalenceKey);
+", equivalenceKey: _explicitEquivalenceKey);
         }
     }
 }

@@ -10,14 +10,9 @@ namespace Roslynator.Testing
 {
     public abstract class ProjectOptions
     {
-        protected ProjectOptions(
-            IEnumerable<MetadataReference> metadataReferences,
-            DiagnosticSeverity allowedCompilerDiagnosticSeverity = DiagnosticSeverity.Info,
-            IEnumerable<string> allowedCompilerDiagnosticIds = null)
+        protected ProjectOptions(IEnumerable<MetadataReference> metadataReferences)
         {
             MetadataReferences = metadataReferences?.ToImmutableArray() ?? ImmutableArray<MetadataReference>.Empty;
-            AllowedCompilerDiagnosticSeverity = allowedCompilerDiagnosticSeverity;
-            AllowedCompilerDiagnosticIds = allowedCompilerDiagnosticIds?.ToImmutableArray() ?? ImmutableArray<string>.Empty;
         }
 
         public abstract string Language { get; }
@@ -45,19 +40,5 @@ namespace Roslynator.Testing
         public CompilationOptions CompilationOptions => CommonCompilationOptions;
 
         public ImmutableArray<MetadataReference> MetadataReferences { get; }
-
-        //TODO: del
-        /// <summary>
-        /// Gets a diagnostic severity that is allowed. Default value is <see cref="DiagnosticSeverity.Info"/>
-        /// which means that compiler diagnostics with severity <see cref="DiagnosticSeverity.Hidden"/>
-        /// and <see cref="DiagnosticSeverity.Info"/> are allowed.
-        /// </summary>
-        public DiagnosticSeverity AllowedCompilerDiagnosticSeverity { get; }
-
-        //TODO: del
-        /// <summary>
-        /// Gets a list of compiler diagnostic IDs that are allowed.
-        /// </summary>
-        public ImmutableArray<string> AllowedCompilerDiagnosticIds { get; }
     }
 }

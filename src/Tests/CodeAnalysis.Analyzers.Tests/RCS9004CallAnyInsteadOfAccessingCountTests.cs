@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS9004CallAnyInsteadOfAccessingCountTests : AbstractCSharpDiagnosticVerifier
+    public class RCS9004CallAnyInsteadOfAccessingCountTests : AbstractCSharpDiagnosticVerifier<SimpleMemberAccessExpressionAnalyzer, BinaryExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.CallAnyInsteadOfAccessingCount;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new SimpleMemberAccessExpressionAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new BinaryExpressionCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.CallAnyInsteadOfAccessingCount)]
         public async Task Test_SyntaxList_Equals()

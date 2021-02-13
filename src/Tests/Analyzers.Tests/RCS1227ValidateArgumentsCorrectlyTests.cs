@@ -12,13 +12,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1227ValidateArgumentsCorrectlyTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1227ValidateArgumentsCorrectlyTests : AbstractCSharpDiagnosticVerifier<ValidateArgumentsCorrectlyAnalyzer, ValidateArgumentsCorrectlyCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.ValidateArgumentsCorrectly;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new ValidateArgumentsCorrectlyAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new ValidateArgumentsCorrectlyCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ValidateArgumentsCorrectly)]
         public async Task Test()

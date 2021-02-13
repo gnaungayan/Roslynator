@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1224MakeMethodExtensionMethodTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1224MakeMethodExtensionMethodTests : AbstractCSharpDiagnosticVerifier<MakeMethodExtensionMethodAnalyzer, MemberDeclarationCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.MakeMethodExtensionMethod;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new MakeMethodExtensionMethodAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new MemberDeclarationCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.MakeMethodExtensionMethod)]
         public async Task Test_Accessibility_ImplictlyInternal()

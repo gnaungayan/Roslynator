@@ -10,6 +10,11 @@ namespace Roslynator.Testing
 {
     public class TestOptions
     {
+        internal static TestOptions Default { get; } = new TestOptions(
+            DiagnosticSeverity.Info,
+            ImmutableArray<string>.Empty,
+            ImmutableDictionary<string, ReportDiagnostic>.Empty);
+
         public TestOptions(
             DiagnosticSeverity allowedCompilerDiagnosticSeverity,
             ImmutableArray<string> allowedCompilerDiagnosticIds,

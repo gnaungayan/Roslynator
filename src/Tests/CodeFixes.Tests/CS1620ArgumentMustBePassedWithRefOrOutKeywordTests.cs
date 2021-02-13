@@ -7,11 +7,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.CodeFixes.Tests
 {
-    public class CS1620ArgumentMustBePassedWithRefOrOutKeywordTests : AbstractCSharpCompilerDiagnosticFixVerifier
+    public class CS1620ArgumentMustBePassedWithRefOrOutKeywordTests : AbstractCSharpCompilerDiagnosticFixVerifier<ArgumentCodeFixProvider>
     {
         public override string DiagnosticId { get; } = CompilerDiagnosticIdentifiers.ArgumentMustBePassedWithRefOrOutKeyword;
-
-        public override CodeFixProvider FixProvider { get; } = new ArgumentCodeFixProvider();
 
         [Fact, Trait(Traits.CodeFix, CompilerDiagnosticIdentifiers.ArgumentMustBePassedWithRefOrOutKeyword)]
         public async Task Test_Out()

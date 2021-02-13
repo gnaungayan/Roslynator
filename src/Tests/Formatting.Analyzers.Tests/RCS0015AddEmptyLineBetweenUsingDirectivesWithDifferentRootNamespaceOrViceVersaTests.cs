@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0015AddEmptyLineBetweenUsingDirectivesWithDifferentRootNamespaceOrViceVersaTests : AbstractCSharpDiagnosticVerifier
+    public class RCS0015AddEmptyLineBetweenUsingDirectivesWithDifferentRootNamespaceOrViceVersaTests : AbstractCSharpDiagnosticVerifier<AddOrRemoveEmptyLineBetweenUsingDirectiveAnalyzer, SyntaxTriviaCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddEmptyLineBetweenUsingDirectivesWithDifferentRootNamespaceOrViceVersa;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new AddOrRemoveEmptyLineBetweenUsingDirectiveAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new SyntaxTriviaCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddEmptyLineBetweenUsingDirectivesWithDifferentRootNamespaceOrViceVersa)]
         public async Task Test_AddEmptyLine_EmptyLine()

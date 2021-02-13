@@ -3,16 +3,22 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CodeFixes;
 using Roslynator.Testing.Text;
 
 namespace Roslynator.Testing.CSharp
 {
-    public abstract class AbstractCSharpCompilerDiagnosticFixVerifier : XunitCSharpCompilerDiagnosticFixVerifier
+    public abstract class AbstractCSharpCompilerDiagnosticFixVerifier<TFixProvider> : XunitCSharpCompilerDiagnosticFixVerifier<TFixProvider>
+        where TFixProvider : CodeFixProvider, new()
     {
         /// <summary>
         /// Gets an ID of a diagnostic to verify.
         /// </summary>
         public abstract string DiagnosticId { get; }
+
+        public override TestOptions Options => DefaultTestOptions.Value;
+
+        public override CSharpProjectOptions ProjectOptions => DefaultCSharpProjectOptions.Value;
 
         /// <summary>
         /// Verifies that specified source will produce compiler diagnostic with ID specified in <see cref="DiagnosticId"/>.

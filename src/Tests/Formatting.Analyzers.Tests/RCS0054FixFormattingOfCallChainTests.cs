@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0054FixFormattingOfCallChainTests : AbstractCSharpDiagnosticVerifier
+    public class RCS0054FixFormattingOfCallChainTests : AbstractCSharpDiagnosticVerifier<FixFormattingOfCallChainAnalyzer, FixFormattingOfCallChainCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.FixFormattingOfCallChain;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new FixFormattingOfCallChainAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new FixFormattingOfCallChainCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.FixFormattingOfCallChain)]
         public async Task Test_WrongIndentation()

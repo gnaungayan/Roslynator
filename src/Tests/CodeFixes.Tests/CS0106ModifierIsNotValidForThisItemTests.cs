@@ -7,11 +7,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.CodeFixes.Tests
 {
-    public class CS0106ModifierIsNotValidForThisItemTests : AbstractCSharpCompilerDiagnosticFixVerifier
+    public class CS0106ModifierIsNotValidForThisItemTests : AbstractCSharpCompilerDiagnosticFixVerifier<ModifiersCodeFixProvider>
     {
         public override string DiagnosticId { get; } = CompilerDiagnosticIdentifiers.ModifierIsNotValidForThisItem;
-
-        public override CodeFixProvider FixProvider { get; } = new ModifiersCodeFixProvider();
 
         [Fact, Trait(Traits.CodeFix, CompilerDiagnosticIdentifiers.ModifierIsNotValidForThisItem)]
         public async Task Test_VirtualModifierInStruct()

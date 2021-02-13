@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1145RemoveRedundantAsOperatorTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1145RemoveRedundantAsOperatorTests : AbstractCSharpDiagnosticVerifier<RemoveRedundantAsOperatorAnalyzer, BinaryExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveRedundantAsOperator;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new RemoveRedundantAsOperatorAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new BinaryExpressionCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.RemoveRedundantAsOperator)]
         public async Task TestNoDiagnostic_Dynamic()

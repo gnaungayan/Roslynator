@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0014AddEmptyLineBetweenSwitchSectionsTests : AbstractCSharpDiagnosticVerifier
+    public class RCS0014AddEmptyLineBetweenSwitchSectionsTests : AbstractCSharpDiagnosticVerifier<AddEmptyLineBetweenSwitchSectionsAnalyzer, SwitchSectionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddEmptyLineBetweenSwitchSections;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new AddEmptyLineBetweenSwitchSectionsAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new SwitchSectionCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddEmptyLineBetweenSwitchSections)]
         public async Task Test()

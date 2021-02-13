@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1021ConvertLambdaExpressionBodyToExpressionBodyTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1021ConvertLambdaExpressionBodyToExpressionBodyTests : AbstractCSharpDiagnosticVerifier<LambdaExpressionAnalyzer, ConvertLambdaExpressionBodyToExpressionBodyCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.ConvertLambdaExpressionBodyToExpressionBody;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new LambdaExpressionAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new ConvertLambdaExpressionBodyToExpressionBodyCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertLambdaExpressionBodyToExpressionBody)]
         public async Task Test()

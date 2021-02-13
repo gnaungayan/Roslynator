@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0011AddEmptyLineBetweenSingleLineAccessorsOrViceVersaTests : AbstractCSharpDiagnosticVerifier
+    public class RCS0011AddEmptyLineBetweenSingleLineAccessorsOrViceVersaTests : AbstractCSharpDiagnosticVerifier<AddOrRemoveEmptyLineBetweenAccessorsAnalyzer, SyntaxTriviaCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddEmptyLineBetweenSingleLineAccessorsOrViceVersa;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new AddOrRemoveEmptyLineBetweenAccessorsAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new SyntaxTriviaCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddEmptyLineBetweenSingleLineAccessorsOrViceVersa)]
         public async Task Test_Property()

@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1081SplitVariableDeclarationTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1081SplitVariableDeclarationTests : AbstractCSharpDiagnosticVerifier<SplitVariableDeclarationAnalyzer, VariableDeclarationCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.SplitVariableDeclaration;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new SplitVariableDeclarationAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new VariableDeclarationCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SplitVariableDeclaration)]
         public async Task Test_SwitchSection()

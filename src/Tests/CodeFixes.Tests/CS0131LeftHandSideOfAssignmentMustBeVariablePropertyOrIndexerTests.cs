@@ -7,11 +7,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.CodeFixes.Tests
 {
-    public class CS0131LeftHandSideOfAssignmentMustBeVariablePropertyOrIndexerTests : AbstractCSharpCompilerDiagnosticFixVerifier
+    public class CS0131LeftHandSideOfAssignmentMustBeVariablePropertyOrIndexerTests : AbstractCSharpCompilerDiagnosticFixVerifier<ExpressionCodeFixProvider>
     {
         public override string DiagnosticId { get; } = CompilerDiagnosticIdentifiers.LeftHandSideOfAssignmentMustBeVariablePropertyOrIndexer;
-
-        public override CodeFixProvider FixProvider { get; } = new ExpressionCodeFixProvider();
 
         [Fact, Trait(Traits.CodeFix, CompilerDiagnosticIdentifiers.LeftHandSideOfAssignmentMustBeVariablePropertyOrIndexer)]
         public async Task Test()

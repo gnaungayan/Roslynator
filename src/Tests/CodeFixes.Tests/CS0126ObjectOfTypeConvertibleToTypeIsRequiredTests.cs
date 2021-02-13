@@ -7,11 +7,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.CodeFixes.Tests
 {
-    public class CS0126ObjectOfTypeConvertibleToTypeIsRequiredTests : AbstractCSharpCompilerDiagnosticFixVerifier
+    public class CS0126ObjectOfTypeConvertibleToTypeIsRequiredTests : AbstractCSharpCompilerDiagnosticFixVerifier<TokenCodeFixProvider>
     {
         public override string DiagnosticId { get; } = CompilerDiagnosticIdentifiers.ObjectOfTypeConvertibleToTypeIsRequired;
-
-        public override CodeFixProvider FixProvider { get; } = new TokenCodeFixProvider();
 
         [Fact, Trait(Traits.CodeFix, CompilerDiagnosticIdentifiers.ObjectOfTypeConvertibleToTypeIsRequired)]
         public async Task Test()

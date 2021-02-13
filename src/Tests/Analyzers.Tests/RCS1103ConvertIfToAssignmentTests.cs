@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1103ConvertIfToAssignmentTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1103ConvertIfToAssignmentTests : AbstractCSharpDiagnosticVerifier<IfStatementAnalyzer, IfStatementCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.ConvertIfToAssignment;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new IfStatementAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new IfStatementCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertIfToAssignment)]
         public async Task Test_InvertCondition()

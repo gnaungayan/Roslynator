@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Threading;
@@ -10,7 +9,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeRefactorings;
 using Microsoft.CodeAnalysis.Text;
-using Roslynator.Testing.Text;
 
 namespace Roslynator.Testing
 {
@@ -18,19 +16,21 @@ namespace Roslynator.Testing
     /// Represents verifier for a refactoring that is provided by <see cref="RefactoringProvider"/>
     /// </summary>
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
-    public abstract class RefactoringVerifier : CodeVerifier
+    public abstract class RefactoringVerifier<TRefactoringProvider> : CodeVerifier
+        where TRefactoringProvider : CodeRefactoringProvider, new()
     {
         internal RefactoringVerifier(IAssert assert) : base(assert)
         {
         }
 
-        /// <summary>
-        /// <see cref="CodeRefactoringProvider"/> that provides a refactoring that should be applied.
-        /// </summary>
-        public abstract CodeRefactoringProvider RefactoringProvider { get; }
+        //TODO: del
+        ///// <summary>
+        ///// <see cref="CodeRefactoringProvider"/> that provides a refactoring that should be applied.
+        ///// </summary>
+        //public abstract CodeRefactoringProvider RefactoringProvider { get; }
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string DebuggerDisplay => RefactoringProvider.GetType().Name;
+        //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        //private string DebuggerDisplay => RefactoringProvider.GetType().Name;
 
         internal async Task VerifyRefactoringAsync(
             RefactoringTestState state,
@@ -45,6 +45,8 @@ namespace Roslynator.Testing
 
             if (!en.MoveNext())
                 Assert.True(false, "Span on which a refactoring should be invoked was not found.");
+
+            TRefactoringProvider refactoringProvider = Activator.CreateInstance<TRefactoringProvider>();
 
             do
             {
@@ -75,7 +77,7 @@ namespace Roslynator.Testing
                         },
                         CancellationToken.None);
 
-                    await RefactoringProvider.ComputeRefactoringsAsync(context);
+                    await refactoringProvider.ComputeRefactoringsAsync(context);
 
                     Assert.True(action != null, "No code refactoring has been registered.");
 
@@ -107,6 +109,8 @@ namespace Roslynator.Testing
 
             options ??= Options;
             projectOptions ??= ProjectOptions;
+
+            TRefactoringProvider refactoringProvider = Activator.CreateInstance<TRefactoringProvider>();
 
             using (Workspace workspace = new AdhocWorkspace())
             {
@@ -140,7 +144,7 @@ namespace Roslynator.Testing
                         },
                         CancellationToken.None);
 
-                    await RefactoringProvider.ComputeRefactoringsAsync(context);
+                    await refactoringProvider.ComputeRefactoringsAsync(context);
 
                 } while (en.MoveNext());
             }

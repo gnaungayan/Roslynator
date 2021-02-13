@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1096ConvertHasFlagCallToBitwiseOperationTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1096ConvertHasFlagCallToBitwiseOperationTests : AbstractCSharpDiagnosticVerifier<ConvertHasFlagCallToBitwiseOperationOrViceVersaAnalyzer, ConvertHasFlagCallToBitwiseOperationOrViceVersaCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.ConvertHasFlagCallToBitwiseOperationOrViceVersa;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new ConvertHasFlagCallToBitwiseOperationOrViceVersaAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new ConvertHasFlagCallToBitwiseOperationOrViceVersaCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertHasFlagCallToBitwiseOperationOrViceVersa)]
         public async Task Test_HasFlag()

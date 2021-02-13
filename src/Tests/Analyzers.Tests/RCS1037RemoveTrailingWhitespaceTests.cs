@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1037RemoveTrailingWhitespaceTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1037RemoveTrailingWhitespaceTests : AbstractCSharpDiagnosticVerifier<WhitespaceAnalyzer, WhitespaceTriviaCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveTrailingWhitespace;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new WhitespaceAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new WhitespaceTriviaCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.RemoveTrailingWhitespace)]
         public async Task Test()

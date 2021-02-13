@@ -11,13 +11,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1244SimplifyDefaultExpressionTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1244SimplifyDefaultExpressionTests : AbstractCSharpDiagnosticVerifier<DefaultExpressionAnalyzer, DefaultExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.SimplifyDefaultExpression;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new DefaultExpressionAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new DefaultExpressionCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyDefaultExpression)]
         public async Task Test_ParameterDefaultValue()

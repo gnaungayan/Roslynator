@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1214UnnecessaryInterpolatedStringTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1214UnnecessaryInterpolatedStringTests : AbstractCSharpDiagnosticVerifier<UnnecessaryInterpolatedStringAnalyzer, InterpolatedStringCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UnnecessaryInterpolatedString;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UnnecessaryInterpolatedStringAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new InterpolatedStringCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UnnecessaryInterpolatedString)]
         public async Task Test_StringLiteral()

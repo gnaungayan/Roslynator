@@ -11,13 +11,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1058UseCompoundAssignmentTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1058UseCompoundAssignmentTests : AbstractCSharpDiagnosticVerifier<UseCompoundAssignmentAnalyzer, UseCompoundAssignmentCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseCompoundAssignment;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UseCompoundAssignmentAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new UseCompoundAssignmentCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseCompoundAssignment)]
         public async Task Test_Property()

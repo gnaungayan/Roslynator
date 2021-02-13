@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1068SimplifyLogicalNegationTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1068SimplifyLogicalNegationTests : AbstractCSharpDiagnosticVerifier<SimplifyLogicalNegationAnalyzer, SimplifyLogicalNegationCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.SimplifyLogicalNegation;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new SimplifyLogicalNegationAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new SimplifyLogicalNegationCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyLogicalNegation)]
         public async Task Test_NotTrue()

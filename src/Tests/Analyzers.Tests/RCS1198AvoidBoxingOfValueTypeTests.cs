@@ -11,15 +11,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1198AvoidBoxingOfValueTypeTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1198AvoidBoxingOfValueTypeTests : AbstractCSharpDiagnosticVerifier<AvoidBoxingOfValueTypeAnalyzer, AvoidBoxingOfValueTypeCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AvoidBoxingOfValueType;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new AvoidBoxingOfValueTypeAnalyzer();
-
-        protected override ImmutableArray<DiagnosticAnalyzer> AdditionalAnalyzers => ImmutableArray.Create<DiagnosticAnalyzer>(new InvocationExpressionAnalyzer());
-
-        public override CodeFixProvider FixProvider { get; } = new AvoidBoxingOfValueTypeCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AvoidBoxingOfValueType)]
         public async Task Test_Interpolation()

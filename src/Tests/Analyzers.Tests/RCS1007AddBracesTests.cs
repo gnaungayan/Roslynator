@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1007AddBracesTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1007AddBracesTests : AbstractCSharpDiagnosticVerifier<AddBracesAnalyzer, AddBracesCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddBraces;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new AddBracesAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new AddBracesCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddBraces)]
         public async Task Test_If()

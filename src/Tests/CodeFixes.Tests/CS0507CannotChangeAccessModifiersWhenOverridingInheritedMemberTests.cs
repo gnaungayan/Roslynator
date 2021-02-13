@@ -7,11 +7,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.CodeFixes.Tests
 {
-    public class CS0507CannotChangeAccessModifiersWhenOverridingInheritedMemberTests : AbstractCSharpCompilerDiagnosticFixVerifier
+    public class CS0507CannotChangeAccessModifiersWhenOverridingInheritedMemberTests : AbstractCSharpCompilerDiagnosticFixVerifier<ChangeOverridingMemberAccessibilityCodeFixProvider>
     {
         public override string DiagnosticId { get; } = CompilerDiagnosticIdentifiers.CannotChangeAccessModifiersWhenOverridingInheritedMember;
-
-        public override CodeFixProvider FixProvider { get; } = new ChangeOverridingMemberAccessibilityCodeFixProvider();
 
         [Fact, Trait(Traits.CodeFix, CompilerDiagnosticIdentifiers.CannotChangeAccessModifiersWhenOverridingInheritedMember)]
         public async Task Test_AccessorWithPublicAccessibility()

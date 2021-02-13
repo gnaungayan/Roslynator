@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1044RemoveOriginalExceptionFromThrowStatementTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1044RemoveOriginalExceptionFromThrowStatementTests : AbstractCSharpDiagnosticVerifier<RemoveOriginalExceptionFromThrowStatementAnalyzer, RemoveOriginalExceptionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveOriginalExceptionFromThrowStatement;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new RemoveOriginalExceptionFromThrowStatementAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new RemoveOriginalExceptionCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.RemoveOriginalExceptionFromThrowStatement)]
         public async Task Test_OriginalExceptionUsed()

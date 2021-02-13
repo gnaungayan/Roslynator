@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1242DoNotPassNonReadOnlyStructByReadOnlyReferenceTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1242DoNotPassNonReadOnlyStructByReadOnlyReferenceTests : AbstractCSharpDiagnosticVerifier<RefReadOnlyParameterAnalyzer, ParameterCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.DoNotPassNonReadOnlyStructByReadOnlyReference;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new RefReadOnlyParameterAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new ParameterCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.DoNotPassNonReadOnlyStructByReadOnlyReference)]
         public async Task Test()

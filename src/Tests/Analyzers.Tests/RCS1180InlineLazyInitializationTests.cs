@@ -11,13 +11,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1180InlineLazyInitializationTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1180InlineLazyInitializationTests : AbstractCSharpDiagnosticVerifier<UseCoalesceExpressionAnalyzer, StatementCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.InlineLazyInitialization;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UseCoalesceExpressionAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new StatementCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.InlineLazyInitialization)]
         public async Task Test_If()

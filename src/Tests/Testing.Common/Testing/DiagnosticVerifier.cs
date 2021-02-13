@@ -12,7 +12,6 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
-using Roslynator.Testing.Text;
 
 namespace Roslynator.Testing
 {
@@ -20,91 +19,89 @@ namespace Roslynator.Testing
     /// Represents verifier for a diagnostic that is produced by <see cref="DiagnosticAnalyzer"/>.
     /// </summary>
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
-    public abstract class DiagnosticVerifier : CodeVerifier
+    public abstract class DiagnosticVerifier<TAnalyzer, TFixProvider> : CodeVerifier
+        where TAnalyzer : DiagnosticAnalyzer, new()
+        where TFixProvider : CodeFixProvider, new()
     {
-        private ImmutableArray<DiagnosticAnalyzer> _analyzers;
-        private ImmutableArray<DiagnosticDescriptor> _supportedDiagnostics;
-
         internal DiagnosticVerifier(IAssert assert) : base(assert)
         {
         }
 
-        private ImmutableArray<string> _fixableDiagnosticIds;
+        //TODO: del
+        ///// <summary>
+        ///// Gets an analyzer that can produce a diagnostic that should be verified.
+        ///// </summary>
+        //protected abstract DiagnosticAnalyzer Analyzer { get; }
 
-        /// <summary>
-        /// Gets an analyzer that can produce a diagnostic that should be verified.
-        /// </summary>
-        protected abstract DiagnosticAnalyzer Analyzer { get; }
+        ///// <summary>
+        ///// Gets a collection of additional analyzers that can produce a diagnostic that should be verified.
+        ///// Override this property if a diagnostic that should be verified can be produced by more than one analyzer.
+        ///// </summary>
+        //protected virtual ImmutableArray<DiagnosticAnalyzer> AdditionalAnalyzers { get; } = ImmutableArray<DiagnosticAnalyzer>.Empty;
 
-        /// <summary>
-        /// Gets a collection of additional analyzers that can produce a diagnostic that should be verified.
-        /// Override this property if a diagnostic that should be verified can be produced by more than one analyzer.
-        /// </summary>
-        protected virtual ImmutableArray<DiagnosticAnalyzer> AdditionalAnalyzers { get; } = ImmutableArray<DiagnosticAnalyzer>.Empty;
+        ///// <summary>
+        ///// A collection of analyzers that can produce a diagnostic that should be verified.
+        ///// </summary>
+        //public ImmutableArray<DiagnosticAnalyzer> Analyzers
+        //{
+        //    get
+        //    {
+        //        if (_analyzers.IsDefault)
+        //            ImmutableInterlocked.InterlockedInitialize(ref _analyzers, CreateAnalyzers());
 
-        /// <summary>
-        /// A collection of analyzers that can produce a diagnostic that should be verified.
-        /// </summary>
-        public ImmutableArray<DiagnosticAnalyzer> Analyzers
-        {
-            get
-            {
-                if (_analyzers.IsDefault)
-                    ImmutableInterlocked.InterlockedInitialize(ref _analyzers, CreateAnalyzers());
+        //        return _analyzers;
 
-                return _analyzers;
+        //        ImmutableArray<DiagnosticAnalyzer> CreateAnalyzers()
+        //        {
+        //            if (AdditionalAnalyzers.IsDefaultOrEmpty)
+        //            {
+        //                return ImmutableArray.Create(Analyzer);
+        //            }
+        //            else
+        //            {
+        //                ImmutableArray<DiagnosticAnalyzer>.Builder builder = ImmutableArray.CreateBuilder<DiagnosticAnalyzer>(AdditionalAnalyzers.Length + 1);
 
-                ImmutableArray<DiagnosticAnalyzer> CreateAnalyzers()
-                {
-                    if (AdditionalAnalyzers.IsDefaultOrEmpty)
-                    {
-                        return ImmutableArray.Create(Analyzer);
-                    }
-                    else
-                    {
-                        ImmutableArray<DiagnosticAnalyzer>.Builder builder = ImmutableArray.CreateBuilder<DiagnosticAnalyzer>(AdditionalAnalyzers.Length + 1);
+        //                builder.Add(Analyzer);
+        //                builder.AddRange(AdditionalAnalyzers);
 
-                        builder.Add(Analyzer);
-                        builder.AddRange(AdditionalAnalyzers);
+        //                return builder.ToImmutable();
+        //            }
+        //        }
+        //    }
+        //}
 
-                        return builder.ToImmutable();
-                    }
-                }
-            }
-        }
+        //internal ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
+        //{
+        //    get
+        //    {
+        //        if (_supportedDiagnostics.IsDefault)
+        //            ImmutableInterlocked.InterlockedInitialize(ref _supportedDiagnostics, Analyzers.SelectMany(f => f.SupportedDiagnostics).ToImmutableArray());
 
-        internal ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-        {
-            get
-            {
-                if (_supportedDiagnostics.IsDefault)
-                    ImmutableInterlocked.InterlockedInitialize(ref _supportedDiagnostics, Analyzers.SelectMany(f => f.SupportedDiagnostics).ToImmutableArray());
+        //        return _supportedDiagnostics;
+        //    }
+        //}
 
-                return _supportedDiagnostics;
-            }
-        }
+        ///// <summary>
+        ///// Gets a <see cref="CodeFixProvider"/> that can fix specified diagnostic.
+        ///// </summary>
+        //public abstract CodeFixProvider FixProvider { get; }
 
-        /// <summary>
-        /// Gets a <see cref="CodeFixProvider"/> that can fix specified diagnostic.
-        /// </summary>
-        public abstract CodeFixProvider FixProvider { get; }
+        //internal ImmutableArray<string> FixableDiagnosticIds
+        //{
+        //    get
+        //    {
+        //        if (_fixableDiagnosticIds.IsDefault)
+        //            ImmutableInterlocked.InterlockedInitialize(ref _fixableDiagnosticIds, FixProvider.FixableDiagnosticIds);
 
-        internal ImmutableArray<string> FixableDiagnosticIds
-        {
-            get
-            {
-                if (_fixableDiagnosticIds.IsDefault)
-                    ImmutableInterlocked.InterlockedInitialize(ref _fixableDiagnosticIds, FixProvider.FixableDiagnosticIds);
+        //        return _fixableDiagnosticIds;
+        //    }
+        //}
 
-                return _fixableDiagnosticIds;
-            }
-        }
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string DebuggerDisplay
-        {
-            get { return $"{string.Join(", ", Analyzers.Select(f => f.GetType().Name))}"; }
-        }
+        //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        //private string DebuggerDisplay
+        //{
+        //    get { return $"{string.Join(", ", Analyzers.Select(f => f.GetType().Name))}"; }
+        //}
 
         internal async Task VerifyDiagnosticAsync(
             DiagnosticTestState state,
@@ -116,6 +113,9 @@ namespace Roslynator.Testing
 
             options ??= Options;
             projectOptions ??= ProjectOptions;
+
+            TAnalyzer analyzer = Activator.CreateInstance<TAnalyzer>();
+            ImmutableArray<DiagnosticDescriptor> supportedDiagnostics = analyzer.SupportedDiagnostics;
 
             using (Workspace workspace = new AdhocWorkspace())
             {
@@ -129,16 +129,16 @@ namespace Roslynator.Testing
 
                 compilation = UpdateCompilation(compilation, state.Diagnostics);
 
-                ImmutableArray<Diagnostic> diagnostics = await compilation.GetAnalyzerDiagnosticsAsync(Analyzers, DiagnosticComparer.SpanStart, cancellationToken);
+                ImmutableArray<Diagnostic> diagnostics = await compilation.GetAnalyzerDiagnosticsAsync(analyzer, DiagnosticComparer.SpanStart, cancellationToken);
 
                 if (diagnostics.Length > 0
-                    && SupportedDiagnostics.Length > 1)
+                    && supportedDiagnostics.Length > 1)
                 {
-                    VerifyDiagnostics(state, FilterDiagnostics(diagnostics), cancellationToken);
+                    VerifyDiagnostics(state, analyzer, FilterDiagnostics(diagnostics), cancellationToken);
                 }
                 else
                 {
-                    VerifyDiagnostics(state, diagnostics, cancellationToken);
+                    VerifyDiagnostics(state, analyzer, diagnostics, cancellationToken);
                 }
             }
 
@@ -193,11 +193,9 @@ namespace Roslynator.Testing
             options ??= Options;
             projectOptions ??= ProjectOptions;
 
-            VerifySupportedDiagnostics(Analyzer, state.Diagnostics);
+            TAnalyzer analyzer = Activator.CreateInstance<TAnalyzer>();
 
-            //TODO: del
-            //if (SupportedDiagnostics.IndexOf(Descriptor, DiagnosticDescriptorComparer.Id) == -1)
-            //      Assert.True(false, $"Diagnostic \"{Descriptor.Id}\" is not supported by analyzer(s) {string.Join(", ", Analyzers.Select(f => f.GetType().Name))}.");
+            VerifySupportedDiagnostics(analyzer, state.Diagnostics);
 
             using (Workspace workspace = new AdhocWorkspace())
             {
@@ -211,7 +209,7 @@ namespace Roslynator.Testing
 
                 compilation = UpdateCompilation(compilation, state.Diagnostics);
 
-                ImmutableArray<Diagnostic> analyzerDiagnostics = await compilation.GetAnalyzerDiagnosticsAsync(Analyzers, DiagnosticComparer.SpanStart, cancellationToken);
+                ImmutableArray<Diagnostic> analyzerDiagnostics = await compilation.GetAnalyzerDiagnosticsAsync(analyzer, DiagnosticComparer.SpanStart, cancellationToken);
 
                 ImmutableArray<Diagnostic> actualDiagnostics = analyzerDiagnostics.Intersect(
                     state.Diagnostics,
@@ -232,14 +230,16 @@ namespace Roslynator.Testing
 
         private void VerifyDiagnostics(
             DiagnosticTestState state,
+            TAnalyzer analyzer,
             IEnumerable<Diagnostic> actualDiagnostics,
             CancellationToken cancellationToken = default)
         {
-            VerifyDiagnostics(state, actualDiagnostics, checkAdditionalLocations: false, cancellationToken: cancellationToken);
+            VerifyDiagnostics(state, analyzer, actualDiagnostics, checkAdditionalLocations: false, cancellationToken: cancellationToken);
         }
 
         private void VerifyDiagnostics(
             DiagnosticTestState state,
+            TAnalyzer analyzer,
             IEnumerable<Diagnostic> actualDiagnostics,
             bool checkAdditionalLocations,
             CancellationToken cancellationToken = default)
@@ -261,7 +261,7 @@ namespace Roslynator.Testing
 
                     Diagnostic expectedDiagnostic = expectedEnumerator.Current;
 
-                    VerifySupportedDiagnostics(Analyzer, expectedDiagnostic);
+                    VerifySupportedDiagnostics(analyzer, expectedDiagnostic);
 
                     if (actualEnumerator.MoveNext())
                     {
@@ -319,12 +319,18 @@ namespace Roslynator.Testing
             options ??= Options;
             projectOptions ??= ProjectOptions;
 
-            VerifySupportedDiagnostics(Analyzer, state.Diagnostics);
+            TAnalyzer analyzer = Activator.CreateInstance<TAnalyzer>();
+            TFixProvider fixProvider = Activator.CreateInstance<TFixProvider>();
+
+            ImmutableArray<DiagnosticDescriptor> supportedDiagnostics = analyzer.SupportedDiagnostics;
+            ImmutableArray<string> fixableDiagnosticIds = fixProvider.FixableDiagnosticIds;
+
+            VerifySupportedDiagnostics(analyzer, state.Diagnostics);
 
             foreach (Diagnostic diagnostic in state.Diagnostics)
             {
-                if (!FixableDiagnosticIds.Contains(diagnostic.Id))
-                    Assert.True(false, $"Diagnostic '{diagnostic.Id}' is not fixable by code fix provider '{FixProvider.GetType().Name}'.");
+                if (!fixableDiagnosticIds.Contains(diagnostic.Id))
+                    Assert.True(false, $"Diagnostic '{diagnostic.Id}' is not fixable by code fix provider '{fixProvider.GetType().Name}'.");
             }
 
             using (Workspace workspace = new AdhocWorkspace())
@@ -351,7 +357,7 @@ namespace Roslynator.Testing
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    ImmutableArray<Diagnostic> diagnostics = await compilation.GetAnalyzerDiagnosticsAsync(Analyzers, DiagnosticComparer.SpanStart, cancellationToken);
+                    ImmutableArray<Diagnostic> diagnostics = await compilation.GetAnalyzerDiagnosticsAsync(analyzer, DiagnosticComparer.SpanStart, cancellationToken);
 
                     int length = diagnostics.Length;
 
@@ -399,7 +405,7 @@ namespace Roslynator.Testing
                         },
                         CancellationToken.None);
 
-                    await FixProvider.RegisterCodeFixesAsync(context);
+                    await fixProvider.RegisterCodeFixesAsync(context);
 
                     if (action == null)
                         break;
@@ -450,6 +456,12 @@ namespace Roslynator.Testing
             options ??= Options;
             projectOptions ??= ProjectOptions;
 
+            TAnalyzer analyzer = Activator.CreateInstance<TAnalyzer>();
+            TFixProvider fixProvider = Activator.CreateInstance<TFixProvider>();
+
+            ImmutableArray<DiagnosticDescriptor> supportedDiagnostics = analyzer.SupportedDiagnostics;
+            ImmutableArray<string> fixableDiagnosticIds = fixProvider.FixableDiagnosticIds;
+
             using (Workspace workspace = new AdhocWorkspace())
             {
                 (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
@@ -462,7 +474,7 @@ namespace Roslynator.Testing
 
                 compilation = UpdateCompilation(compilation, state.Diagnostics);
 
-                ImmutableArray<Diagnostic> diagnostics = await compilation.GetAnalyzerDiagnosticsAsync(Analyzers, DiagnosticComparer.SpanStart, cancellationToken);
+                ImmutableArray<Diagnostic> diagnostics = await compilation.GetAnalyzerDiagnosticsAsync(analyzer, DiagnosticComparer.SpanStart, cancellationToken);
 
                 foreach (Diagnostic diagnostic in diagnostics)
                 {
@@ -471,10 +483,7 @@ namespace Roslynator.Testing
                     if (state.Diagnostics.IndexOf(diagnostic, DiagnosticComparer.Id) == -1)
                         continue;
 
-                    //if (!string.Equals(diagnostic.Id, Descripto.Id, StringComparison.Ordinal))
-                    //    continue;
-
-                    if (!FixableDiagnosticIds.Contains(diagnostic.Id))
+                    if (!fixableDiagnosticIds.Contains(diagnostic.Id))
                         continue;
 
                     var context = new CodeFixContext(
@@ -490,7 +499,7 @@ namespace Roslynator.Testing
                         },
                         CancellationToken.None);
 
-                    await FixProvider.RegisterCodeFixesAsync(context);
+                    await fixProvider.RegisterCodeFixesAsync(context);
                 }
             }
         }

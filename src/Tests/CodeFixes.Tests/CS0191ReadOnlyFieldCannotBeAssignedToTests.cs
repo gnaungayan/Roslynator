@@ -7,11 +7,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.CodeFixes.Tests
 {
-    public class CS0191ReadOnlyFieldCannotBeAssignedToTests : AbstractCSharpCompilerDiagnosticFixVerifier
+    public class CS0191ReadOnlyFieldCannotBeAssignedToTests : AbstractCSharpCompilerDiagnosticFixVerifier<ExpressionCodeFixProvider>
     {
         public override string DiagnosticId { get; } = CompilerDiagnosticIdentifiers.ReadOnlyFieldCannotBeAssignedTo;
-
-        public override CodeFixProvider FixProvider { get; } = new ExpressionCodeFixProvider();
 
         [Fact, Trait(Traits.CodeFix, CompilerDiagnosticIdentifiers.ReadOnlyFieldCannotBeAssignedTo)]
         public async Task Test()

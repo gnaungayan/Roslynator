@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0056LineIsTooLongTests : AbstractCSharpDiagnosticVerifier
+    public class RCS0056LineIsTooLongTests : AbstractCSharpDiagnosticVerifier<LineIsTooLongAnalyzer, LineIsTooLongCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.LineIsTooLong;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new LineIsTooLongAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new LineIsTooLongCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.LineIsTooLong)]
         public async Task Test_ExpressionBody_AddNewLineBeforeArrow()

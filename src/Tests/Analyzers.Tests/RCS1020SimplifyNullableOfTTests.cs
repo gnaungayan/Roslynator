@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1020SimplifyNullableOfTTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1020SimplifyNullableOfTTests : AbstractCSharpDiagnosticVerifier<SimplifyNullableOfTAnalyzer, SimplifyNullableOfTCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.SimplifyNullableOfT;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new SimplifyNullableOfTAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new SimplifyNullableOfTCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyNullableOfT)]
         public async Task Test()

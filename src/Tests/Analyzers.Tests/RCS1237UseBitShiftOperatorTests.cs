@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1237UseBitShiftOperatorTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1237UseBitShiftOperatorTests : AbstractCSharpDiagnosticVerifier<EnumSymbolAnalyzer, EnumDeclarationCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseBitShiftOperator;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new EnumSymbolAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new EnumDeclarationCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseBitShiftOperator)]
         public async Task Test()

@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0027AddNewLineBeforeBinaryOperatorInsteadOfAfterItOrViceVersaTests : AbstractCSharpDiagnosticVerifier
+    public class RCS0027AddNewLineBeforeBinaryOperatorInsteadOfAfterItOrViceVersaTests : AbstractCSharpDiagnosticVerifier<AddNewLineBeforeBinaryOperatorInsteadOfAfterItOrViceVersaAnalyzer, BinaryExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddNewLineBeforeBinaryOperatorInsteadOfAfterItOrViceVersa;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new AddNewLineBeforeBinaryOperatorInsteadOfAfterItOrViceVersaAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new BinaryExpressionCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddNewLineBeforeBinaryOperatorInsteadOfAfterItOrViceVersa)]
         public async Task Test_BeforeInsteadOfAfter()

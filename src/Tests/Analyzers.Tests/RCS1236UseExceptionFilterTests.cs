@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1236UseExceptionFilterTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1236UseExceptionFilterTests : AbstractCSharpDiagnosticVerifier<UseExceptionFilterAnalyzer, IfStatementCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseExceptionFilter;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UseExceptionFilterAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new IfStatementCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseExceptionFilter)]
         public async Task Test_IfThrow()

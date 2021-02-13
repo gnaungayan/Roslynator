@@ -6,17 +6,25 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.Testing.Text;
 
 namespace Roslynator.Testing.CSharp
 {
-    public abstract class AbstractCSharpDiagnosticVerifier : XunitCSharpDiagnosticVerifier
+    public abstract class AbstractCSharpDiagnosticVerifier<TAnalyzer, TFixProvider> : XunitCSharpDiagnosticVerifier<TAnalyzer, TFixProvider>
+        where TAnalyzer : DiagnosticAnalyzer, new()
+        where TFixProvider : CodeFixProvider, new()
     {
         /// <summary>
         /// Gets a <see cref="DiagnosticDescriptor"/> that describes diagnostic that should be verified.
         /// </summary>
         public abstract DiagnosticDescriptor Descriptor { get; }
+
+        public override TestOptions Options => DefaultTestOptions.Value;
+
+        public override CSharpProjectOptions ProjectOptions => DefaultCSharpProjectOptions.Value;
 
         /// <summary>
         /// Verifies that specified source will produce diagnostic described with see <see cref="Descriptor"/>

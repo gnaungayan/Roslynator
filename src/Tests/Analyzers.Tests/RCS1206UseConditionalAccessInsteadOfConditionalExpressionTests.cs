@@ -11,13 +11,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1206UseConditionalAccessInsteadOfConditionalExpressionTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1206UseConditionalAccessInsteadOfConditionalExpressionTests : AbstractCSharpDiagnosticVerifier<SimplifyNullCheckAnalyzer, ConditionalExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseConditionalAccessInsteadOfConditionalExpression;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new SimplifyNullCheckAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new ConditionalExpressionCodeFixProvider();
 
         [Theory, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseConditionalAccessInsteadOfConditionalExpression)]
         [InlineData("(x != null) ? x.ToString() : null", "x?.ToString()")]

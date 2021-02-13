@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1159UseGenericEventHandlerTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1159UseGenericEventHandlerTests : AbstractCSharpDiagnosticVerifier<UseGenericEventHandlerAnalyzer, TypeCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseGenericEventHandler;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UseGenericEventHandlerAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new TypeCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseGenericEventHandler)]
         public async Task Test_EventField()

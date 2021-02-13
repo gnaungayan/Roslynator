@@ -8,11 +8,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.CodeFixes.Tests
 {
-    public class CS0621VirtualOrAbstractMembersCannotBePrivateTests : AbstractCSharpCompilerDiagnosticFixVerifier
+    public class CS0621VirtualOrAbstractMembersCannotBePrivateTests : AbstractCSharpCompilerDiagnosticFixVerifier<ModifiersCodeFixProvider>
     {
         public override string DiagnosticId { get; } = CompilerDiagnosticIdentifiers.VirtualOrAbstractMembersCannotBePrivate;
-
-        public override CodeFixProvider FixProvider { get; } = new ModifiersCodeFixProvider();
 
         [Fact, Trait(Traits.CodeFix, CompilerDiagnosticIdentifiers.VirtualOrAbstractMembersCannotBePrivate)]
         public async Task Test_ChangeAccessibilityToPublic()

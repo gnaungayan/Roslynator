@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0052AddNewLineBeforeEqualsSignInsteadOfAfterItOrViceVersaTests : AbstractCSharpDiagnosticVerifier
+    public class RCS0052AddNewLineBeforeEqualsSignInsteadOfAfterItOrViceVersaTests : AbstractCSharpDiagnosticVerifier<AddNewLineBeforeEqualsSignInsteadOfAfterItOrViceVersaAnalyzer, SyntaxTokenCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddNewLineBeforeEqualsSignInsteadOfAfterItOrViceVersa;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new AddNewLineBeforeEqualsSignInsteadOfAfterItOrViceVersaAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new SyntaxTokenCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddNewLineBeforeEqualsSignInsteadOfAfterItOrViceVersa)]
         public async Task Test_LocalDeclaration_BeforeInsteadOfAfter()

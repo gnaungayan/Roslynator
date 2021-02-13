@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1010UseVarInsteadOfExplicitTypeWhenTypeIsObviousTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1010UseVarInsteadOfExplicitTypeWhenTypeIsObviousTests : AbstractCSharpDiagnosticVerifier<UseVarInsteadOfExplicitTypeWhenTypeIsObviousAnalyzer, UseVarInsteadOfExplicitTypeCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsObvious;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UseVarInsteadOfExplicitTypeWhenTypeIsObviousAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new UseVarInsteadOfExplicitTypeCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseVarInsteadOfExplicitTypeWhenTypeIsObvious)]
         public async Task Test_ObjectCreation()

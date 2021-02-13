@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0039RemoveNewLineBeforeBaseListTests : AbstractCSharpDiagnosticVerifier
+    public class RCS0039RemoveNewLineBeforeBaseListTests : AbstractCSharpDiagnosticVerifier<RemoveNewLineBeforeBaseListAnalyzer, SyntaxTriviaCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveNewLineBeforeBaseList;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new RemoveNewLineBeforeBaseListAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new SyntaxTriviaCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.RemoveNewLineBeforeBaseList)]
         public async Task Test_Class()

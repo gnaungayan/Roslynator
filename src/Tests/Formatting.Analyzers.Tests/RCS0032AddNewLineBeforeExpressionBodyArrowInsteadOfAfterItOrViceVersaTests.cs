@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0032AddNewLineBeforeExpressionBodyArrowInsteadOfAfterItOrViceVersaTests : AbstractCSharpDiagnosticVerifier
+    public class RCS0032AddNewLineBeforeExpressionBodyArrowInsteadOfAfterItOrViceVersaTests : AbstractCSharpDiagnosticVerifier<AddNewLineBeforeExpressionBodyArrowInsteadOfAfterItOrViceVersaAnalyzer, SyntaxTokenCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddNewLineBeforeExpressionBodyArrowInsteadOfAfterItOrViceVersa;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new AddNewLineBeforeExpressionBodyArrowInsteadOfAfterItOrViceVersaAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new SyntaxTokenCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddNewLineBeforeExpressionBodyArrowInsteadOfAfterItOrViceVersa)]
         public async Task Test_BeforeInsteadOfAfter()

@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1215ExpressionIsAlwaysEqualToTrueOrFalseTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1215ExpressionIsAlwaysEqualToTrueOrFalseTests : AbstractCSharpDiagnosticVerifier<BinaryOperatorAnalyzer, ExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.ExpressionIsAlwaysEqualToTrueOrFalse;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new BinaryOperatorAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new ExpressionCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ExpressionIsAlwaysEqualToTrueOrFalse)]
         public async Task Test_True()

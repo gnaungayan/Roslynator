@@ -11,13 +11,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1213RemoveUnusedMemberDeclarationTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1213RemoveUnusedMemberDeclarationTests : AbstractCSharpDiagnosticVerifier<UnusedMemberAnalyzer, UnusedMemberCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveUnusedMemberDeclaration;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UnusedMemberAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new UnusedMemberCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.RemoveUnusedMemberDeclaration)]
         public async Task Test_Method()

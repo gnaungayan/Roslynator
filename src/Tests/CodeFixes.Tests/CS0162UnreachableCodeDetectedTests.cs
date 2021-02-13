@@ -7,11 +7,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.CodeFixes.Tests
 {
-    public class CS0162UnreachableCodeDetectedTests : AbstractCSharpCompilerDiagnosticFixVerifier
+    public class CS0162UnreachableCodeDetectedTests : AbstractCSharpCompilerDiagnosticFixVerifier<UnreachableCodeCodeFixProvider>
     {
         public override string DiagnosticId { get; } = CompilerDiagnosticIdentifiers.UnreachableCodeDetected;
-
-        public override CodeFixProvider FixProvider { get; } = new UnreachableCodeCodeFixProvider();
 
         [Fact, Trait(Traits.CodeFix, CompilerDiagnosticIdentifiers.UnreachableCodeDetected)]
         public async Task Test()

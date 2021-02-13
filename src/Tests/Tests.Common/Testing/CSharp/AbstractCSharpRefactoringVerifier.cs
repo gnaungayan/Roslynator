@@ -10,11 +10,13 @@ using Roslynator.Testing.Text;
 
 namespace Roslynator.Testing.CSharp
 {
-    public abstract class AbstractCSharpRefactoringVerifier : XunitCSharpRefactoringVerifier
+    public abstract class AbstractCSharpRefactoringVerifier : XunitCSharpRefactoringVerifier<RoslynatorCodeRefactoringProvider>
     {
-        public override CodeRefactoringProvider RefactoringProvider { get; } = new RoslynatorCodeRefactoringProvider();
-
         public abstract string RefactoringId { get; }
+
+        public override TestOptions Options => DefaultTestOptions.Value;
+
+        public override CSharpProjectOptions ProjectOptions => DefaultCSharpProjectOptions.Value;
 
         /// <summary>
         /// Verifies that a refactoring can be applied on a specified source code.

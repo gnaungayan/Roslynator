@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1230UnnecessaryExplicitUseOfEnumeratorTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1230UnnecessaryExplicitUseOfEnumeratorTests : AbstractCSharpDiagnosticVerifier<UnnecessaryExplicitUseOfEnumeratorAnalyzer, UnnecessaryExplicitUseOfEnumeratorCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UnnecessaryExplicitUseOfEnumerator;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UnnecessaryExplicitUseOfEnumeratorAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new UnnecessaryExplicitUseOfEnumeratorCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UnnecessaryExplicitUseOfEnumerator)]
         public async Task Test()

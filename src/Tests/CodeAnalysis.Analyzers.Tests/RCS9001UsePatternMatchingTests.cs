@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS9001UsePatternMatchingTests : AbstractCSharpDiagnosticVerifier
+    public class RCS9001UsePatternMatchingTests : AbstractCSharpDiagnosticVerifier<UsePatternMatchingAnalyzer, UsePatternMatchingCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UsePatternMatching;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UsePatternMatchingAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new UsePatternMatchingCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UsePatternMatching)]
         public async Task Test_SwitchStatement()

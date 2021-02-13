@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1123AddParenthesesWhenNecessaryTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1123AddParenthesesWhenNecessaryTests : AbstractCSharpDiagnosticVerifier<AddParenthesesWhenNecessaryAnalyzer, AddParenthesesWhenNecessaryCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddParenthesesWhenNecessary;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new AddParenthesesWhenNecessaryAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new AddParenthesesWhenNecessaryCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddParenthesesWhenNecessary)]
         public async Task Test()

@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1104SimplifyConditionalExpressionTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1104SimplifyConditionalExpressionTests : AbstractCSharpDiagnosticVerifier<SimplifyConditionalExpressionAnalyzer, ConditionalExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.SimplifyConditionalExpression;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new SimplifyConditionalExpressionAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new ConditionalExpressionCodeFixProvider();
 
         [Theory, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyConditionalExpression)]
         [InlineData("f ? true : false", "f")]

@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1192UnnecessaryUsageOfVerbatimStringLiteralTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1192UnnecessaryUsageOfVerbatimStringLiteralTests : AbstractCSharpDiagnosticVerifier<UnnecessaryUsageOfVerbatimStringLiteralAnalyzer, UnnecessaryUsageOfVerbatimStringLiteralCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UnnecessaryUsageOfVerbatimStringLiteral;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UnnecessaryUsageOfVerbatimStringLiteralAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new UnnecessaryUsageOfVerbatimStringLiteralCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UnnecessaryUsageOfVerbatimStringLiteral)]
         public async Task Test_EmptyStringLiteral()

@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1202AvoidNullReferenceExceptionTests2 : AbstractCSharpDiagnosticVerifier
+    public class RCS1202AvoidNullReferenceExceptionTests2 : AbstractCSharpDiagnosticVerifier<AvoidNullReferenceExceptionAnalyzer, AvoidNullReferenceExceptionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AvoidNullReferenceException;
-
-        public override CodeFixProvider FixProvider { get; } = new AvoidNullReferenceExceptionCodeFixProvider();
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new AvoidNullReferenceExceptionAnalyzer();
 
         [Theory, Trait(Traits.Analyzer, DiagnosticIdentifiers.AvoidNullReferenceException)]
         [InlineData("(x as string)[|.|]ToString()", "(x as string)?.ToString()")]

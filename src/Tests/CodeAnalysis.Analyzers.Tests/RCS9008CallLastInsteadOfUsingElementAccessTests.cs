@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS9008CallLastInsteadOfUsingElementAccessTests : AbstractCSharpDiagnosticVerifier
+    public class RCS9008CallLastInsteadOfUsingElementAccessTests : AbstractCSharpDiagnosticVerifier<ElementAccessExpressionAnalyzer, ElementAccessExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.CallLastInsteadOfUsingElementAccess;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new ElementAccessExpressionAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new ElementAccessExpressionCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.CallLastInsteadOfUsingElementAccess)]
         public async Task Test_SyntaxList()

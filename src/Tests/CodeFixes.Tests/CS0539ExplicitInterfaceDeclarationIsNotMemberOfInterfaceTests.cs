@@ -7,11 +7,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.CodeFixes.Tests
 {
-    public class CS0539ExplicitInterfaceDeclarationIsNotMemberOfInterfaceTests : AbstractCSharpCompilerDiagnosticFixVerifier
+    public class CS0539ExplicitInterfaceDeclarationIsNotMemberOfInterfaceTests : AbstractCSharpCompilerDiagnosticFixVerifier<MemberDeclarationCodeFixProvider>
     {
         public override string DiagnosticId { get; } = CompilerDiagnosticIdentifiers.ExplicitInterfaceDeclarationIsNotMemberOfInterface;
-
-        public override CodeFixProvider FixProvider { get; } = new MemberDeclarationCodeFixProvider();
 
         [Fact, Trait(Traits.CodeFix, CompilerDiagnosticIdentifiers.ExplicitInterfaceDeclarationIsNotMemberOfInterface)]
         public async Task Test_Method_ExplicitlyImplemented()

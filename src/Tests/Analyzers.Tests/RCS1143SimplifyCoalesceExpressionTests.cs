@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1143SimplifyCoalesceExpressionTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1143SimplifyCoalesceExpressionTests : AbstractCSharpDiagnosticVerifier<SimplifyCoalesceExpressionAnalyzer, BinaryExpressionCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.SimplifyCoalesceExpression;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new SimplifyCoalesceExpressionAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new BinaryExpressionCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyCoalesceExpression)]
         public async Task Test_DefaultOfNullableType()

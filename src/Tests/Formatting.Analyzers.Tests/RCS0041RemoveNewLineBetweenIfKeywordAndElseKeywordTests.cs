@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0041RemoveNewLineBetweenIfKeywordAndElseKeywordTests : AbstractCSharpDiagnosticVerifier
+    public class RCS0041RemoveNewLineBetweenIfKeywordAndElseKeywordTests : AbstractCSharpDiagnosticVerifier<RemoveNewLineBetweenIfKeywordAndElseKeywordAnalyzer, SyntaxTriviaCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.RemoveNewLineBetweenIfKeywordAndElseKeyword;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new RemoveNewLineBetweenIfKeywordAndElseKeywordAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new SyntaxTriviaCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.RemoveNewLineBetweenIfKeywordAndElseKeyword)]
         public async Task Test()

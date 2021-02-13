@@ -7,11 +7,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.CodeFixes.Tests
 {
-    public class CS1741RefOrOutParameterCannotHaveDefaultValueTests : AbstractCSharpCompilerDiagnosticFixVerifier
+    public class CS1741RefOrOutParameterCannotHaveDefaultValueTests : AbstractCSharpCompilerDiagnosticFixVerifier<ParameterCodeFixProvider>
     {
         public override string DiagnosticId { get; } = CompilerDiagnosticIdentifiers.RefOrOutParameterCannotHaveDefaultValue;
-
-        public override CodeFixProvider FixProvider { get; } = new ParameterCodeFixProvider();
 
         [Fact, Trait(Traits.CodeFix, CompilerDiagnosticIdentifiers.RefOrOutParameterCannotHaveDefaultValue)]
         public async Task Test_Out()

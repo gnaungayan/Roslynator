@@ -11,13 +11,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1146UseConditionalAccessTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1146UseConditionalAccessTests : AbstractCSharpDiagnosticVerifier<UseConditionalAccessAnalyzer, UseConditionalAccessCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseConditionalAccess;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new UseConditionalAccessAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new UseConditionalAccessCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseConditionalAccess)]
         public async Task Test_IfStatement_ReferenceType()

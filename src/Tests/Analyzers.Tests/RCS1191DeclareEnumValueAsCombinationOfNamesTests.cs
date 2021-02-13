@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1191DeclareEnumValueAsCombinationOfNamesTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1191DeclareEnumValueAsCombinationOfNamesTests : AbstractCSharpDiagnosticVerifier<EnumSymbolAnalyzer, EnumMemberDeclarationCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.DeclareEnumValueAsCombinationOfNames;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new EnumSymbolAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new EnumMemberDeclarationCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.DeclareEnumValueAsCombinationOfNames)]
         public async Task Test()

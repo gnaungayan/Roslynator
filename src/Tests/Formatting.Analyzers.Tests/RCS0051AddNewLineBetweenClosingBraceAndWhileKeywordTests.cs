@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.Formatting.CSharp.Tests
 {
-    public class RCS0051AddNewLineBetweenClosingBraceAndWhileKeywordTests : AbstractCSharpDiagnosticVerifier
+    public class RCS0051AddNewLineBetweenClosingBraceAndWhileKeywordTests : AbstractCSharpDiagnosticVerifier<AddNewLineBetweenClosingBraceAndWhileKeywordOrViceVersaAnalyzer, SyntaxTokenCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddNewLineBetweenClosingBraceAndWhileKeywordOrViceVersa;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new AddNewLineBetweenClosingBraceAndWhileKeywordOrViceVersaAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new SyntaxTokenCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddNewLineBetweenClosingBraceAndWhileKeywordOrViceVersa)]
         public async Task Test_AddNewLine()

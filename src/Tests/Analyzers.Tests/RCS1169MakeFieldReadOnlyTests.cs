@@ -11,13 +11,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1169MakeFieldReadOnlyTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1169MakeFieldReadOnlyTests : AbstractCSharpDiagnosticVerifier<MakeMemberReadOnlyAnalyzer, MemberDeclarationCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.MakeFieldReadOnly;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new MakeMemberReadOnlyAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new MemberDeclarationCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.MakeFieldReadOnly)]
         public async Task Test_InstanceField()

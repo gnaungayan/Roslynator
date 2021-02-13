@@ -11,13 +11,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1207ConvertMethodGroupToAnonymousFunctionTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1207ConvertMethodGroupToAnonymousFunctionTests : AbstractCSharpDiagnosticVerifier<ConvertAnonymousFunctionToMethodGroupOrViceVersaAnalyzer, ConvertAnonymousFunctionToMethodGroupOrViceVersaCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.ConvertAnonymousFunctionToMethodGroupOrViceVersa;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new ConvertAnonymousFunctionToMethodGroupOrViceVersaAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new ConvertAnonymousFunctionToMethodGroupOrViceVersaCodeFixProvider();
 
         public override TestOptions Options
         {

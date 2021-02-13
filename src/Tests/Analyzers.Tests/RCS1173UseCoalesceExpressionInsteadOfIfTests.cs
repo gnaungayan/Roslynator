@@ -10,13 +10,9 @@ using Xunit;
 
 namespace Roslynator.CSharp.Analysis.Tests
 {
-    public class RCS1173UseCoalesceExpressionInsteadOfIfTests : AbstractCSharpDiagnosticVerifier
+    public class RCS1173UseCoalesceExpressionInsteadOfIfTests : AbstractCSharpDiagnosticVerifier<IfStatementAnalyzer, IfStatementCodeFixProvider>
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseCoalesceExpressionInsteadOfIf;
-
-        protected override DiagnosticAnalyzer Analyzer { get; } = new IfStatementAnalyzer();
-
-        public override CodeFixProvider FixProvider { get; } = new IfStatementCodeFixProvider();
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseCoalesceExpressionInsteadOfIf)]
         public async Task Test_IfElseToAssignment()
