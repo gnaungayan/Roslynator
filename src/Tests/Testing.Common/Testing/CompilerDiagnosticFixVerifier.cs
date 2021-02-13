@@ -27,11 +27,6 @@ namespace Roslynator.Testing
         }
 
         /// <summary>
-        /// Gets an ID of a diagnostic to verify.
-        /// </summary>
-        public abstract string DiagnosticId { get; }
-
-        /// <summary>
         /// Gets an <see cref="CodeFixProvider"/> that should fix a diagnostic.
         /// </summary>
         public abstract CodeFixProvider FixProvider { get; }
@@ -50,7 +45,7 @@ namespace Roslynator.Testing
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string DebuggerDisplay
         {
-            get { return $"{DiagnosticId} {FixProvider.GetType().Name}"; }
+            get { return $"{FixProvider.GetType().Name}"; }
         }
 
         /// <summary>
@@ -71,8 +66,8 @@ namespace Roslynator.Testing
             options ??= Options;
             projectOptions ??= ProjectOptions;
 
-            if (!FixableDiagnosticIds.Contains(DiagnosticId))
-                Assert.True(false, $"Code fix provider '{FixProvider.GetType().Name}' cannot fix diagnostic '{DiagnosticId}'.");
+            if (!FixableDiagnosticIds.Contains(state.DiagnosticId))
+                Assert.True(false, $"Code fix provider '{FixProvider.GetType().Name}' cannot fix diagnostic '{state.DiagnosticId}'.");
 
             using (Workspace workspace = new AdhocWorkspace())
             {
@@ -164,7 +159,7 @@ namespace Roslynator.Testing
 
                 foreach (Diagnostic diagnostic in diagnostics)
                 {
-                    if (string.Equals(diagnostic.Id, DiagnosticId, StringComparison.Ordinal))
+                    if (string.Equals(diagnostic.Id, state.DiagnosticId, StringComparison.Ordinal))
                     {
                         if (match == null
                             || diagnostic.Location.SourceSpan.Start > match.Location.SourceSpan.Start)

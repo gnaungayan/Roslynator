@@ -10,6 +10,11 @@ namespace Roslynator.Testing.CSharp
     public abstract class AbstractCSharpCompilerDiagnosticFixVerifier : XunitCSharpCompilerDiagnosticFixVerifier
     {
         /// <summary>
+        /// Gets an ID of a diagnostic to verify.
+        /// </summary>
+        public abstract string DiagnosticId { get; }
+
+        /// <summary>
         /// Verifies that specified source will produce compiler diagnostic with ID specified in <see cref="DiagnosticId"/>.
         /// </summary>
         /// <param name="source">Source text that contains placeholder <c>[||]</c> to be replaced with <paramref name="sourceData"/> and <paramref name="expectedData"/>.</param>
@@ -33,6 +38,7 @@ namespace Roslynator.Testing.CSharp
             TextAndSpans result = TextParser.FindSpansAndReplace(source, sourceData, expectedData);
 
             var state = new CompilerDiagnosticFixTestState(
+                DiagnosticId,
                 result.Text,
                 result.Expected,
                 AdditionalFile.CreateRange(additionalFiles),
@@ -68,6 +74,7 @@ namespace Roslynator.Testing.CSharp
             TextAndSpans result = TextParser.FindSpansAndRemove(source);
 
             var state = new CompilerDiagnosticFixTestState(
+                DiagnosticId,
                 result.Text,
                 expected,
                 AdditionalFile.CreateRange(additionalFiles),
@@ -101,6 +108,7 @@ namespace Roslynator.Testing.CSharp
             TextAndSpans result = TextParser.FindSpansAndRemove(source);
 
             var state = new CompilerDiagnosticFixTestState(
+                DiagnosticId,
                 result.Text,
                 result.Expected,
                 AdditionalFile.CreateRange(additionalFiles),

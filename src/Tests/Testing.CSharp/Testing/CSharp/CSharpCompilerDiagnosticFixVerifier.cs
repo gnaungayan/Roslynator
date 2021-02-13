@@ -11,7 +11,7 @@ namespace Roslynator.Testing.CSharp
         /// Initializes a new instance of <see cref="CSharpCompilerDiagnosticFixVerifier"/>.
         /// </summary>
         /// <param name="assert"></param>
-        protected CSharpCompilerDiagnosticFixVerifier(IAssert assert) : base(assert)
+        internal CSharpCompilerDiagnosticFixVerifier(IAssert assert) : base(assert)
         {
         }
 

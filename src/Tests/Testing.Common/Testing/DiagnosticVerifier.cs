@@ -32,11 +32,6 @@ namespace Roslynator.Testing
         private ImmutableArray<string> _fixableDiagnosticIds;
 
         /// <summary>
-        /// Gets a <see cref="DiagnosticDescriptor"/> that describes diagnostic that should be verified.
-        /// </summary>
-        public abstract DiagnosticDescriptor Descriptor { get; }
-
-        /// <summary>
         /// Gets an analyzer that can produce a diagnostic that should be verified.
         /// </summary>
         protected abstract DiagnosticAnalyzer Analyzer { get; }
@@ -105,11 +100,10 @@ namespace Roslynator.Testing
             }
         }
 
-
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string DebuggerDisplay
         {
-            get { return $"{Descriptor.Id} {string.Join(", ", Analyzers.Select(f => f.GetType().Name))}"; }
+            get { return $"{string.Join(", ", Analyzers.Select(f => f.GetType().Name))}"; }
         }
 
         internal async Task VerifyDiagnosticAsync(
@@ -133,7 +127,7 @@ namespace Roslynator.Testing
 
                 VerifyCompilerDiagnostics(compilerDiagnostics, options);
 
-                compilation = UpdateCompilation(compilation);
+                compilation = UpdateCompilation(compilation, state.Diagnostics);
 
                 ImmutableArray<Diagnostic> diagnostics = await compilation.GetAnalyzerDiagnosticsAsync(Analyzers, DiagnosticComparer.SpanStart, cancellationToken);
 
@@ -168,10 +162,15 @@ namespace Roslynator.Testing
             }
         }
 
-        private protected Compilation UpdateCompilation(Compilation compilation)
+        private Compilation UpdateCompilation(
+            Compilation compilation,
+            ImmutableArray<Diagnostic> diagnostics)
         {
-            if (!Descriptor.IsEnabledByDefault)
-                compilation = compilation.EnsureEnabled(Descriptor);
+            foreach (Diagnostic diagnostic in diagnostics)
+            {
+                if (!diagnostic.Descriptor.IsEnabledByDefault)
+                    compilation = compilation.EnsureEnabled(diagnostic.Descriptor);
+            }
 
             return compilation;
         }
@@ -194,8 +193,11 @@ namespace Roslynator.Testing
             options ??= Options;
             projectOptions ??= ProjectOptions;
 
-            if (SupportedDiagnostics.IndexOf(Descriptor, DiagnosticDescriptorComparer.Id) == -1)
-                  Assert.True(false, $"Diagnostic \"{Descriptor.Id}\" is not supported by analyzer(s) {string.Join(", ", Analyzers.Select(f => f.GetType().Name))}.");
+            VerifySupportedDiagnostics(Analyzer, state.Diagnostics);
+
+            //TODO: del
+            //if (SupportedDiagnostics.IndexOf(Descriptor, DiagnosticDescriptorComparer.Id) == -1)
+            //      Assert.True(false, $"Diagnostic \"{Descriptor.Id}\" is not supported by analyzer(s) {string.Join(", ", Analyzers.Select(f => f.GetType().Name))}.");
 
             using (Workspace workspace = new AdhocWorkspace())
             {
@@ -207,15 +209,24 @@ namespace Roslynator.Testing
 
                 VerifyCompilerDiagnostics(compilerDiagnostics, options);
 
-                compilation = UpdateCompilation(compilation);
+                compilation = UpdateCompilation(compilation, state.Diagnostics);
 
                 ImmutableArray<Diagnostic> analyzerDiagnostics = await compilation.GetAnalyzerDiagnosticsAsync(Analyzers, DiagnosticComparer.SpanStart, cancellationToken);
 
-                foreach (Diagnostic diagnostic in analyzerDiagnostics)
-                {
-                    if (string.Equals(diagnostic.Id, Descriptor.Id, StringComparison.Ordinal))
-                        Assert.True(false, $"No diagnostic expected{analyzerDiagnostics.Where(f => string.Equals(f.Id, Descriptor.Id, StringComparison.Ordinal)).ToDebugString()}");
-                }
+                ImmutableArray<Diagnostic> actualDiagnostics = analyzerDiagnostics.Intersect(
+                    state.Diagnostics,
+                    DiagnosticComparer.Id)
+                    .ToImmutableArray();
+
+                if (!actualDiagnostics.IsEmpty)
+                    Assert.True(false, $"No diagnostic expected{actualDiagnostics.ToDebugString()}");
+
+                //TODO: del
+                //foreach (Diagnostic diagnostic in analyzerDiagnostics)
+                //{
+                //    if (string.Equals(diagnostic.Id, Descripto.Id, StringComparison.Ordinal))
+                //        Assert.True(false, $"No diagnostic expected{analyzerDiagnostics.Where(f => string.Equals(f.Id, Descripto.Id, StringComparison.Ordinal)).ToDebugString()}");
+                //}
             }
         }
 
@@ -250,8 +261,7 @@ namespace Roslynator.Testing
 
                     Diagnostic expectedDiagnostic = expectedEnumerator.Current;
 
-                    if (SupportedDiagnostics.IndexOf(expectedDiagnostic.Descriptor, DiagnosticDescriptorComparer.Id) == -1)
-                        Assert.True(false, $"Diagnostic \"{expectedDiagnostic.Id}\" is not supported by analyzer(s) {string.Join(", ", Analyzers.Select(f => f.GetType().Name))}.");
+                    VerifySupportedDiagnostics(Analyzer, expectedDiagnostic);
 
                     if (actualEnumerator.MoveNext())
                     {
@@ -309,11 +319,13 @@ namespace Roslynator.Testing
             options ??= Options;
             projectOptions ??= ProjectOptions;
 
-            if (!SupportedDiagnostics.Contains(Descriptor, DiagnosticDescriptorComparer.Id))
-                Assert.True(false, $"Diagnostic '{Descriptor.Id}' is not supported by analyzer(s) {string.Join(", ", Analyzers.Select(f => f.GetType().Name))}.");
+            VerifySupportedDiagnostics(Analyzer, state.Diagnostics);
 
-            if (!FixableDiagnosticIds.Contains(Descriptor.Id))
-                Assert.True(false, $"Diagnostic '{Descriptor.Id}' is not fixable by code fix provider '{FixProvider.GetType().Name}'.");
+            foreach (Diagnostic diagnostic in state.Diagnostics)
+            {
+                if (!FixableDiagnosticIds.Contains(diagnostic.Id))
+                    Assert.True(false, $"Diagnostic '{diagnostic.Id}' is not fixable by code fix provider '{FixProvider.GetType().Name}'.");
+            }
 
             using (Workspace workspace = new AdhocWorkspace())
             {
@@ -329,7 +341,7 @@ namespace Roslynator.Testing
 
                 VerifyCompilerDiagnostics(compilerDiagnostics, options);
 
-                compilation = UpdateCompilation(compilation);
+                compilation = UpdateCompilation(compilation, state.Diagnostics);
 
                 ImmutableArray<Diagnostic> previousDiagnostics = ImmutableArray<Diagnostic>.Empty;
 
@@ -347,7 +359,7 @@ namespace Roslynator.Testing
                         break;
 
                     if (length == previousDiagnostics.Length
-                        && !diagnostics.Except(previousDiagnostics, DiagnosticDeepEqualityComparer.Instance).Any())
+                        && diagnostics.Intersect(previousDiagnostics, DiagnosticDeepEqualityComparer.Instance).Count() == length)
                     {
                         Assert.True(false, "Same diagnostics returned before and after the fix was applied.");
                     }
@@ -355,11 +367,17 @@ namespace Roslynator.Testing
                     Diagnostic diagnostic = null;
                     foreach (Diagnostic d in diagnostics)
                     {
-                        if (d.Id == Descriptor.Id)
+                        foreach (Diagnostic d2 in state.Diagnostics)
                         {
-                            diagnostic = d;
-                            break;
+                            if (d.Id == d2.Id)
+                            {
+                                diagnostic = d;
+                                break;
+                            }
                         }
+
+                        if (diagnostic != null)
+                            break;
                     }
 
                     if (diagnostic == null)
@@ -398,7 +416,7 @@ namespace Roslynator.Testing
 
                     VerifyNoNewCompilerDiagnostics(compilerDiagnostics, newCompilerDiagnostics, options);
 
-                    compilation = UpdateCompilation(compilation);
+                    compilation = UpdateCompilation(compilation, state.Diagnostics);
 
                     previousDiagnostics = diagnostics;
                 }
@@ -442,7 +460,7 @@ namespace Roslynator.Testing
 
                 VerifyCompilerDiagnostics(compilerDiagnostics, options);
 
-                compilation = UpdateCompilation(compilation);
+                compilation = UpdateCompilation(compilation, state.Diagnostics);
 
                 ImmutableArray<Diagnostic> diagnostics = await compilation.GetAnalyzerDiagnosticsAsync(Analyzers, DiagnosticComparer.SpanStart, cancellationToken);
 
@@ -450,8 +468,11 @@ namespace Roslynator.Testing
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    if (!string.Equals(diagnostic.Id, Descriptor.Id, StringComparison.Ordinal))
+                    if (state.Diagnostics.IndexOf(diagnostic, DiagnosticComparer.Id) == -1)
                         continue;
+
+                    //if (!string.Equals(diagnostic.Id, Descripto.Id, StringComparison.Ordinal))
+                    //    continue;
 
                     if (!FixableDiagnosticIds.Contains(diagnostic.Id))
                         continue;
@@ -549,25 +570,6 @@ namespace Roslynator.Testing
             {
                 return $"\r\n\r\nExpected diagnostic:\r\n{expectedDiagnostic}\r\n\r\nActual diagnostic:\r\n{actualDiagnostic}\r\n";
             }
-        }
-
-        internal Diagnostic CreateDiagnostic(string source, TextSpan span)
-        {
-            LinePositionSpan lineSpan = span.ToLinePositionSpan(source);
-
-            return CreateDiagnostic(span, lineSpan);
-        }
-
-        internal Diagnostic CreateDiagnostic(LinePositionSpanInfo lineSpanInfo)
-        {
-            return CreateDiagnostic(lineSpanInfo.Span, lineSpanInfo.LineSpan);
-        }
-
-        internal Diagnostic CreateDiagnostic(TextSpan span, LinePositionSpan lineSpan)
-        {
-            Location location = Location.Create(ProjectOptions.DefaultDocumentName, span, lineSpan);
-
-            return Diagnostic.Create(Descriptor, location);
         }
     }
 }

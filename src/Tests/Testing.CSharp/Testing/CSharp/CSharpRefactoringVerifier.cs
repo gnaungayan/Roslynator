@@ -11,7 +11,7 @@ namespace Roslynator.Testing.CSharp
         /// Initializes a new instance of <see cref="CSharpRefactoringVerifier"/>.
         /// </summary>
         /// <param name="assert"></param>
-        protected CSharpRefactoringVerifier(IAssert assert) : base(assert)
+        internal CSharpRefactoringVerifier(IAssert assert) : base(assert)
         {
         }
 

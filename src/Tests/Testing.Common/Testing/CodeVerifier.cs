@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.Testing.Text;
 
 #pragma warning disable RCS1223
@@ -37,7 +38,7 @@ namespace Roslynator.Testing
         /// <summary>
         /// Gets a test assertions.
         /// </summary>
-        protected IAssert Assert { get; }
+        internal IAssert Assert { get; }
 
         internal TextParser TextParser { get; }
 
@@ -185,6 +186,22 @@ namespace Roslynator.Testing
                 .Single()
                 .ChangedSolution
                 .GetDocument(document.Id);
+        }
+
+        internal void VerifySupportedDiagnostics(
+            DiagnosticAnalyzer analyzer,
+            ImmutableArray<Diagnostic> diagnostics)
+        {
+            foreach (Diagnostic diagnostic in diagnostics)
+            {
+                VerifySupportedDiagnostics(analyzer, diagnostic);
+            }
+        }
+
+        internal void VerifySupportedDiagnostics(DiagnosticAnalyzer analyzer, Diagnostic diagnostic)
+        {
+            if (analyzer.SupportedDiagnostics.IndexOf(diagnostic.Descriptor, DiagnosticDescriptorComparer.Id) == -1)
+                Assert.True(false, $"Diagnostic \"{diagnostic.Id}\" is not supported by analyzer '{analyzer.GetType().Name}'.");
         }
     }
 }

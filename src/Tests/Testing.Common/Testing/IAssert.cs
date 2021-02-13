@@ -5,7 +5,7 @@ namespace Roslynator.Testing
     /// <summary>
     /// Represents an abstraction for test assertions.
     /// </summary>
-    public interface IAssert
+    internal interface IAssert
     {
         /// <summary>
         /// Compares specified values and throws error if they are not equal.

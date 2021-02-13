@@ -46,6 +46,7 @@ namespace Roslynator.Testing
 
         public ImmutableArray<MetadataReference> MetadataReferences { get; }
 
+        //TODO: del
         /// <summary>
         /// Gets a diagnostic severity that is allowed. Default value is <see cref="DiagnosticSeverity.Info"/>
         /// which means that compiler diagnostics with severity <see cref="DiagnosticSeverity.Hidden"/>
@@ -53,6 +54,7 @@ namespace Roslynator.Testing
         /// </summary>
         public DiagnosticSeverity AllowedCompilerDiagnosticSeverity { get; }
 
+        //TODO: del
         /// <summary>
         /// Gets a list of compiler diagnostic IDs that are allowed.
         /// </summary>

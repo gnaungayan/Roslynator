@@ -14,6 +14,11 @@ namespace Roslynator.Testing.CSharp
     public abstract class AbstractCSharpDiagnosticVerifier : XunitCSharpDiagnosticVerifier
     {
         /// <summary>
+        /// Gets a <see cref="DiagnosticDescriptor"/> that describes diagnostic that should be verified.
+        /// </summary>
+        public abstract DiagnosticDescriptor Descriptor { get; }
+
+        /// <summary>
         /// Verifies that specified source will produce diagnostic described with see <see cref="Descriptor"/>
         /// </summary>
         /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
@@ -454,6 +459,25 @@ namespace Roslynator.Testing.CSharp
                 options: options,
                 projectOptions: projectOptions,
                 cancellationToken: cancellationToken);
+        }
+
+        internal Diagnostic CreateDiagnostic(string source, TextSpan span)
+        {
+            LinePositionSpan lineSpan = span.ToLinePositionSpan(source);
+
+            return CreateDiagnostic(span, lineSpan);
+        }
+
+        internal Diagnostic CreateDiagnostic(LinePositionSpanInfo lineSpanInfo)
+        {
+            return CreateDiagnostic(lineSpanInfo.Span, lineSpanInfo.LineSpan);
+        }
+
+        internal Diagnostic CreateDiagnostic(TextSpan span, LinePositionSpan lineSpan)
+        {
+            Location location = Location.Create(ProjectOptions.DefaultDocumentName, span, lineSpan);
+
+            return Diagnostic.Create(Descriptor, location);
         }
     }
 }
