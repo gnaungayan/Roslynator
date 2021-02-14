@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 
 #pragma warning disable RCS1223
 
@@ -11,39 +12,40 @@ namespace Roslynator.Testing
 {
     public sealed class DiagnosticTestState : TestState
     {
-        internal static DiagnosticTestState Empty { get; } = new DiagnosticTestState(null, null, null);
+        internal static DiagnosticTestState Empty { get; } = new DiagnosticTestState(null, null, null, null);
 
-        public DiagnosticTestState(string source, string expectedSource, IEnumerable<Diagnostic> diagnostics)
-            : this(source, expectedSource, diagnostics, null, null, null, null, null)
+        public DiagnosticTestState(
+            string source,
+            string expectedSource,
+            DiagnosticDescriptor descriptor,
+            IEnumerable<TextSpan> spans)
+            : this(source, expectedSource, descriptor, spans, null, null, null, null, null)
         {
         }
 
         public DiagnosticTestState(
             string source,
             string expectedSource,
-            IEnumerable<Diagnostic> diagnostics,
+            DiagnosticDescriptor descriptor,
+            IEnumerable<TextSpan> spans,
             IEnumerable<AdditionalFile> additionalFiles,
             string message,
             IFormatProvider formatProvider,
             string codeActionTitle,
             string equivalenceKey) : base(source, expectedSource, additionalFiles, codeActionTitle, equivalenceKey)
         {
-            Diagnostics = diagnostics?.ToImmutableArray() ?? ImmutableArray<Diagnostic>.Empty;
+            Descriptor = descriptor;
+            Spans = spans?.ToImmutableArray() ?? ImmutableArray<TextSpan>.Empty;
             Message = message;
             FormatProvider = formatProvider;
         }
-
-        public ImmutableArray<Diagnostic> Diagnostics { get; private set; }
-
-        public string Message { get; private set; }
-
-        public IFormatProvider FormatProvider { get; private set; }
 
         private DiagnosticTestState(DiagnosticTestState other)
             : this(
                 source: other.Source,
                 expectedSource: other.ExpectedSource,
-                diagnostics: other.Diagnostics,
+                descriptor: other.Descriptor,
+                spans: other.Spans,
                 additionalFiles: other.AdditionalFiles,
                 message: other.Message,
                 formatProvider: other.FormatProvider,
@@ -52,10 +54,28 @@ namespace Roslynator.Testing
         {
         }
 
+        public DiagnosticDescriptor Descriptor { get; private set; }
+
+        public ImmutableArray<TextSpan> Spans { get; private set; }
+
+        public string Message { get; private set; }
+
+        public IFormatProvider FormatProvider { get; private set; }
+
+        internal ImmutableArray<Diagnostic> GetDiagnostics(SyntaxTree tree)
+        {
+            return ImmutableArray.CreateRange(
+                Spans,
+                span => Diagnostic.Create(
+                    Descriptor,
+                    Location.Create(tree, span)));
+        }
+
         public DiagnosticTestState Update(
             string source,
             string expectedSource,
-            IEnumerable<Diagnostic> diagnostics,
+            DiagnosticDescriptor descriptor,
+            IEnumerable<TextSpan> spans,
             IEnumerable<AdditionalFile> additionalFiles,
             string message,
             IFormatProvider formatProvider,
@@ -65,7 +85,8 @@ namespace Roslynator.Testing
             return new DiagnosticTestState(
                 source: source,
                 expectedSource: expectedSource,
-                diagnostics: diagnostics,
+                descriptor: descriptor,
+                spans: spans,
                 additionalFiles: additionalFiles,
                 message: message,
                 formatProvider: formatProvider,
@@ -76,7 +97,8 @@ namespace Roslynator.Testing
         public DiagnosticTestState MaybeUpdate(
             string source = null,
             string expectedSource = null,
-            IEnumerable<Diagnostic> diagnostics = null,
+            DiagnosticDescriptor descriptor = null,
+            IEnumerable<TextSpan> spans = null,
             IEnumerable<AdditionalFile> additionalFiles = null,
             string message = null,
             IFormatProvider formatProvider = null,
@@ -86,7 +108,8 @@ namespace Roslynator.Testing
             return new DiagnosticTestState(
                 source: source ?? Source,
                 expectedSource: expectedSource ?? ExpectedSource,
-                diagnostics: diagnostics ?? Diagnostics,
+                descriptor: descriptor ?? Descriptor,
+                spans: spans ?? Spans,
                 additionalFiles: additionalFiles ?? AdditionalFiles,
                 message: message ?? Message,
                 formatProvider: formatProvider ?? FormatProvider,
@@ -129,9 +152,14 @@ namespace Roslynator.Testing
             return new DiagnosticTestState(this) { ExpectedSource = expectedSource };
         }
 
-        public DiagnosticTestState WithDiagnostics(IEnumerable<Diagnostic> diagnostics)
+        public DiagnosticTestState WithDescriptor(DiagnosticDescriptor descriptor)
         {
-            return new DiagnosticTestState(this) { Diagnostics = diagnostics?.ToImmutableArray() ?? ImmutableArray<Diagnostic>.Empty };
+            return new DiagnosticTestState(this) { Descriptor = descriptor };
+        }
+
+        public DiagnosticTestState WithSpans(IEnumerable<TextSpan> spans)
+        {
+            return new DiagnosticTestState(this) { Spans = spans?.ToImmutableArray() ?? ImmutableArray<TextSpan>.Empty };
         }
 
         new public DiagnosticTestState WithAdditionalFiles(IEnumerable<AdditionalFile> additionalFiles)

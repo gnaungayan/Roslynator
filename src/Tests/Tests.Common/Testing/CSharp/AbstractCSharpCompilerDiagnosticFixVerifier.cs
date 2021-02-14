@@ -41,7 +41,7 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextProcessor.FindSpansAndReplace(source, sourceData, expectedData);
+            TextWithSpans result = TextWithSpans.ParseAndReplace(source, sourceData, expectedData);
 
             var state = new CompilerDiagnosticFixTestState(
                 DiagnosticId,
@@ -77,7 +77,7 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(source);
+            var result = TextWithSpans.Parse(source);
 
             var state = new CompilerDiagnosticFixTestState(
                 DiagnosticId,
@@ -111,7 +111,7 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(source);
+            var result = TextWithSpans.Parse(source);
 
             var state = new CompilerDiagnosticFixTestState(
                 DiagnosticId,

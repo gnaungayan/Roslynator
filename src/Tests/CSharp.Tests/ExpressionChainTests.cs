@@ -36,12 +36,12 @@ class C
         string s = [|a + b + c|];
     }
 }";
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(s);
+            var result = TextWithSpans.Parse(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             var be2 = (BinaryExpressionSyntax)be.Left;
 
-            ExpressionChain.Enumerator en = new ExpressionChain(be, result.Spans[0].Span).GetEnumerator();
+            ExpressionChain.Enumerator en = new ExpressionChain(be, result.Spans[0]).GetEnumerator();
 
             Assert.True(en.MoveNext() && en.Current == be2.Left);
             Assert.True(en.MoveNext() && en.Current == be2.Right);
@@ -60,12 +60,12 @@ class C
         string s = a + b + [|c + d|];
     }
 }";
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(s);
+            var result = TextWithSpans.Parse(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             var be2 = (BinaryExpressionSyntax)be.Left;
 
-            ExpressionChain.Enumerator en = new ExpressionChain(be, result.Spans[0].Span).GetEnumerator();
+            ExpressionChain.Enumerator en = new ExpressionChain(be, result.Spans[0]).GetEnumerator();
 
             Assert.True(en.MoveNext() && en.Current == be2.Right);
             Assert.True(en.MoveNext() && en.Current == be.Right);
@@ -83,13 +83,13 @@ class C
         string s = a + [|b + c|] + d;
     }
 }";
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(s);
+            var result = TextWithSpans.Parse(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             be = (BinaryExpressionSyntax)be.Left;
             var be2 = (BinaryExpressionSyntax)be.Left;
 
-            ExpressionChain.Enumerator en = new ExpressionChain(be, result.Spans[0].Span).GetEnumerator();
+            ExpressionChain.Enumerator en = new ExpressionChain(be, result.Spans[0]).GetEnumerator();
 
             Assert.True(en.MoveNext() && en.Current == be2.Right);
             Assert.True(en.MoveNext() && en.Current == be.Right);
@@ -107,11 +107,11 @@ class C
         string s = a + [|b|];
     }
 }";
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(s);
+            var result = TextWithSpans.Parse(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
 
-            ExpressionChain.Enumerator en = new ExpressionChain(be, result.Spans[0].Span).GetEnumerator();
+            ExpressionChain.Enumerator en = new ExpressionChain(be, result.Spans[0]).GetEnumerator();
 
             Assert.True(en.MoveNext() && en.Current == be.Right);
             Assert.True(!en.MoveNext());
@@ -128,11 +128,11 @@ class C
         string s = [|a|] + b;
     }
 }";
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(s);
+            var result = TextWithSpans.Parse(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
 
-            ExpressionChain.Enumerator en = new ExpressionChain(be, result.Spans[0].Span).GetEnumerator();
+            ExpressionChain.Enumerator en = new ExpressionChain(be, result.Spans[0]).GetEnumerator();
 
             Assert.True(en.MoveNext() && en.Current == be.Left);
             Assert.True(!en.MoveNext());
@@ -163,12 +163,12 @@ class C
         string s = [|a + b + c|];
     }
 }";
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(s);
+            var result = TextWithSpans.Parse(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             var be2 = (BinaryExpressionSyntax)be.Left;
 
-            ExpressionChain.Reversed.Enumerator en = new ExpressionChain(be, result.Spans[0].Span).Reverse().GetEnumerator();
+            ExpressionChain.Reversed.Enumerator en = new ExpressionChain(be, result.Spans[0]).Reverse().GetEnumerator();
 
             Assert.True(en.MoveNext() && en.Current == be.Right);
             Assert.True(en.MoveNext() && en.Current == be2.Right);
@@ -187,12 +187,12 @@ class C
         string s = a + b + [|c + d|];
     }
 }";
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(s);
+            var result = TextWithSpans.Parse(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             var be2 = (BinaryExpressionSyntax)be.Left;
 
-            ExpressionChain.Reversed.Enumerator en = new ExpressionChain(be, result.Spans[0].Span).Reverse().GetEnumerator();
+            ExpressionChain.Reversed.Enumerator en = new ExpressionChain(be, result.Spans[0]).Reverse().GetEnumerator();
 
             Assert.True(en.MoveNext() && en.Current == be.Right);
             Assert.True(en.MoveNext() && en.Current == be2.Right);
@@ -210,13 +210,13 @@ class C
         string s = a + [|b + c|] + d;
     }
 }";
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(s);
+            var result = TextWithSpans.Parse(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
             be = (BinaryExpressionSyntax)be.Left;
             var be2 = (BinaryExpressionSyntax)be.Left;
 
-            ExpressionChain.Reversed.Enumerator en = new ExpressionChain(be, result.Spans[0].Span).Reverse().GetEnumerator();
+            ExpressionChain.Reversed.Enumerator en = new ExpressionChain(be, result.Spans[0]).Reverse().GetEnumerator();
 
             Assert.True(en.MoveNext() && en.Current == be.Right);
             Assert.True(en.MoveNext() && en.Current == be2.Right);
@@ -234,11 +234,11 @@ class C
         string s = a + [|b|];
     }
 }";
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(s);
+            var result = TextWithSpans.Parse(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
 
-            ExpressionChain.Reversed.Enumerator en = new ExpressionChain(be, result.Spans[0].Span).Reverse().GetEnumerator();
+            ExpressionChain.Reversed.Enumerator en = new ExpressionChain(be, result.Spans[0]).Reverse().GetEnumerator();
 
             Assert.True(en.MoveNext() && en.Current == be.Right);
             Assert.True(!en.MoveNext());
@@ -255,11 +255,11 @@ class C
         string s = [|a|] + b;
     }
 }";
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(s);
+            var result = TextWithSpans.Parse(s);
 
             BinaryExpressionSyntax be = CSharpSyntaxTree.ParseText(result.Text).GetRoot().FirstDescendant<BinaryExpressionSyntax>();
 
-            ExpressionChain.Reversed.Enumerator en = new ExpressionChain(be, result.Spans[0].Span).Reverse().GetEnumerator();
+            ExpressionChain.Reversed.Enumerator en = new ExpressionChain(be, result.Spans[0]).Reverse().GetEnumerator();
 
             Assert.True(en.MoveNext() && en.Current == be.Left);
             Assert.True(!en.MoveNext());

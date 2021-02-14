@@ -7,12 +7,12 @@ using Microsoft.CodeAnalysis.CodeFixes;
 
 namespace Roslynator.Testing
 {
-    public sealed class EmptyCodeFixProvider : CodeFixProvider
+    public sealed class DummyCodeFixProvider : CodeFixProvider
     {
-        public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray<string>.Empty;
+        public override ImmutableArray<string> FixableDiagnosticIds => throw new NotSupportedException();
 
         public override Task RegisterCodeFixesAsync(CodeFixContext context) => throw new NotSupportedException();
 
-        public override FixAllProvider GetFixAllProvider() => null;
+        public override FixAllProvider GetFixAllProvider() => throw new NotSupportedException();
     }
 }

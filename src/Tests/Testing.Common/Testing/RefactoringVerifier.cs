@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -15,22 +14,12 @@ namespace Roslynator.Testing
     /// <summary>
     /// Represents verifier for a refactoring that is provided by <see cref="RefactoringProvider"/>
     /// </summary>
-    [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public abstract class RefactoringVerifier<TRefactoringProvider> : CodeVerifier
         where TRefactoringProvider : CodeRefactoringProvider, new()
     {
         internal RefactoringVerifier(IAssert assert) : base(assert)
         {
         }
-
-        //TODO: del
-        ///// <summary>
-        ///// <see cref="CodeRefactoringProvider"/> that provides a refactoring that should be applied.
-        ///// </summary>
-        //public abstract CodeRefactoringProvider RefactoringProvider { get; }
-
-        //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        //private string DebuggerDisplay => RefactoringProvider.GetType().Name;
 
         internal async Task VerifyRefactoringAsync(
             RefactoringTestState state,

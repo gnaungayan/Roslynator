@@ -15,7 +15,6 @@ namespace Roslynator.CSharp.Analysis.Tests
         [Theory, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseCoalesceExpressionInsteadOfConditionalExpression)]
         [InlineData("s != null ? s : \"\"", "s ?? \"\"")]
         [InlineData("s == null ? \"\" : s", "s ?? \"\"")]
-
         [InlineData("(s != null) ? (s) : (\"\")", "s ?? \"\"")]
         [InlineData("(s == null) ? (\"\") : (s)", "s ?? \"\"")]
         public async Task Test_ReferenceType(string source, string expected)

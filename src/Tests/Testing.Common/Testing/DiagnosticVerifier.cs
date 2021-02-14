@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +17,6 @@ namespace Roslynator.Testing
     /// <summary>
     /// Represents verifier for a diagnostic that is produced by <see cref="DiagnosticAnalyzer"/>.
     /// </summary>
-    [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public abstract class DiagnosticVerifier<TAnalyzer, TFixProvider> : CodeVerifier
         where TAnalyzer : DiagnosticAnalyzer, new()
         where TFixProvider : CodeFixProvider, new()
@@ -26,82 +24,6 @@ namespace Roslynator.Testing
         internal DiagnosticVerifier(IAssert assert) : base(assert)
         {
         }
-
-        //TODO: del
-        ///// <summary>
-        ///// Gets an analyzer that can produce a diagnostic that should be verified.
-        ///// </summary>
-        //protected abstract DiagnosticAnalyzer Analyzer { get; }
-
-        ///// <summary>
-        ///// Gets a collection of additional analyzers that can produce a diagnostic that should be verified.
-        ///// Override this property if a diagnostic that should be verified can be produced by more than one analyzer.
-        ///// </summary>
-        //protected virtual ImmutableArray<DiagnosticAnalyzer> AdditionalAnalyzers { get; } = ImmutableArray<DiagnosticAnalyzer>.Empty;
-
-        ///// <summary>
-        ///// A collection of analyzers that can produce a diagnostic that should be verified.
-        ///// </summary>
-        //public ImmutableArray<DiagnosticAnalyzer> Analyzers
-        //{
-        //    get
-        //    {
-        //        if (_analyzers.IsDefault)
-        //            ImmutableInterlocked.InterlockedInitialize(ref _analyzers, CreateAnalyzers());
-
-        //        return _analyzers;
-
-        //        ImmutableArray<DiagnosticAnalyzer> CreateAnalyzers()
-        //        {
-        //            if (AdditionalAnalyzers.IsDefaultOrEmpty)
-        //            {
-        //                return ImmutableArray.Create(Analyzer);
-        //            }
-        //            else
-        //            {
-        //                ImmutableArray<DiagnosticAnalyzer>.Builder builder = ImmutableArray.CreateBuilder<DiagnosticAnalyzer>(AdditionalAnalyzers.Length + 1);
-
-        //                builder.Add(Analyzer);
-        //                builder.AddRange(AdditionalAnalyzers);
-
-        //                return builder.ToImmutable();
-        //            }
-        //        }
-        //    }
-        //}
-
-        //internal ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-        //{
-        //    get
-        //    {
-        //        if (_supportedDiagnostics.IsDefault)
-        //            ImmutableInterlocked.InterlockedInitialize(ref _supportedDiagnostics, Analyzers.SelectMany(f => f.SupportedDiagnostics).ToImmutableArray());
-
-        //        return _supportedDiagnostics;
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Gets a <see cref="CodeFixProvider"/> that can fix specified diagnostic.
-        ///// </summary>
-        //public abstract CodeFixProvider FixProvider { get; }
-
-        //internal ImmutableArray<string> FixableDiagnosticIds
-        //{
-        //    get
-        //    {
-        //        if (_fixableDiagnosticIds.IsDefault)
-        //            ImmutableInterlocked.InterlockedInitialize(ref _fixableDiagnosticIds, FixProvider.FixableDiagnosticIds);
-
-        //        return _fixableDiagnosticIds;
-        //    }
-        //}
-
-        //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        //private string DebuggerDisplay
-        //{
-        //    get { return $"{string.Join(", ", Analyzers.Select(f => f.GetType().Name))}"; }
-        //}
 
         internal async Task VerifyDiagnosticAsync(
             DiagnosticTestState state,
@@ -121,33 +43,41 @@ namespace Roslynator.Testing
             {
                 (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
 
+                SyntaxTree tree = await document.GetSyntaxTreeAsync();
+
+                ImmutableArray<Diagnostic> expectedDiagnostics = state.GetDiagnostics(tree);
+
+                VerifySupportedDiagnostics(analyzer, expectedDiagnostics);
+
                 Compilation compilation = await document.Project.GetCompilationAsync(cancellationToken);
 
                 ImmutableArray<Diagnostic> compilerDiagnostics = compilation.GetDiagnostics(cancellationToken);
 
                 VerifyCompilerDiagnostics(compilerDiagnostics, options);
 
-                compilation = UpdateCompilation(compilation, state.Diagnostics);
+                compilation = UpdateCompilation(compilation, expectedDiagnostics);
 
                 ImmutableArray<Diagnostic> diagnostics = await compilation.GetAnalyzerDiagnosticsAsync(analyzer, DiagnosticComparer.SpanStart, cancellationToken);
 
                 if (diagnostics.Length > 0
                     && supportedDiagnostics.Length > 1)
                 {
-                    VerifyDiagnostics(state, analyzer, FilterDiagnostics(diagnostics), cancellationToken);
+                    VerifyDiagnostics(state, analyzer, expectedDiagnostics, FilterDiagnostics(diagnostics, expectedDiagnostics), cancellationToken);
                 }
                 else
                 {
-                    VerifyDiagnostics(state, analyzer, diagnostics, cancellationToken);
+                    VerifyDiagnostics(state, analyzer, expectedDiagnostics, diagnostics, cancellationToken);
                 }
             }
 
-            IEnumerable<Diagnostic> FilterDiagnostics(ImmutableArray<Diagnostic> diagnostics)
+            static IEnumerable<Diagnostic> FilterDiagnostics(
+                ImmutableArray<Diagnostic> diagnostics,
+                ImmutableArray<Diagnostic> expectedDiagnostics)
             {
                 foreach (Diagnostic diagnostic in diagnostics)
                 {
                     var success = false;
-                    foreach (Diagnostic expectedDiagnostic in state.Diagnostics)
+                    foreach (Diagnostic expectedDiagnostic in expectedDiagnostics)
                     {
                         if (DiagnosticComparer.Id.Equals(diagnostic, expectedDiagnostic))
                         {
@@ -195,11 +125,15 @@ namespace Roslynator.Testing
 
             TAnalyzer analyzer = Activator.CreateInstance<TAnalyzer>();
 
-            VerifySupportedDiagnostics(analyzer, state.Diagnostics);
-
             using (Workspace workspace = new AdhocWorkspace())
             {
                 (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
+
+                SyntaxTree tree = await document.GetSyntaxTreeAsync();
+
+                ImmutableArray<Diagnostic> expectedDiagnostics = state.GetDiagnostics(tree);
+
+                VerifySupportedDiagnostics(analyzer, expectedDiagnostics);
 
                 Compilation compilation = await document.Project.GetCompilationAsync(cancellationToken);
 
@@ -207,39 +141,34 @@ namespace Roslynator.Testing
 
                 VerifyCompilerDiagnostics(compilerDiagnostics, options);
 
-                compilation = UpdateCompilation(compilation, state.Diagnostics);
+                compilation = UpdateCompilation(compilation, expectedDiagnostics);
 
                 ImmutableArray<Diagnostic> analyzerDiagnostics = await compilation.GetAnalyzerDiagnosticsAsync(analyzer, DiagnosticComparer.SpanStart, cancellationToken);
 
                 ImmutableArray<Diagnostic> actualDiagnostics = analyzerDiagnostics.Intersect(
-                    state.Diagnostics,
+                    expectedDiagnostics,
                     DiagnosticComparer.Id)
                     .ToImmutableArray();
 
                 if (!actualDiagnostics.IsEmpty)
                     Assert.True(false, $"No diagnostic expected{actualDiagnostics.ToDebugString()}");
-
-                //TODO: del
-                //foreach (Diagnostic diagnostic in analyzerDiagnostics)
-                //{
-                //    if (string.Equals(diagnostic.Id, Descripto.Id, StringComparison.Ordinal))
-                //        Assert.True(false, $"No diagnostic expected{analyzerDiagnostics.Where(f => string.Equals(f.Id, Descripto.Id, StringComparison.Ordinal)).ToDebugString()}");
-                //}
             }
         }
 
         private void VerifyDiagnostics(
             DiagnosticTestState state,
             TAnalyzer analyzer,
+            IEnumerable<Diagnostic> expectedDiagnostics,
             IEnumerable<Diagnostic> actualDiagnostics,
             CancellationToken cancellationToken = default)
         {
-            VerifyDiagnostics(state, analyzer, actualDiagnostics, checkAdditionalLocations: false, cancellationToken: cancellationToken);
+            VerifyDiagnostics(state, analyzer, expectedDiagnostics, actualDiagnostics, checkAdditionalLocations: false, cancellationToken: cancellationToken);
         }
 
         private void VerifyDiagnostics(
             DiagnosticTestState state,
             TAnalyzer analyzer,
+            IEnumerable<Diagnostic> expectedDiagnostics,
             IEnumerable<Diagnostic> actualDiagnostics,
             bool checkAdditionalLocations,
             CancellationToken cancellationToken = default)
@@ -247,7 +176,7 @@ namespace Roslynator.Testing
             int expectedCount = 0;
             int actualCount = 0;
 
-            using (IEnumerator<Diagnostic> expectedEnumerator = state.Diagnostics.OrderBy(f => f, DiagnosticComparer.SpanStart).GetEnumerator())
+            using (IEnumerator<Diagnostic> expectedEnumerator = expectedDiagnostics.OrderBy(f => f, DiagnosticComparer.SpanStart).GetEnumerator())
             using (IEnumerator<Diagnostic> actualEnumerator = actualDiagnostics.OrderBy(f => f, DiagnosticComparer.SpanStart).GetEnumerator())
             {
                 if (!expectedEnumerator.MoveNext())
@@ -325,14 +254,6 @@ namespace Roslynator.Testing
             ImmutableArray<DiagnosticDescriptor> supportedDiagnostics = analyzer.SupportedDiagnostics;
             ImmutableArray<string> fixableDiagnosticIds = fixProvider.FixableDiagnosticIds;
 
-            VerifySupportedDiagnostics(analyzer, state.Diagnostics);
-
-            foreach (Diagnostic diagnostic in state.Diagnostics)
-            {
-                if (!fixableDiagnosticIds.Contains(diagnostic.Id))
-                    Assert.True(false, $"Diagnostic '{diagnostic.Id}' is not fixable by code fix provider '{fixProvider.GetType().Name}'.");
-            }
-
             using (Workspace workspace = new AdhocWorkspace())
             {
                 (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
@@ -341,13 +262,25 @@ namespace Roslynator.Testing
 
                 document = project.GetDocument(document.Id);
 
+                SyntaxTree tree = await document.GetSyntaxTreeAsync();
+
+                ImmutableArray<Diagnostic> expectedDiagnostics = state.GetDiagnostics(tree);
+
+                foreach (Diagnostic diagnostic in expectedDiagnostics)
+                {
+                    if (!fixableDiagnosticIds.Contains(diagnostic.Id))
+                        Assert.True(false, $"Diagnostic '{diagnostic.Id}' is not fixable by code fix provider '{fixProvider.GetType().Name}'.");
+                }
+
+                VerifySupportedDiagnostics(analyzer, expectedDiagnostics);
+
                 Compilation compilation = await project.GetCompilationAsync(cancellationToken);
 
                 ImmutableArray<Diagnostic> compilerDiagnostics = compilation.GetDiagnostics(cancellationToken);
 
                 VerifyCompilerDiagnostics(compilerDiagnostics, options);
 
-                compilation = UpdateCompilation(compilation, state.Diagnostics);
+                compilation = UpdateCompilation(compilation, expectedDiagnostics);
 
                 ImmutableArray<Diagnostic> previousDiagnostics = ImmutableArray<Diagnostic>.Empty;
 
@@ -373,7 +306,7 @@ namespace Roslynator.Testing
                     Diagnostic diagnostic = null;
                     foreach (Diagnostic d in diagnostics)
                     {
-                        foreach (Diagnostic d2 in state.Diagnostics)
+                        foreach (Diagnostic d2 in expectedDiagnostics)
                         {
                             if (d.Id == d2.Id)
                             {
@@ -422,7 +355,7 @@ namespace Roslynator.Testing
 
                     VerifyNoNewCompilerDiagnostics(compilerDiagnostics, newCompilerDiagnostics, options);
 
-                    compilation = UpdateCompilation(compilation, state.Diagnostics);
+                    compilation = UpdateCompilation(compilation, expectedDiagnostics);
 
                     previousDiagnostics = diagnostics;
                 }
@@ -468,11 +401,17 @@ namespace Roslynator.Testing
 
                 Compilation compilation = await document.Project.GetCompilationAsync(cancellationToken);
 
+                SyntaxTree tree = await document.GetSyntaxTreeAsync();
+
+                ImmutableArray<Diagnostic> expectedDiagnostics = state.GetDiagnostics(tree);
+
+                VerifySupportedDiagnostics(analyzer, expectedDiagnostics);
+
                 ImmutableArray<Diagnostic> compilerDiagnostics = compilation.GetDiagnostics(cancellationToken);
 
                 VerifyCompilerDiagnostics(compilerDiagnostics, options);
 
-                compilation = UpdateCompilation(compilation, state.Diagnostics);
+                compilation = UpdateCompilation(compilation, expectedDiagnostics);
 
                 ImmutableArray<Diagnostic> diagnostics = await compilation.GetAnalyzerDiagnosticsAsync(analyzer, DiagnosticComparer.SpanStart, cancellationToken);
 
@@ -480,7 +419,7 @@ namespace Roslynator.Testing
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    if (state.Diagnostics.IndexOf(diagnostic, DiagnosticComparer.Id) == -1)
+                    if (expectedDiagnostics.IndexOf(diagnostic, DiagnosticComparer.Id) == -1)
                         continue;
 
                     if (!fixableDiagnosticIds.Contains(diagnostic.Id))

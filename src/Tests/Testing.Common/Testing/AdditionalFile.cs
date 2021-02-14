@@ -23,13 +23,13 @@ namespace Roslynator.Testing
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string DebuggerDisplay => Source;
 
-        internal static ImmutableArray<AdditionalFile> CreateRange(IEnumerable<string> additionalFiles)
+        public static ImmutableArray<AdditionalFile> CreateRange(IEnumerable<string> additionalFiles)
         {
             return additionalFiles?.Select(f => new AdditionalFile(f)).ToImmutableArray()
                 ?? ImmutableArray<AdditionalFile>.Empty;
         }
 
-        internal static ImmutableArray<AdditionalFile> CreateRange(IEnumerable<(string source, string expected)> additionalFiles)
+        public static ImmutableArray<AdditionalFile> CreateRange(IEnumerable<(string source, string expected)> additionalFiles)
         {
             return additionalFiles?.Select(f => new AdditionalFile(f.source, f.expected)).ToImmutableArray()
                 ?? ImmutableArray<AdditionalFile>.Empty;

@@ -3,14 +3,16 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Text;
+using Microsoft.CodeAnalysis.Text;
 using Roslynator.Text;
 
 namespace Roslynator.Testing.Text
 {
-    public static class TextProcessor
+    internal static class TextProcessor
     {
-        public static TextAndSpans FindSpansAndRemove(string text, IComparer<LinePositionSpanInfo> comparer = null)
+        public static TextWithSpans FindSpansAndRemove(string text)
         {
             StringBuilder sb = StringBuilderCache.GetInstance(text.Length);
 
@@ -120,11 +122,11 @@ namespace Roslynator.Testing.Text
 
             sb.Append(text, lastPos, text.Length - lastPos);
 
-            spans?.Sort(comparer ?? LinePositionSpanInfoComparer.Index);
+            spans?.Sort(LinePositionSpanInfoComparer.Index);
 
-            return new TextAndSpans(
+            return new TextWithSpans(
                 StringBuilderCache.GetStringAndFree(sb),
-                spans?.ToImmutableArray() ?? ImmutableArray<LinePositionSpanInfo>.Empty);
+                spans?.Select(f => f.Span).ToImmutableArray() ?? ImmutableArray<TextSpan>.Empty);
 
             char PeekNextChar()
             {
@@ -161,21 +163,12 @@ namespace Roslynator.Testing.Text
             }
         }
 
-        public static TextAndSpans FindSpansAndReplace(
+        public static TextWithSpans FindSpansAndReplace(
             string source,
-            string sourceData,
-            IComparer<LinePositionSpanInfo> comparer = null)
+            string replacement1,
+            string replacement2 = null)
         {
-            return FindSpansAndReplace(source, sourceData, expectedData: null, comparer);
-        }
-
-        public static TextAndSpans FindSpansAndReplace(
-            string source,
-            string sourceData,
-            string expectedData,
-            IComparer<LinePositionSpanInfo> comparer = null)
-        {
-            TextAndSpans result = FindSpansAndRemove(source);
+            TextWithSpans result = FindSpansAndRemove(source);
 
             if (result.Spans.Length == 0)
                 throw new InvalidOperationException("Text contains no span.");
@@ -183,22 +176,22 @@ namespace Roslynator.Testing.Text
             if (result.Spans.Length > 1)
                 throw new InvalidOperationException("Text contains more than one span.");
 
-            string expected2 = (expectedData != null)
-                ? result.Text.Remove(result.Spans[0].Start.Index) + expectedData + result.Text.Substring(result.Spans[0].End.Index)
+            string expected2 = (replacement2 != null)
+                ? result.Text.Remove(result.Spans[0].Start) + replacement2 + result.Text.Substring(result.Spans[0].End)
                 : null;
 
-            string source2 = sourceData;
+            string source2 = replacement1;
 
-            TextAndSpans result2 = FindSpansAndRemove(sourceData);
+            TextWithSpans result2 = FindSpansAndRemove(replacement1);
 
             if (result2.Spans.Length == 0)
-                source2 = "[|" + sourceData + "|]";
+                source2 = "[|" + replacement1 + "|]";
 
-            source2 = result.Text.Remove(result.Spans[0].Start.Index) + source2 + result.Text.Substring(result.Spans[0].End.Index);
+            source2 = result.Text.Remove(result.Spans[0].Start) + source2 + result.Text.Substring(result.Spans[0].End);
 
-            result = FindSpansAndRemove(source2, comparer);
+            result = FindSpansAndRemove(source2);
 
-            return new TextAndSpans(result.Text, expected2, result.Spans);
+            return new TextWithSpans(result.Text, expected2, result.Spans);
         }
     }
 }

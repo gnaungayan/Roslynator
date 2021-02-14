@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -41,12 +40,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(source);
+            var result = TextWithSpans.Parse(source);
 
             var state = new DiagnosticTestState(
                 result.Text,
                 null,
-                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)),
+                Descriptor,
+                result.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -77,12 +77,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextProcessor.FindSpansAndReplace(source, sourceData);
+            TextWithSpans result = TextWithSpans.ParseAndReplace(source, sourceData);
 
             var state = new DiagnosticTestState(
                 source,
                 null,
-                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)),
+                Descriptor,
+                result.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -107,7 +108,8 @@ namespace Roslynator.Testing.CSharp
             var state = new DiagnosticTestState(
                 source,
                 null,
-                ImmutableArray.Create(CreateDiagnostic(source, span)),
+                Descriptor,
+                ImmutableArray.Create(span),
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -132,7 +134,8 @@ namespace Roslynator.Testing.CSharp
             var state = new DiagnosticTestState(
                 source,
                 null,
-                spans.Select(span => CreateDiagnostic(source, span)).ToImmutableArray(),
+                Descriptor,
+                spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -146,55 +149,56 @@ namespace Roslynator.Testing.CSharp
                 cancellationToken: cancellationToken);
         }
 
-        internal async Task VerifyDiagnosticAsync(
-            string source,
-            Diagnostic expectedDiagnostic,
-            IEnumerable<string> additionalFiles = null,
-            TestOptions options = null,
-            ProjectOptions projectOptions = null,
-            CancellationToken cancellationToken = default)
-        {
-            var state = new DiagnosticTestState(
-                source,
-                null,
-                ImmutableArray.Create(expectedDiagnostic),
-                AdditionalFile.CreateRange(additionalFiles),
-                null,
-                null,
-                null,
-                null);
+        //TODO: del
+        //internal async Task VerifyDiagnosticAsync(
+        //    string source,
+        //    Diagnostic expectedDiagnostic,
+        //    IEnumerable<string> additionalFiles = null,
+        //    TestOptions options = null,
+        //    ProjectOptions projectOptions = null,
+        //    CancellationToken cancellationToken = default)
+        //{
+        //    var state = new DiagnosticTestState(
+        //        source,
+        //        null,
+        //        ImmutableArray.Create(expectedDiagnostic),
+        //        AdditionalFile.CreateRange(additionalFiles),
+        //        null,
+        //        null,
+        //        null,
+        //        null);
 
-            await VerifyDiagnosticAsync(
-                state,
-                options: options,
-                projectOptions: projectOptions,
-                cancellationToken: cancellationToken);
-        }
+        //    await VerifyDiagnosticAsync(
+        //        state,
+        //        options: options,
+        //        projectOptions: projectOptions,
+        //        cancellationToken: cancellationToken);
+        //}
 
-        internal async Task VerifyDiagnosticAsync(
-            string source,
-            IEnumerable<Diagnostic> expectedDiagnostics,
-            IEnumerable<string> additionalFiles = null,
-            TestOptions options = null,
-            ProjectOptions projectOptions = null,
-            CancellationToken cancellationToken = default)
-        {
-            var state = new DiagnosticTestState(
-                source,
-                null,
-                expectedDiagnostics,
-                AdditionalFile.CreateRange(additionalFiles),
-                null,
-                null,
-                null,
-                null);
+        //internal async Task VerifyDiagnosticAsync(
+        //    string source,
+        //    IEnumerable<Diagnostic> expectedDiagnostics,
+        //    IEnumerable<string> additionalFiles = null,
+        //    TestOptions options = null,
+        //    ProjectOptions projectOptions = null,
+        //    CancellationToken cancellationToken = default)
+        //{
+        //    var state = new DiagnosticTestState(
+        //        source,
+        //        null,
+        //        expectedDiagnostics,
+        //        AdditionalFile.CreateRange(additionalFiles),
+        //        null,
+        //        null,
+        //        null,
+        //        null);
 
-            await VerifyDiagnosticAsync(
-                state,
-                options,
-                projectOptions,
-                cancellationToken);
-        }
+        //    await VerifyDiagnosticAsync(
+        //        state,
+        //        options,
+        //        projectOptions,
+        //        cancellationToken);
+        //}
 
         /// <summary>
         /// Verifies that specified source will not produce diagnostic described with see <see cref="Descriptor"/>
@@ -213,12 +217,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextProcessor.FindSpansAndReplace(source, sourceData);
+            TextWithSpans result = TextWithSpans.ParseAndReplace(source, sourceData);
 
             var state = new DiagnosticTestState(
                 result.Text,
                 result.Expected,
-                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)),
+                Descriptor,
+                result.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -247,12 +252,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(source);
+            var result = TextWithSpans.Parse(source);
 
             var state = new DiagnosticTestState(
                 result.Text,
                 result.Expected,
-                diagnostics: ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)),
+                Descriptor,
+                result.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -285,12 +291,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(source);
+            var result = TextWithSpans.Parse(source);
 
             var state = new DiagnosticTestState(
                 result.Text,
                 expected,
-                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)),
+                Descriptor,
+                result.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -319,12 +326,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(source);
+            var result = TextWithSpans.Parse(source);
 
             var state = new DiagnosticTestState(
                 result.Text,
                 null,
-                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)),
+                Descriptor,
+                result.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -357,12 +365,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextProcessor.FindSpansAndReplace(source, sourceData, expectedData);
+            TextWithSpans result = TextWithSpans.ParseAndReplace(source, sourceData, expectedData);
 
             var state = new DiagnosticTestState(
                 result.Text,
                 result.Expected,
-                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)),
+                Descriptor,
+                result.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -384,12 +393,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextProcessor.FindSpansAndReplace(source, sourceData, expectedData);
+            TextWithSpans result = TextWithSpans.ParseAndReplace(source, sourceData, expectedData);
 
             var state = new DiagnosticTestState(
                 result.Text,
                 result.Expected,
-                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)),
+                Descriptor,
+                result.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -414,12 +424,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(source);
+            var result = TextWithSpans.Parse(source);
 
             var state = new DiagnosticTestState(
                 result.Text,
                 expected,
-                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)),
+                Descriptor,
+                result.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -450,12 +461,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(source);
+            var result = TextWithSpans.Parse(source);
 
             var state = new DiagnosticTestState(
                 result.Text,
                 result.Expected,
-                ImmutableArray.CreateRange(result.Spans, f => CreateDiagnostic(f)),
+                Descriptor,
+                result.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -469,23 +481,24 @@ namespace Roslynator.Testing.CSharp
                 cancellationToken: cancellationToken);
         }
 
-        internal Diagnostic CreateDiagnostic(string source, TextSpan span)
-        {
-            LinePositionSpan lineSpan = span.ToLinePositionSpan(source);
+        //TODO: del
+        //internal Diagnostic CreateDiagnostic(string source, TextSpan span)
+        //{
+        //    LinePositionSpan lineSpan = span.ToLinePositionSpan(source);
 
-            return CreateDiagnostic(span, lineSpan);
-        }
+        //    return CreateDiagnostic(span, lineSpan);
+        //}
 
-        internal Diagnostic CreateDiagnostic(LinePositionSpanInfo lineSpanInfo)
-        {
-            return CreateDiagnostic(lineSpanInfo.Span, lineSpanInfo.LineSpan);
-        }
+        //internal Diagnostic CreateDiagnostic(LinePositionSpanInfo lineSpanInfo)
+        //{
+        //    return CreateDiagnostic(lineSpanInfo.Span, lineSpanInfo.LineSpan);
+        //}
 
-        internal Diagnostic CreateDiagnostic(TextSpan span, LinePositionSpan lineSpan)
-        {
-            Location location = Location.Create(ProjectOptions.DefaultDocumentName, span, lineSpan);
+        //internal Diagnostic CreateDiagnostic(TextSpan span, LinePositionSpan lineSpan)
+        //{
+        //    Location location = Location.Create(ProjectOptions.DefaultDocumentName, span, lineSpan);
 
-            return Diagnostic.Create(Descriptor, location);
-        }
+        //    return Diagnostic.Create(Descriptor, location);
+        //}
     }
 }

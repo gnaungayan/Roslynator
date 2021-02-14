@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CodeRefactorings;
@@ -37,12 +38,12 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(source, comparer: LinePositionSpanInfoComparer.IndexDescending);
+            var result = TextWithSpans.Parse(source);
 
             var state = new RefactoringTestState(
                 result.Text,
                 expected,
-                ImmutableArray.CreateRange(result.Spans, f => f.Span),
+                result.Spans.OrderByDescending(f => f.Start).ToImmutableArray(),
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 equivalenceKey);
@@ -75,12 +76,12 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextProcessor.FindSpansAndReplace(source, sourceData, expectedData);
+            TextWithSpans result = TextWithSpans.ParseAndReplace(source, sourceData, expectedData);
 
             var state = new RefactoringTestState(
                 result.Text,
                 result.Expected,
-                ImmutableArray.CreateRange(result.Spans, f => f.Span),
+                result.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 equivalenceKey);
@@ -107,12 +108,12 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextAndSpans result = TextProcessor.FindSpansAndRemove(source, comparer: LinePositionSpanInfoComparer.IndexDescending);
+            var result = TextWithSpans.Parse(source);
 
             var state = new RefactoringTestState(
                 result.Text,
                 result.Expected,
-                ImmutableArray.CreateRange(result.Spans, f => f.Span),
+                result.Spans.OrderByDescending(f => f.Start).ToImmutableArray(),
                 null,
                 null,
                 equivalenceKey);

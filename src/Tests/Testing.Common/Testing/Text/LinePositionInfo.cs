@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.Testing.Text
 {
-    public readonly struct LinePositionInfo : IEquatable<LinePositionInfo>
+    internal readonly struct LinePositionInfo : IEquatable<LinePositionInfo>
     {
         public LinePositionInfo(int index, int lineIndex, int columnIndex)
         {
