@@ -15,7 +15,7 @@ namespace Roslynator.CSharp.Analysis.Tests
 
         public override TestOptions Options
         {
-            get { return base.Options.WithEnabled(AnalyzerOptions.RemoveAccessibilityModifiers); }
+            get { return base.Options.EnableDiagnostic(AnalyzerOptions.RemoveAccessibilityModifiers); }
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddAccessibilityModifiersOrViceVersa)]

@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Roslynator.Testing.CSharp
 {
-    public class CSharpProjectOptions : ProjectOptions
+    public sealed class CSharpProjectOptions : ProjectOptions
     {
         private static CSharpProjectOptions _default_CSharp5;
         private static CSharpProjectOptions _default_CSharp6;
@@ -39,7 +39,7 @@ namespace Roslynator.Testing.CSharp
 
         public override string Language => LanguageNames.CSharp;
 
-        public override string DefaultDocumentName => "Test.cs";
+        public override string DocumentName => "Test.cs";
 
         /// <summary>
         /// Gets a parse options that should be used to parse tested source code.
@@ -148,7 +148,7 @@ namespace Roslynator.Testing.CSharp
         /// Adds specified assembly name to the list of assembly names.
         /// </summary>
         /// <param name="metadataReference"></param>
-        public CSharpProjectOptions AddMetadataReferences(MetadataReference metadataReference)
+        internal CSharpProjectOptions AddMetadataReference(MetadataReference metadataReference)
         {
             return WithMetadataReferences(MetadataReferences.Add(metadataReference));
         }

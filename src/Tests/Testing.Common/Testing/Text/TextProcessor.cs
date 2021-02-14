@@ -12,7 +12,7 @@ namespace Roslynator.Testing.Text
 {
     internal static class TextProcessor
     {
-        public static TextWithSpans FindSpansAndRemove(string text)
+        public static TextAndSpans FindSpansAndRemove(string text)
         {
             StringBuilder sb = StringBuilderCache.GetInstance(text.Length);
 
@@ -124,7 +124,7 @@ namespace Roslynator.Testing.Text
 
             spans?.Sort(LinePositionSpanInfoComparer.Index);
 
-            return new TextWithSpans(
+            return new TextAndSpans(
                 StringBuilderCache.GetStringAndFree(sb),
                 spans?.Select(f => f.Span).ToImmutableArray() ?? ImmutableArray<TextSpan>.Empty);
 
@@ -163,12 +163,12 @@ namespace Roslynator.Testing.Text
             }
         }
 
-        public static TextWithSpans FindSpansAndReplace(
+        public static TextAndSpans FindSpansAndReplace(
             string source,
             string replacement1,
             string replacement2 = null)
         {
-            TextWithSpans result = FindSpansAndRemove(source);
+            TextAndSpans result = FindSpansAndRemove(source);
 
             if (result.Spans.Length == 0)
                 throw new InvalidOperationException("Text contains no span.");
@@ -182,7 +182,7 @@ namespace Roslynator.Testing.Text
 
             string source2 = replacement1;
 
-            TextWithSpans result2 = FindSpansAndRemove(replacement1);
+            TextAndSpans result2 = FindSpansAndRemove(replacement1);
 
             if (result2.Spans.Length == 0)
                 source2 = "[|" + replacement1 + "|]";
@@ -191,7 +191,7 @@ namespace Roslynator.Testing.Text
 
             result = FindSpansAndRemove(source2);
 
-            return new TextWithSpans(result.Text, expected2, result.Spans);
+            return new TextAndSpans(result.Text, expected2, result.Spans);
         }
     }
 }

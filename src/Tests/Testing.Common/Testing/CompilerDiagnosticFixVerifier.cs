@@ -15,35 +15,12 @@ namespace Roslynator.Testing
     /// <summary>
     /// Represents a verifier for compiler diagnostic.
     /// </summary>
-    [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public abstract class CompilerDiagnosticFixVerifier<TFixProvider> : CodeVerifier
         where TFixProvider : CodeFixProvider, new()
     {
         internal CompilerDiagnosticFixVerifier(IAssert assert) : base(assert)
         {
         }
-
-        ///// <summary>
-        ///// Gets an <see cref="CodeFixProvider"/> that should fix a diagnostic.
-        ///// </summary>
-        //public abstract CodeFixProvider FixProvider { get; }
-
-        //internal ImmutableArray<string> FixableDiagnosticIds
-        //{
-        //    get
-        //    {
-        //        if (_fixableDiagnosticIds.IsDefault)
-        //            ImmutableInterlocked.InterlockedInitialize(ref _fixableDiagnosticIds, FixProvider.FixableDiagnosticIds);
-
-        //        return _fixableDiagnosticIds;
-        //    }
-        //}
-
-        //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        //private string DebuggerDisplay
-        //{
-        //    get { return $"{FixProvider.GetType().Name}"; }
-        //}
 
         /// <summary>
         /// Verifies that specified source will produce compiler diagnostic with ID specified in <see cref="DiagnosticId"/>.

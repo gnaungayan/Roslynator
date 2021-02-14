@@ -10,15 +10,15 @@ namespace Roslynator.Testing
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public readonly struct AdditionalFile
     {
-        public AdditionalFile(string source, string expected = null)
+        public AdditionalFile(string source, string expectedSource = null)
         {
             Source = source;
-            Expected = expected;
+            ExpectedSource = expectedSource;
         }
 
         public string Source { get; }
 
-        public string Expected { get; }
+        public string ExpectedSource { get; }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string DebuggerDisplay => Source;
@@ -29,9 +29,9 @@ namespace Roslynator.Testing
                 ?? ImmutableArray<AdditionalFile>.Empty;
         }
 
-        public static ImmutableArray<AdditionalFile> CreateRange(IEnumerable<(string source, string expected)> additionalFiles)
+        public static ImmutableArray<AdditionalFile> CreateRange(IEnumerable<(string source, string expectedSource)> additionalFiles)
         {
-            return additionalFiles?.Select(f => new AdditionalFile(f.source, f.expected)).ToImmutableArray()
+            return additionalFiles?.Select(f => new AdditionalFile(f.source, f.expectedSource)).ToImmutableArray()
                 ?? ImmutableArray<AdditionalFile>.Empty;
         }
     }

@@ -85,7 +85,7 @@ class C
         }
     }
 }
-", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterBinaryOperatorInsteadOfBeforeIt));
+", options: Options.EnableDiagnostic(AnalyzerOptions.AddNewLineAfterBinaryOperatorInsteadOfBeforeIt));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddNewLineBeforeBinaryOperatorInsteadOfAfterItOrViceVersa)]
@@ -149,7 +149,7 @@ class C
         }
     }
 }
-", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterBinaryOperatorInsteadOfBeforeIt));
+", options: Options.EnableDiagnostic(AnalyzerOptions.AddNewLineAfterBinaryOperatorInsteadOfBeforeIt));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddNewLineBeforeBinaryOperatorInsteadOfAfterItOrViceVersa)]
@@ -169,7 +169,7 @@ class C
         }
     }
 }
-", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterBinaryOperatorInsteadOfBeforeIt));
+", options: Options.EnableDiagnostic(AnalyzerOptions.AddNewLineAfterBinaryOperatorInsteadOfBeforeIt));
         }
     }
 }

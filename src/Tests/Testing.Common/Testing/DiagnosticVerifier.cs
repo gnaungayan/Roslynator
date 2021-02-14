@@ -25,7 +25,7 @@ namespace Roslynator.Testing
         {
         }
 
-        internal async Task VerifyDiagnosticAsync(
+        public async Task VerifyDiagnosticAsync(
             DiagnosticTestState state,
             TestOptions options = null,
             ProjectOptions projectOptions = null,
@@ -92,19 +92,6 @@ namespace Roslynator.Testing
             }
         }
 
-        private Compilation UpdateCompilation(
-            Compilation compilation,
-            ImmutableArray<Diagnostic> diagnostics)
-        {
-            foreach (Diagnostic diagnostic in diagnostics)
-            {
-                if (!diagnostic.Descriptor.IsEnabledByDefault)
-                    compilation = compilation.EnsureEnabled(diagnostic.Descriptor);
-            }
-
-            return compilation;
-        }
-
         /// <summary>
         /// Verifies that specified source will not produce diagnostic described with see <see cref="Descriptor"/>
         /// </summary>
@@ -155,89 +142,7 @@ namespace Roslynator.Testing
             }
         }
 
-        private void VerifyDiagnostics(
-            DiagnosticTestState state,
-            TAnalyzer analyzer,
-            IEnumerable<Diagnostic> expectedDiagnostics,
-            IEnumerable<Diagnostic> actualDiagnostics,
-            CancellationToken cancellationToken = default)
-        {
-            VerifyDiagnostics(state, analyzer, expectedDiagnostics, actualDiagnostics, checkAdditionalLocations: false, cancellationToken: cancellationToken);
-        }
-
-        private void VerifyDiagnostics(
-            DiagnosticTestState state,
-            TAnalyzer analyzer,
-            IEnumerable<Diagnostic> expectedDiagnostics,
-            IEnumerable<Diagnostic> actualDiagnostics,
-            bool checkAdditionalLocations,
-            CancellationToken cancellationToken = default)
-        {
-            int expectedCount = 0;
-            int actualCount = 0;
-
-            using (IEnumerator<Diagnostic> expectedEnumerator = expectedDiagnostics.OrderBy(f => f, DiagnosticComparer.SpanStart).GetEnumerator())
-            using (IEnumerator<Diagnostic> actualEnumerator = actualDiagnostics.OrderBy(f => f, DiagnosticComparer.SpanStart).GetEnumerator())
-            {
-                if (!expectedEnumerator.MoveNext())
-                    Assert.True(false, "Diagnostic's location not found in a source text.");
-
-                do
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    expectedCount++;
-
-                    Diagnostic expectedDiagnostic = expectedEnumerator.Current;
-
-                    VerifySupportedDiagnostics(analyzer, expectedDiagnostic);
-
-                    if (actualEnumerator.MoveNext())
-                    {
-                        actualCount++;
-
-                        VerifyDiagnostic(
-                            actualEnumerator.Current,
-                            expectedDiagnostic,
-                            state.Message,
-                            state.FormatProvider,
-                            checkAdditionalLocations: checkAdditionalLocations);
-                    }
-                    else
-                    {
-                        while (expectedEnumerator.MoveNext())
-                            expectedCount++;
-
-                        ReportMismatch(actualDiagnostics, actualCount, expectedCount);
-                    }
-
-                } while (expectedEnumerator.MoveNext());
-
-                if (actualEnumerator.MoveNext())
-                {
-                    actualCount++;
-
-                    while (actualEnumerator.MoveNext())
-                        actualCount++;
-
-                    ReportMismatch(actualDiagnostics, actualCount, expectedCount);
-                }
-            }
-
-            void ReportMismatch(IEnumerable<Diagnostic> actualDiagnostics, int actualCount, int expectedCount)
-            {
-                if (actualCount == 0)
-                {
-                    Assert.True(false, $"No diagnostic found, expected: {expectedCount}.");
-                }
-                else
-                {
-                    Assert.True(false, $"Mismatch between number of diagnostics, expected: {expectedCount} actual: {actualCount}{actualDiagnostics.ToDebugString()}");
-                }
-            }
-        }
-
-        internal async Task VerifyFixAsync(
+        public async Task VerifyFixAsync(
             DiagnosticTestState state,
             TestOptions options = null,
             ProjectOptions projectOptions = null,
@@ -443,6 +348,94 @@ namespace Roslynator.Testing
             }
         }
 
+        private void VerifyDiagnostics(
+            DiagnosticTestState state,
+            TAnalyzer analyzer,
+            IEnumerable<Diagnostic> expectedDiagnostics,
+            IEnumerable<Diagnostic> actualDiagnostics,
+            CancellationToken cancellationToken = default)
+        {
+            VerifyDiagnostics(
+                state,
+                analyzer,
+                expectedDiagnostics,
+                actualDiagnostics,
+                checkAdditionalLocations: false,
+                cancellationToken: cancellationToken);
+        }
+
+        private void VerifyDiagnostics(
+            DiagnosticTestState state,
+            TAnalyzer analyzer,
+            IEnumerable<Diagnostic> expectedDiagnostics,
+            IEnumerable<Diagnostic> actualDiagnostics,
+            bool checkAdditionalLocations,
+            CancellationToken cancellationToken = default)
+        {
+            int expectedCount = 0;
+            int actualCount = 0;
+
+            using (IEnumerator<Diagnostic> expectedEnumerator = expectedDiagnostics.OrderBy(f => f, DiagnosticComparer.SpanStart).GetEnumerator())
+            using (IEnumerator<Diagnostic> actualEnumerator = actualDiagnostics.OrderBy(f => f, DiagnosticComparer.SpanStart).GetEnumerator())
+            {
+                if (!expectedEnumerator.MoveNext())
+                    Assert.True(false, "Diagnostic's location not found in a source text.");
+
+                do
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    expectedCount++;
+
+                    Diagnostic expectedDiagnostic = expectedEnumerator.Current;
+
+                    VerifySupportedDiagnostics(analyzer, expectedDiagnostic);
+
+                    if (actualEnumerator.MoveNext())
+                    {
+                        actualCount++;
+
+                        VerifyDiagnostic(
+                            actualEnumerator.Current,
+                            expectedDiagnostic,
+                            state.DiagnosticMessage,
+                            state.FormatProvider,
+                            checkAdditionalLocations: checkAdditionalLocations);
+                    }
+                    else
+                    {
+                        while (expectedEnumerator.MoveNext())
+                            expectedCount++;
+
+                        ReportMismatch(actualDiagnostics, actualCount, expectedCount);
+                    }
+
+                } while (expectedEnumerator.MoveNext());
+
+                if (actualEnumerator.MoveNext())
+                {
+                    actualCount++;
+
+                    while (actualEnumerator.MoveNext())
+                        actualCount++;
+
+                    ReportMismatch(actualDiagnostics, actualCount, expectedCount);
+                }
+            }
+
+            void ReportMismatch(IEnumerable<Diagnostic> actualDiagnostics, int actualCount, int expectedCount)
+            {
+                if (actualCount == 0)
+                {
+                    Assert.True(false, $"No diagnostic found, expected: {expectedCount}.");
+                }
+                else
+                {
+                    Assert.True(false, $"Mismatch between number of diagnostics, expected: {expectedCount} actual: {actualCount}{actualDiagnostics.ToDebugString()}");
+                }
+            }
+        }
+
         private void VerifyDiagnostic(
             Diagnostic actualDiagnostic,
             Diagnostic expectedDiagnostic,
@@ -518,6 +511,19 @@ namespace Roslynator.Testing
             {
                 return $"\r\n\r\nExpected diagnostic:\r\n{expectedDiagnostic}\r\n\r\nActual diagnostic:\r\n{actualDiagnostic}\r\n";
             }
+        }
+
+        private Compilation UpdateCompilation(
+            Compilation compilation,
+            ImmutableArray<Diagnostic> diagnostics)
+        {
+            foreach (Diagnostic diagnostic in diagnostics)
+            {
+                if (!diagnostic.Descriptor.IsEnabledByDefault)
+                    compilation = compilation.EnsureEnabled(diagnostic.Descriptor);
+            }
+
+            return compilation;
         }
     }
 }

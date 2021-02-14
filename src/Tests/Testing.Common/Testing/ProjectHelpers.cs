@@ -31,7 +31,7 @@ namespace Roslynator.Testing
                 .WithCompilationOptions(compilationOptions)
                 .WithParseOptions(projectOptions.ParseOptions);
 
-            Document document = project.AddDocument(projectOptions.DefaultDocumentName, SourceText.From(state.Source));
+            Document document = project.AddDocument(projectOptions.DocumentName, SourceText.From(state.Source));
 
             ImmutableArray<ExpectedDocument>.Builder expectedDocuments = null;
 
@@ -44,8 +44,8 @@ namespace Roslynator.Testing
 
                 for (int i = 0; i < additionalFiles.Length; i++)
                 {
-                    Document additionalDocument = project.AddDocument(AppendNumberToFileName(projectOptions.DefaultDocumentName, i + 2), SourceText.From(additionalFiles[i].Source));
-                    expectedDocuments.Add(new ExpectedDocument(additionalDocument.Id, additionalFiles[i].Expected));
+                    Document additionalDocument = project.AddDocument(AppendNumberToFileName(projectOptions.DocumentName, i + 2), SourceText.From(additionalFiles[i].Source));
+                    expectedDocuments.Add(new ExpectedDocument(additionalDocument.Id, additionalFiles[i].ExpectedSource));
                     project = additionalDocument.Project;
                 }
 

@@ -57,7 +57,7 @@ namespace Roslynator.Testing
             return WithAllowedCompilerDiagnosticIds(AllowedCompilerDiagnosticIds.AddRange(diagnosticIds));
         }
 
-        public TestOptions WithEnabled(DiagnosticDescriptor descriptor)
+        public TestOptions EnableDiagnostic(DiagnosticDescriptor descriptor)
         {
             ImmutableDictionary<string, ReportDiagnostic> specificDiagnosticOptions = SpecificDiagnosticOptions.SetItem(
                 descriptor.Id,
@@ -66,7 +66,7 @@ namespace Roslynator.Testing
             return WithSpecificDiagnosticOptions(specificDiagnosticOptions);
         }
 
-        public TestOptions WithEnabled(DiagnosticDescriptor descriptor1, DiagnosticDescriptor descriptor2)
+        internal TestOptions EnableDiagnostic(DiagnosticDescriptor descriptor1, DiagnosticDescriptor descriptor2)
         {
             ImmutableDictionary<string, ReportDiagnostic> options = SpecificDiagnosticOptions;
 
@@ -77,7 +77,7 @@ namespace Roslynator.Testing
             return WithSpecificDiagnosticOptions(options);
         }
 
-        public TestOptions WithDisabled(DiagnosticDescriptor descriptor)
+        public TestOptions DisableDiagnostic(DiagnosticDescriptor descriptor)
         {
             ImmutableDictionary<string, ReportDiagnostic> specificDiagnosticOptions = SpecificDiagnosticOptions.SetItem(
                 descriptor.Id,

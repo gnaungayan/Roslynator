@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.VisualBasic;
 
 namespace Roslynator.Testing
 {
-    public class VisualBasicProjectOptions : ProjectOptions
+    public sealed class VisualBasicProjectOptions : ProjectOptions
     {
         public VisualBasicProjectOptions(
             VisualBasicCompilationOptions compilationOptions,
@@ -22,7 +22,7 @@ namespace Roslynator.Testing
 
         public override string Language => LanguageNames.VisualBasic;
 
-        public override string DefaultDocumentName => "Test.vb";
+        public override string DocumentName => "Test.vb";
 
         new public VisualBasicParseOptions ParseOptions { get; }
 
@@ -39,23 +39,9 @@ namespace Roslynator.Testing
 
         private static VisualBasicProjectOptions CreateDefault()
         {
-            VisualBasicParseOptions parseOptions = null;
-            VisualBasicCompilationOptions compilationOptions = null;
+            var parseOptions = new VisualBasicParseOptions(LanguageVersion.Default);
 
-            using (var workspace = new AdhocWorkspace())
-            {
-                Project project = workspace
-                    .CurrentSolution
-                    .AddProject("TestProject", "TestProject", LanguageNames.VisualBasic);
-
-                compilationOptions = ((VisualBasicCompilationOptions)project.CompilationOptions)
-                    .WithOutputKind(OutputKind.DynamicallyLinkedLibrary);
-
-                parseOptions = ((VisualBasicParseOptions)project.ParseOptions);
-
-                parseOptions = parseOptions
-                    .WithLanguageVersion(LanguageVersion.Latest);
-            }
+            var compilationOptions = new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
 
             return new VisualBasicProjectOptions(
                 compilationOptions: compilationOptions,
@@ -67,39 +53,12 @@ namespace Roslynator.Testing
         /// Adds specified assembly name to the list of assembly names.
         /// </summary>
         /// <param name="metadataReference"></param>
-        public VisualBasicProjectOptions AddMetadataReferences(MetadataReference metadataReference)
+        public VisualBasicProjectOptions AddMetadataReference(MetadataReference metadataReference)
         {
             return WithMetadataReferences(MetadataReferences.Add(metadataReference));
         }
 
-        internal VisualBasicProjectOptions WithEnabled(DiagnosticDescriptor descriptor)
-        {
-            var compilationOptions = (VisualBasicCompilationOptions)CompilationOptions.EnsureEnabled(descriptor);
-
-            return WithCompilationOptions(compilationOptions);
-        }
-
-        internal VisualBasicProjectOptions WithEnabled(DiagnosticDescriptor descriptor1, DiagnosticDescriptor descriptor2)
-        {
-            ImmutableDictionary<string, ReportDiagnostic> diagnosticOptions = CompilationOptions.SpecificDiagnosticOptions;
-
-            diagnosticOptions = diagnosticOptions
-                .SetItem(descriptor1.Id, descriptor1.DefaultSeverity.ToReportDiagnostic())
-                .SetItem(descriptor2.Id, descriptor2.DefaultSeverity.ToReportDiagnostic());
-
-            VisualBasicCompilationOptions compilationOptions = CompilationOptions.WithSpecificDiagnosticOptions(diagnosticOptions);
-
-            return WithCompilationOptions(compilationOptions);
-        }
-
-        internal VisualBasicProjectOptions WithDisabled(DiagnosticDescriptor descriptor)
-        {
-            var compilationOptions = (VisualBasicCompilationOptions)CompilationOptions.EnsureSuppressed(descriptor);
-
-            return WithCompilationOptions(compilationOptions);
-        }
 #pragma warning disable CS1591
-
         public VisualBasicProjectOptions WithParseOptions(VisualBasicParseOptions parseOptions)
         {
             return new VisualBasicProjectOptions(

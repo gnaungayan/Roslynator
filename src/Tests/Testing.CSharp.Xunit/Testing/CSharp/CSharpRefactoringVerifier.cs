@@ -2,7 +2,7 @@
 
 using Microsoft.CodeAnalysis.CodeRefactorings;
 
-namespace Roslynator.Testing.CSharp
+namespace Roslynator.Testing.CSharp.Xunit
 {
     /// <summary>
     /// Represents verifier for a C# refactoring that is provided by <see cref="RefactoringVerifier.RefactoringProvider"/>

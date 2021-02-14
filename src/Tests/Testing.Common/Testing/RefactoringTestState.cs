@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.Testing
 {
-    public class RefactoringTestState : TestState
+    public sealed class RefactoringTestState : TestState
     {
         public RefactoringTestState(string source, string expectedSource, IEnumerable<TextSpan> spans)
             : this(source, expectedSource, spans, null, null, null)
@@ -56,7 +56,7 @@ namespace Roslynator.Testing
                 equivalenceKey: equivalenceKey);
         }
 
-        public RefactoringTestState MaybeUpdate(
+        internal RefactoringTestState MaybeUpdate(
             string source = null,
             string expectedSource = null,
             IEnumerable<TextSpan> spans = null,

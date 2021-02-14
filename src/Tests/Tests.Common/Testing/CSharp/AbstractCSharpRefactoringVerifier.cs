@@ -5,9 +5,8 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CodeRefactorings;
 using Roslynator.CSharp.Refactorings;
-using Roslynator.Testing.Text;
+using Roslynator.Testing.CSharp.Xunit;
 
 namespace Roslynator.Testing.CSharp
 {
@@ -38,7 +37,7 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextWithSpans.Parse(source);
+            var result = TextAndSpans.Parse(source);
 
             var state = new RefactoringTestState(
                 result.Text,
@@ -76,12 +75,12 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextWithSpans result = TextWithSpans.ParseAndReplace(source, sourceData, expectedData);
+            var result = TextAndSpans.Parse(source, sourceData, expectedData);
 
             var state = new RefactoringTestState(
                 result.Text,
                 result.Expected,
-                result.Spans,
+                result.Spans.OrderByDescending(f => f.Start).ToImmutableArray(),
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 equivalenceKey);
@@ -108,7 +107,7 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextWithSpans.Parse(source);
+            var result = TextAndSpans.Parse(source);
 
             var state = new RefactoringTestState(
                 result.Text,

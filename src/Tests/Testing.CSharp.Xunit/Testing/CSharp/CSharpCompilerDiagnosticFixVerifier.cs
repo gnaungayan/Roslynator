@@ -2,7 +2,7 @@
 
 using Microsoft.CodeAnalysis.CodeFixes;
 
-namespace Roslynator.Testing.CSharp
+namespace Roslynator.Testing.CSharp.Xunit
 {
     /// <summary>
     /// Represents a verifier for C# compiler diagnostics.

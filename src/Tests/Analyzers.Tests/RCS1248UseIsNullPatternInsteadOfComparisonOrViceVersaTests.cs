@@ -103,7 +103,7 @@ class C
         }
     }
 }
-", options: Options.WithEnabled(AnalyzerOptions.UseIsNullPatternInsteadOfInequalityOperator));
+", options: Options.EnableDiagnostic(AnalyzerOptions.UseIsNullPatternInsteadOfInequalityOperator));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseIsNullPatternInsteadOfComparisonOrViceVersa)]
@@ -133,7 +133,7 @@ class C
         }
     }
 }
-", options: Options.WithEnabled(AnalyzerOptions.UseIsNullPatternInsteadOfInequalityOperator));
+", options: Options.EnableDiagnostic(AnalyzerOptions.UseIsNullPatternInsteadOfInequalityOperator));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseIsNullPatternInsteadOfComparisonOrViceVersa)]
@@ -163,7 +163,7 @@ class C
         }
     }
 }
-", options: Options.WithEnabled(AnalyzerOptions.UseComparisonInsteadOfIsNullPattern));
+", options: Options.EnableDiagnostic(AnalyzerOptions.UseComparisonInsteadOfIsNullPattern));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseIsNullPatternInsteadOfComparisonOrViceVersa)]
@@ -193,7 +193,7 @@ class C
         }
     }
 }
-", options: Options.WithEnabled(AnalyzerOptions.UseComparisonInsteadOfIsNullPattern));
+", options: Options.EnableDiagnostic(AnalyzerOptions.UseComparisonInsteadOfIsNullPattern));
         }
     }
 }

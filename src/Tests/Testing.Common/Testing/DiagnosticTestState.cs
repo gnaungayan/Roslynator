@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.Testing
 {
+    //TODO: Diagnostic.Properties, AdditionalLocations
     public sealed class DiagnosticTestState : TestState
     {
         internal static DiagnosticTestState Empty { get; } = new DiagnosticTestState(null, null, null, null);
@@ -29,14 +30,14 @@ namespace Roslynator.Testing
             DiagnosticDescriptor descriptor,
             IEnumerable<TextSpan> spans,
             IEnumerable<AdditionalFile> additionalFiles,
-            string message,
+            string diagnosticMessage,
             IFormatProvider formatProvider,
             string codeActionTitle,
             string equivalenceKey) : base(source, expectedSource, additionalFiles, codeActionTitle, equivalenceKey)
         {
             Descriptor = descriptor;
             Spans = spans?.ToImmutableArray() ?? ImmutableArray<TextSpan>.Empty;
-            Message = message;
+            DiagnosticMessage = diagnosticMessage;
             FormatProvider = formatProvider;
         }
 
@@ -47,7 +48,7 @@ namespace Roslynator.Testing
                 descriptor: other.Descriptor,
                 spans: other.Spans,
                 additionalFiles: other.AdditionalFiles,
-                message: other.Message,
+                diagnosticMessage: other.DiagnosticMessage,
                 formatProvider: other.FormatProvider,
                 codeActionTitle: other.CodeActionTitle,
                 equivalenceKey: other.EquivalenceKey)
@@ -58,7 +59,7 @@ namespace Roslynator.Testing
 
         public ImmutableArray<TextSpan> Spans { get; private set; }
 
-        public string Message { get; private set; }
+        public string DiagnosticMessage { get; private set; }
 
         public IFormatProvider FormatProvider { get; private set; }
 
@@ -77,7 +78,7 @@ namespace Roslynator.Testing
             DiagnosticDescriptor descriptor,
             IEnumerable<TextSpan> spans,
             IEnumerable<AdditionalFile> additionalFiles,
-            string message,
+            string diagnosticMessage,
             IFormatProvider formatProvider,
             string codeActionTitle,
             string equivalenceKey)
@@ -88,19 +89,19 @@ namespace Roslynator.Testing
                 descriptor: descriptor,
                 spans: spans,
                 additionalFiles: additionalFiles,
-                message: message,
+                diagnosticMessage: diagnosticMessage,
                 formatProvider: formatProvider,
                 codeActionTitle: codeActionTitle,
                 equivalenceKey: equivalenceKey);
         }
 
-        public DiagnosticTestState MaybeUpdate(
+        internal DiagnosticTestState MaybeUpdate(
             string source = null,
             string expectedSource = null,
             DiagnosticDescriptor descriptor = null,
             IEnumerable<TextSpan> spans = null,
             IEnumerable<AdditionalFile> additionalFiles = null,
-            string message = null,
+            string diagnosticMessage = null,
             IFormatProvider formatProvider = null,
             string codeActionTitle = null,
             string equivalenceKey = null)
@@ -111,7 +112,7 @@ namespace Roslynator.Testing
                 descriptor: descriptor ?? Descriptor,
                 spans: spans ?? Spans,
                 additionalFiles: additionalFiles ?? AdditionalFiles,
-                message: message ?? Message,
+                diagnosticMessage: diagnosticMessage ?? DiagnosticMessage,
                 formatProvider: formatProvider ?? FormatProvider,
                 codeActionTitle: codeActionTitle ?? CodeActionTitle,
                 equivalenceKey: equivalenceKey ?? EquivalenceKey);
@@ -167,9 +168,9 @@ namespace Roslynator.Testing
             return new DiagnosticTestState(this) { AdditionalFiles = additionalFiles?.ToImmutableArray() ?? ImmutableArray<AdditionalFile>.Empty };
         }
 
-        public DiagnosticTestState WithMessage(string message)
+        public DiagnosticTestState WithDiagnosticMessage(string diagnosticMessage)
         {
-            return new DiagnosticTestState(this) { Message = message };
+            return new DiagnosticTestState(this) { DiagnosticMessage = diagnosticMessage };
         }
 
         public DiagnosticTestState WithFormatProvider(IFormatProvider formatProvider)

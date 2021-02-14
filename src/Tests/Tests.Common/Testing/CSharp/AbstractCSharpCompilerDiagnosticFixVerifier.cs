@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CodeFixes;
-using Roslynator.Testing.Text;
+using Roslynator.Testing.CSharp.Xunit;
 
 namespace Roslynator.Testing.CSharp
 {
@@ -35,13 +35,13 @@ namespace Roslynator.Testing.CSharp
             string source,
             string sourceData,
             string expectedData,
-            IEnumerable<(string source, string expected)> additionalFiles = null,
+            IEnumerable<(string source, string expectedSource)> additionalFiles = null,
             string equivalenceKey = null,
             TestOptions options = null,
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            TextWithSpans result = TextWithSpans.ParseAndReplace(source, sourceData, expectedData);
+            var result = TextAndSpans.Parse(source, sourceData, expectedData);
 
             var state = new CompilerDiagnosticFixTestState(
                 DiagnosticId,
@@ -71,13 +71,13 @@ namespace Roslynator.Testing.CSharp
         public async Task VerifyFixAsync(
             string source,
             string expected,
-            IEnumerable<(string source, string expected)> additionalFiles = null,
+            IEnumerable<(string source, string expectedSource)> additionalFiles = null,
             string equivalenceKey = null,
             TestOptions options = null,
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextWithSpans.Parse(source);
+            var result = TextAndSpans.Parse(source);
 
             var state = new CompilerDiagnosticFixTestState(
                 DiagnosticId,
@@ -111,7 +111,7 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextWithSpans.Parse(source);
+            var result = TextAndSpans.Parse(source);
 
             var state = new CompilerDiagnosticFixTestState(
                 DiagnosticId,

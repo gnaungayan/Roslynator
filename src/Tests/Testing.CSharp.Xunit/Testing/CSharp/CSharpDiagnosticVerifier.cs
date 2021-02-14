@@ -3,7 +3,7 @@
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Roslynator.Testing.CSharp
+namespace Roslynator.Testing.CSharp.Xunit
 {
     /// <summary>
     /// Represents a verifier for a C# diagnostic that is produced by <see cref="DiagnosticAnalyzer"/>.

@@ -6,14 +6,14 @@ using Roslynator.Testing.Text;
 
 namespace Roslynator.Testing
 {
-    public readonly struct TextWithSpans
+    public readonly struct TextAndSpans
     {
-        internal TextWithSpans(string text, ImmutableArray<TextSpan> spans)
+        internal TextAndSpans(string text, ImmutableArray<TextSpan> spans)
             : this(text, null, spans)
         {
         }
 
-        internal TextWithSpans(string text, string expected, ImmutableArray<TextSpan> spans)
+        internal TextAndSpans(string text, string expected, ImmutableArray<TextSpan> spans)
         {
             Text = text;
             Expected = expected;
@@ -26,12 +26,13 @@ namespace Roslynator.Testing
 
         public ImmutableArray<TextSpan> Spans { get; }
 
-        public static TextWithSpans Parse(string text)
+        //TODO: IComparer<TextSpan>
+        public static TextAndSpans Parse(string text)
         {
             return TextProcessor.FindSpansAndRemove(text);
         }
 
-        public static TextWithSpans ParseAndReplace(
+        public static TextAndSpans Parse(
             string text,
             string replacement1,
             string replacement2 = null)

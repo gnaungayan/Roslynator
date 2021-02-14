@@ -17,7 +17,7 @@ namespace Roslynator.Testing
 
         public abstract string Language { get; }
 
-        public abstract string DefaultDocumentName { get; }
+        public abstract string DocumentName { get; }
 
         /// <summary>
         /// Gets a common parse options.

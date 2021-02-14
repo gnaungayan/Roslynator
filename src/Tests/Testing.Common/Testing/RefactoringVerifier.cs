@@ -21,7 +21,7 @@ namespace Roslynator.Testing
         {
         }
 
-        internal async Task VerifyRefactoringAsync(
+        public async Task VerifyRefactoringAsync(
             RefactoringTestState state,
             TestOptions options = null,
             ProjectOptions projectOptions = null,
@@ -88,7 +88,7 @@ namespace Roslynator.Testing
             } while (en.MoveNext());
         }
 
-        internal async Task VerifyNoRefactoringAsync(
+        public async Task VerifyNoRefactoringAsync(
             RefactoringTestState state,
             TestOptions options = null,
             ProjectOptions projectOptions = null,

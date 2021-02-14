@@ -55,7 +55,7 @@ namespace Roslynator.Testing
                 equivalenceKey: equivalenceKey);
         }
 
-        public CompilerDiagnosticFixTestState MaybeUpdate(
+        internal CompilerDiagnosticFixTestState MaybeUpdate(
             string diagnosticId = null,
             string source = null,
             string expectedSource = null,

@@ -45,7 +45,7 @@ class C
     string M() =>
         null;
 }
-", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterExpressionBodyArrowInsteadOfBeforeIt));
+", options: Options.EnableDiagnostic(AnalyzerOptions.AddNewLineAfterExpressionBodyArrowInsteadOfBeforeIt));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddNewLineBeforeExpressionBodyArrowInsteadOfAfterItOrViceVersa)]
@@ -69,7 +69,7 @@ class C
     string M() // x
         => null;
 }
-", options: Options.WithEnabled(AnalyzerOptions.AddNewLineAfterExpressionBodyArrowInsteadOfBeforeIt));
+", options: Options.EnableDiagnostic(AnalyzerOptions.AddNewLineAfterExpressionBodyArrowInsteadOfBeforeIt));
         }
     }
 }
