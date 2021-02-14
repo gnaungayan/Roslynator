@@ -7,13 +7,13 @@ namespace Roslynator.Testing.CSharp
     /// <summary>
     /// Represents verifier for a C# refactoring that is provided by <see cref="RefactoringVerifier.RefactoringProvider"/>
     /// </summary>
-    public abstract class XunitCSharpRefactoringVerifier<TRefactoringProvider> : CSharpRefactoringVerifier<TRefactoringProvider>
+    public abstract class XunitRefactoringVerifier<TRefactoringProvider> : CSharpRefactoringVerifier<TRefactoringProvider>
         where TRefactoringProvider : CodeRefactoringProvider, new()
     {
         /// <summary>
         /// Initializes a new instance of <see cref="CSharpRefactoringVerifier"/>.
         /// </summary>
-        protected XunitCSharpRefactoringVerifier() : base(XunitAssert.Instance)
+        protected XunitRefactoringVerifier() : base(XunitAssert.Instance)
         {
         }
     }

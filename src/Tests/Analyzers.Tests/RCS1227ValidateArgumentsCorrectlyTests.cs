@@ -225,7 +225,7 @@ class C
         yield return s;
     }
 }
-");
+", projectOptions: ProjectOptions.WithDebugPreprocessorSymbol());
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ValidateArgumentsCorrectly)]

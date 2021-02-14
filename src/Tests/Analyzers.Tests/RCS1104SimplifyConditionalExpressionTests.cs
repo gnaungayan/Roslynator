@@ -155,7 +155,7 @@ class C
 #endif
     }
 }
-");
+", projectOptions: ProjectOptions.WithDebugPreprocessorSymbol());
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyConditionalExpression)]

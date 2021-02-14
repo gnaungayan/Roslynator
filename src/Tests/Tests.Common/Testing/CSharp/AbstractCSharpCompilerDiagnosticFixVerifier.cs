@@ -8,7 +8,7 @@ using Roslynator.Testing.Text;
 
 namespace Roslynator.Testing.CSharp
 {
-    public abstract class AbstractCSharpCompilerDiagnosticFixVerifier<TFixProvider> : XunitCSharpCompilerDiagnosticFixVerifier<TFixProvider>
+    public abstract class AbstractCSharpCompilerDiagnosticFixVerifier<TFixProvider> : XunitCompilerDiagnosticFixVerifier<TFixProvider>
         where TFixProvider : CodeFixProvider, new()
     {
         /// <summary>

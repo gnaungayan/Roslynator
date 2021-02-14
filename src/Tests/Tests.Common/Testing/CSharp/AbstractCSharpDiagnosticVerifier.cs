@@ -12,7 +12,7 @@ using Roslynator.Testing.Text;
 
 namespace Roslynator.Testing.CSharp
 {
-    public abstract class AbstractCSharpDiagnosticVerifier<TAnalyzer, TFixProvider> : XunitCSharpDiagnosticVerifier<TAnalyzer, TFixProvider>
+    public abstract class AbstractCSharpDiagnosticVerifier<TAnalyzer, TFixProvider> : XunitDiagnosticVerifier<TAnalyzer, TFixProvider>
         where TAnalyzer : DiagnosticAnalyzer, new()
         where TFixProvider : CodeFixProvider, new()
     {

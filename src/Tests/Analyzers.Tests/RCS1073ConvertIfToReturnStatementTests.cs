@@ -120,7 +120,7 @@ class C
         }
     }
 }
-");
+", projectOptions: ProjectOptions.WithDebugPreprocessorSymbol());
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertIfToReturnStatement)]
@@ -163,7 +163,7 @@ class C
 #endif
     }
 }
-");
+", projectOptions: ProjectOptions.WithDebugPreprocessorSymbol());
         }
     }
 }

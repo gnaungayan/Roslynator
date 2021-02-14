@@ -39,6 +39,6 @@ namespace Roslynator.Testing
         /// </summary>
         public CompilationOptions CompilationOptions => CommonCompilationOptions;
 
-        public ImmutableArray<MetadataReference> MetadataReferences { get; }
+        public ImmutableArray<MetadataReference> MetadataReferences { get; protected set; }
     }
 }

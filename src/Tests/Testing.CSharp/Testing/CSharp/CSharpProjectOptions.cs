@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -9,7 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 #pragma warning disable RCS1223
 
-namespace Roslynator.Testing
+namespace Roslynator.Testing.CSharp
 {
     public class CSharpProjectOptions : ProjectOptions
     {
@@ -29,6 +30,13 @@ namespace Roslynator.Testing
             ParseOptions = parseOptions;
         }
 
+        private CSharpProjectOptions(CSharpProjectOptions other)
+            : base(other.MetadataReferences)
+        {
+            CompilationOptions = other.CompilationOptions;
+            ParseOptions = other.ParseOptions;
+        }
+
         public override string Language => LanguageNames.CSharp;
 
         public override string DefaultDocumentName => "Test.cs";
@@ -36,12 +44,12 @@ namespace Roslynator.Testing
         /// <summary>
         /// Gets a parse options that should be used to parse tested source code.
         /// </summary>
-        new public CSharpParseOptions ParseOptions { get; }
+        new public CSharpParseOptions ParseOptions { get; private set; }
 
         /// <summary>
         /// Gets a compilation options that should be used to compile test project.
         /// </summary>
-        new public CSharpCompilationOptions CompilationOptions { get; }
+        new public CSharpCompilationOptions CompilationOptions { get; private set; }
 
         /// <summary>
         /// Gets a common parse options.
@@ -60,24 +68,9 @@ namespace Roslynator.Testing
 
         private static CSharpProjectOptions CreateDefault()
         {
-            CSharpParseOptions parseOptions = null;
-            CSharpCompilationOptions compilationOptions = null;
+            var parseOptions = new CSharpParseOptions(LanguageVersion.LatestMajor);
 
-            using (var workspace = new AdhocWorkspace())
-            {
-                Project project = workspace
-                    .CurrentSolution
-                    .AddProject("TestProject", "TestProject", LanguageNames.CSharp);
-
-                compilationOptions = ((CSharpCompilationOptions)project.CompilationOptions)
-                    .WithOutputKind(OutputKind.DynamicallyLinkedLibrary);
-
-                parseOptions = ((CSharpParseOptions)project.ParseOptions);
-
-                parseOptions = parseOptions
-                    .WithLanguageVersion(LanguageVersion.LatestMajor)
-                    .WithPreprocessorSymbols(parseOptions.PreprocessorSymbolNames.Concat(new[] { "DEBUG" }));
-            }
+            var compilationOptions = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
 
             return new CSharpProjectOptions(
                 compilationOptions: compilationOptions,
@@ -151,24 +144,6 @@ namespace Roslynator.Testing
             }
         }
 
-        ///// <summary>
-        ///// Adds specified compiler diagnostic ID to the list of allowed compiler diagnostic IDs.
-        ///// </summary>
-        ///// <param name="diagnosticId"></param>
-        //public CSharpProjectOptions AddAllowedCompilerDiagnosticId(string diagnosticId)
-        //{
-        //    return WithAllowedCompilerDiagnosticIds(AllowedCompilerDiagnosticIds.Add(diagnosticId));
-        //}
-
-        ///// <summary>
-        ///// Adds a list of specified compiler diagnostic IDs to the list of allowed compiler diagnostic IDs.
-        ///// </summary>
-        ///// <param name="diagnosticIds"></param>
-        //public CSharpProjectOptions AddAllowedCompilerDiagnosticIds(IEnumerable<string> diagnosticIds)
-        //{
-        //    return WithAllowedCompilerDiagnosticIds(AllowedCompilerDiagnosticIds.AddRange(diagnosticIds));
-        //}
-
         /// <summary>
         /// Adds specified assembly name to the list of assembly names.
         /// </summary>
@@ -178,30 +153,32 @@ namespace Roslynator.Testing
             return WithMetadataReferences(MetadataReferences.Add(metadataReference));
         }
 
-#pragma warning disable CS1591
+        internal CSharpProjectOptions WithAllowUnsafe(bool enabled)
+        {
+            return WithCompilationOptions(CompilationOptions.WithAllowUnsafe(enabled));
+        }
 
+        internal CSharpProjectOptions WithDebugPreprocessorSymbol()
+        {
+            return WithParseOptions(
+                ParseOptions.WithPreprocessorSymbols(
+                    ParseOptions.PreprocessorSymbolNames.Concat(new[] { "DEBUG" })));
+        }
+
+#pragma warning disable CS1591
         public CSharpProjectOptions WithParseOptions(CSharpParseOptions parseOptions)
         {
-            return new CSharpProjectOptions(
-                compilationOptions: CompilationOptions,
-                parseOptions: parseOptions,
-                metadataReferences: MetadataReferences);
+            return new CSharpProjectOptions(this) { ParseOptions = parseOptions ?? throw new ArgumentNullException(nameof(parseOptions)) };
         }
 
         public CSharpProjectOptions WithCompilationOptions(CSharpCompilationOptions compilationOptions)
         {
-            return new CSharpProjectOptions(
-                compilationOptions: compilationOptions,
-                parseOptions: ParseOptions,
-                metadataReferences: MetadataReferences);
+            return new CSharpProjectOptions(this) { CompilationOptions = compilationOptions ?? throw new ArgumentNullException(nameof(compilationOptions)) };
         }
 
         public CSharpProjectOptions WithMetadataReferences(IEnumerable<MetadataReference> metadataReferences)
         {
-            return new CSharpProjectOptions(
-                compilationOptions: CompilationOptions,
-                parseOptions: ParseOptions,
-                metadataReferences: metadataReferences);
+            return new CSharpProjectOptions(this) { MetadataReferences = metadataReferences?.ToImmutableArray() ?? ImmutableArray<MetadataReference>.Empty };
         }
 #pragma warning restore CS1591
     }

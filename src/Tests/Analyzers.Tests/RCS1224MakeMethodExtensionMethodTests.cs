@@ -245,7 +245,7 @@ public static class FooExtensions
 {
         public static unsafe void M(int* p) { }
 }
-");
+", projectOptions: ProjectOptions.WithAllowUnsafe(true));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.MakeMethodExtensionMethod)]

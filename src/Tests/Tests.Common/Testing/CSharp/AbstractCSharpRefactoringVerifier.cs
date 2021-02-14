@@ -11,7 +11,7 @@ using Roslynator.Testing.Text;
 
 namespace Roslynator.Testing.CSharp
 {
-    public abstract class AbstractCSharpRefactoringVerifier : XunitCSharpRefactoringVerifier<RoslynatorCodeRefactoringProvider>
+    public abstract class AbstractCSharpRefactoringVerifier : XunitRefactoringVerifier<RoslynatorCodeRefactoringProvider>
     {
         public abstract string RefactoringId { get; }
 

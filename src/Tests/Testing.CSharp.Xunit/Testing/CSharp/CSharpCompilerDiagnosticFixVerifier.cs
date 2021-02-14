@@ -7,13 +7,13 @@ namespace Roslynator.Testing.CSharp
     /// <summary>
     /// Represents a verifier for C# compiler diagnostics.
     /// </summary>
-    public abstract class XunitCSharpCompilerDiagnosticFixVerifier<TFixProvider> : CSharpCompilerDiagnosticFixVerifier<TFixProvider>
+    public abstract class XunitCompilerDiagnosticFixVerifier<TFixProvider> : CSharpCompilerDiagnosticFixVerifier<TFixProvider>
         where TFixProvider : CodeFixProvider, new()
     {
         /// <summary>
         /// Initializes a new instance of <see cref="XunitCSharpCompilerDiagnosticFixVerifier"/>
         /// </summary>
-        protected XunitCSharpCompilerDiagnosticFixVerifier() : base(XunitAssert.Instance)
+        protected XunitCompilerDiagnosticFixVerifier() : base(XunitAssert.Instance)
         {
         }
     }

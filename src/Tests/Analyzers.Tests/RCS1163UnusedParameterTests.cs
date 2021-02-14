@@ -53,7 +53,7 @@ class C
         var memory = stackalloc byte[length];
     }
 }
-");
+", projectOptions: ProjectOptions.WithAllowUnsafe(true));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UnusedParameter)]

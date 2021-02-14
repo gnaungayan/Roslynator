@@ -14,12 +14,8 @@ namespace Roslynator.Testing.CSharp
             CSharpParseOptions parseOptions = CSharpProjectOptions.Default.ParseOptions;
             CSharpCompilationOptions compilationOptions = CSharpProjectOptions.Default.CompilationOptions;
 
-            compilationOptions = compilationOptions
-                .WithAllowUnsafe(true);
-
             parseOptions = parseOptions
-                .WithLanguageVersion(LanguageVersion.CSharp9)
-                .WithPreprocessorSymbols(parseOptions.PreprocessorSymbolNames.Concat(new[] { "DEBUG" }));
+                .WithLanguageVersion(LanguageVersion.CSharp9);
 
             return new CSharpProjectOptions(
                 compilationOptions: compilationOptions,

@@ -8,14 +8,14 @@ namespace Roslynator.Testing.CSharp
     /// <summary>
     /// Represents a verifier for a C# diagnostic that is produced by <see cref="DiagnosticAnalyzer"/>.
     /// </summary>
-    public abstract class XunitCSharpDiagnosticVerifier<TAnalyzer, TFixProvider> : CSharpDiagnosticVerifier<TAnalyzer, TFixProvider>
+    public abstract class XunitDiagnosticVerifier<TAnalyzer, TFixProvider> : CSharpDiagnosticVerifier<TAnalyzer, TFixProvider>
         where TAnalyzer : DiagnosticAnalyzer, new()
         where TFixProvider : CodeFixProvider, new()
     {
         /// <summary>
         /// Initializes a new instance of <see cref="CSharpDiagnosticVerifier"/>.
         /// </summary>
-        protected XunitCSharpDiagnosticVerifier() : base(XunitAssert.Instance)
+        protected XunitDiagnosticVerifier() : base(XunitAssert.Instance)
         {
         }
     }

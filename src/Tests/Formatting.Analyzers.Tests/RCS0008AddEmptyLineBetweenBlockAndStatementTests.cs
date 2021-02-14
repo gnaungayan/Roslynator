@@ -240,7 +240,7 @@ class C
         M();
     }
 }
-");
+", projectOptions: ProjectOptions.WithAllowUnsafe(true));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddEmptyLineBetweenBlockAndStatement)]
@@ -327,7 +327,7 @@ class C
         M();
     }
 }
-");
+", projectOptions: ProjectOptions.WithAllowUnsafe(true));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddEmptyLineBetweenBlockAndStatement)]
