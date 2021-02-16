@@ -149,7 +149,7 @@ class C
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UnnecessaryInterpolatedString)]
-        public async Task TestNoDiagnosti()
+        public async Task TestNoDiagnostic()
         {
             await VerifyNoDiagnosticAsync(@"
 class C
@@ -159,6 +159,50 @@ class C
         const string x = null;
         string s = $""{x}"";
     }
+}
+");
+        }
+
+        [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UnnecessaryInterpolatedString)]
+        public async Task TestNoDiagnostic_FormattableString()
+        {
+            await VerifyNoDiagnosticAsync(@"
+using System;
+
+class C
+{
+    string Call(FormattableString s) => Call($"""");
+}
+");
+        }
+
+        [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UnnecessaryInterpolatedString)]
+        public async Task TestNoDiagnostic_FormattableString2()
+        {
+            await VerifyNoDiagnosticAsync(@"
+using System;
+
+class C
+{
+    string Call(FormattableString s) => Call($""x"");
+}
+");
+        }
+
+        [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UnnecessaryInterpolatedString)]
+        public async Task TestNoDiagnostic_FormattableString3()
+        {
+            await VerifyNoDiagnosticAsync(@"
+using System;
+
+class C
+{
+    string Call(FormattableString s)
+    {
+        string x = null;
+        return Call($""{""x""}"");
+    }
+
 }
 ");
         }
