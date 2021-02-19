@@ -40,13 +40,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextAndSpans.Parse(source);
+            var code = TestCode.Parse(source);
 
             var state = new DiagnosticTestState(
-                result.Text,
+                code.Value,
                 null,
                 Descriptor,
-                result.Spans,
+                code.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -77,13 +77,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextAndSpans.Parse(source, sourceData);
+            var code = TestCode.Parse(source, sourceData);
 
             var state = new DiagnosticTestState(
                 source,
                 null,
                 Descriptor,
-                result.Spans,
+                code.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -217,13 +217,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextAndSpans.Parse(source, sourceData);
+            var code = TestCode.Parse(source, sourceData);
 
             var state = new DiagnosticTestState(
-                result.Text,
-                result.Expected,
+                code.Value,
+                code.ExpectedValue,
                 Descriptor,
-                result.Spans,
+                code.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -252,13 +252,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextAndSpans.Parse(source);
+            var code = TestCode.Parse(source);
 
             var state = new DiagnosticTestState(
-                result.Text,
-                result.Expected,
+                code.Value,
+                code.ExpectedValue,
                 Descriptor,
-                result.Spans,
+                code.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -291,13 +291,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextAndSpans.Parse(source);
+            var code = TestCode.Parse(source);
 
             var state = new DiagnosticTestState(
-                result.Text,
+                code.Value,
                 expected,
                 Descriptor,
-                result.Spans,
+                code.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -326,13 +326,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextAndSpans.Parse(source);
+            var code = TestCode.Parse(source);
 
             var state = new DiagnosticTestState(
-                result.Text,
+                code.Value,
                 null,
                 Descriptor,
-                result.Spans,
+                code.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -365,13 +365,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextAndSpans.Parse(source, sourceData, expectedData);
+            var code = TestCode.Parse(source, sourceData, expectedData);
 
             var state = new DiagnosticTestState(
-                result.Text,
-                result.Expected,
+                code.Value,
+                code.ExpectedValue,
                 Descriptor,
-                result.Spans,
+                code.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -393,13 +393,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextAndSpans.Parse(source, sourceData, expectedData);
+            var code = TestCode.Parse(source, sourceData, expectedData);
 
             var state = new DiagnosticTestState(
-                result.Text,
-                result.Expected,
+                code.Value,
+                code.ExpectedValue,
                 Descriptor,
-                result.Spans,
+                code.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -407,9 +407,7 @@ namespace Roslynator.Testing.CSharp
                 equivalenceKey);
 
             await VerifyFixAsync(
-                source: result.Text,
-                expected: result.Expected,
-                equivalenceKey: equivalenceKey,
+                state,
                 options: options,
                 projectOptions: projectOptions,
                 cancellationToken: cancellationToken);
@@ -424,13 +422,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextAndSpans.Parse(source);
+            var code = TestCode.Parse(source);
 
             var state = new DiagnosticTestState(
-                result.Text,
+                code.Value,
                 expected,
                 Descriptor,
-                result.Spans,
+                code.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,
@@ -461,13 +459,13 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextAndSpans.Parse(source);
+            var code = TestCode.Parse(source);
 
             var state = new DiagnosticTestState(
-                result.Text,
-                result.Expected,
+                code.Value,
+                code.ExpectedValue,
                 Descriptor,
-                result.Spans,
+                code.Spans,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 null,

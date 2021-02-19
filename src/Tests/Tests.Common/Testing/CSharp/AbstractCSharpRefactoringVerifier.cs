@@ -37,12 +37,12 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextAndSpans.Parse(source);
+            var code = TestCode.Parse(source);
 
             var state = new RefactoringTestState(
-                result.Text,
+                code.Value,
                 expected,
-                result.Spans.OrderByDescending(f => f.Start).ToImmutableArray(),
+                code.Spans.OrderByDescending(f => f.Start).ToImmutableArray(),
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 equivalenceKey);
@@ -75,12 +75,12 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextAndSpans.Parse(source, sourceData, expectedData);
+            var code = TestCode.Parse(source, sourceData, expectedData);
 
             var state = new RefactoringTestState(
-                result.Text,
-                result.Expected,
-                result.Spans.OrderByDescending(f => f.Start).ToImmutableArray(),
+                code.Value,
+                code.ExpectedValue,
+                code.Spans.OrderByDescending(f => f.Start).ToImmutableArray(),
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 equivalenceKey);
@@ -107,12 +107,12 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextAndSpans.Parse(source);
+            var code = TestCode.Parse(source);
 
             var state = new RefactoringTestState(
-                result.Text,
-                result.Expected,
-                result.Spans.OrderByDescending(f => f.Start).ToImmutableArray(),
+                code.Value,
+                code.ExpectedValue,
+                code.Spans.OrderByDescending(f => f.Start).ToImmutableArray(),
                 null,
                 null,
                 equivalenceKey);

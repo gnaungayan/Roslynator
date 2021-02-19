@@ -41,12 +41,12 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextAndSpans.Parse(source, sourceData, expectedData);
+            var code = TestCode.Parse(source, sourceData, expectedData);
 
             var state = new CompilerDiagnosticFixTestState(
                 DiagnosticId,
-                result.Text,
-                result.Expected,
+                code.Value,
+                code.ExpectedValue,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 equivalenceKey);
@@ -77,11 +77,11 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextAndSpans.Parse(source);
+            var code = TestCode.Parse(source);
 
             var state = new CompilerDiagnosticFixTestState(
                 DiagnosticId,
-                result.Text,
+                code.Value,
                 expected,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
@@ -111,12 +111,12 @@ namespace Roslynator.Testing.CSharp
             ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
-            var result = TextAndSpans.Parse(source);
+            var code = TestCode.Parse(source);
 
             var state = new CompilerDiagnosticFixTestState(
                 DiagnosticId,
-                result.Text,
-                result.Expected,
+                code.Value,
+                code.ExpectedValue,
                 AdditionalFile.CreateRange(additionalFiles),
                 null,
                 equivalenceKey: equivalenceKey);

@@ -12,7 +12,7 @@ namespace Roslynator.Testing.Text
 {
     internal static class TextProcessor
     {
-        public static TextAndSpans FindSpansAndRemove(string text)
+        public static TestCode FindSpansAndRemove(string text)
         {
             StringBuilder sb = StringBuilderCache.GetInstance(text.Length);
 
@@ -124,7 +124,7 @@ namespace Roslynator.Testing.Text
 
             spans?.Sort(LinePositionSpanInfoComparer.Index);
 
-            return new TextAndSpans(
+            return new TestCode(
                 StringBuilderCache.GetStringAndFree(sb),
                 spans?.Select(f => f.Span).ToImmutableArray() ?? ImmutableArray<TextSpan>.Empty);
 
@@ -163,35 +163,35 @@ namespace Roslynator.Testing.Text
             }
         }
 
-        public static TextAndSpans FindSpansAndReplace(
+        public static TestCode FindSpansAndReplace(
             string source,
             string replacement1,
             string replacement2 = null)
         {
-            TextAndSpans result = FindSpansAndRemove(source);
+            TestCode code = FindSpansAndRemove(source);
 
-            if (result.Spans.Length == 0)
+            if (code.Spans.Length == 0)
                 throw new InvalidOperationException("Text contains no span.");
 
-            if (result.Spans.Length > 1)
+            if (code.Spans.Length > 1)
                 throw new InvalidOperationException("Text contains more than one span.");
 
             string expected2 = (replacement2 != null)
-                ? result.Text.Remove(result.Spans[0].Start) + replacement2 + result.Text.Substring(result.Spans[0].End)
+                ? code.Value.Remove(code.Spans[0].Start) + replacement2 + code.Value.Substring(code.Spans[0].End)
                 : null;
 
             string source2 = replacement1;
 
-            TextAndSpans result2 = FindSpansAndRemove(replacement1);
+            TestCode code2 = FindSpansAndRemove(replacement1);
 
-            if (result2.Spans.Length == 0)
+            if (code2.Spans.Length == 0)
                 source2 = "[|" + replacement1 + "|]";
 
-            source2 = result.Text.Remove(result.Spans[0].Start) + source2 + result.Text.Substring(result.Spans[0].End);
+            source2 = code.Value.Remove(code.Spans[0].Start) + source2 + code.Value.Substring(code.Spans[0].End);
 
-            result = FindSpansAndRemove(source2);
+            code = FindSpansAndRemove(source2);
 
-            return new TextAndSpans(result.Text, expected2, result.Spans);
+            return new TestCode(code.Value, expected2, code.Spans);
         }
     }
 }

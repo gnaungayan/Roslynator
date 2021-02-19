@@ -28,7 +28,7 @@ namespace Roslynator.Testing
 
         public ImmutableArray<TextSpan> Spans { get; private set; }
 
-        protected RefactoringTestState(RefactoringTestState other)
+        private RefactoringTestState(RefactoringTestState other)
             : this(
                 source: other.Source,
                 expectedSource: other.ExpectedSource,
