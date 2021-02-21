@@ -13,7 +13,7 @@ namespace Roslynator.Formatting.CSharp.Tests
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.AddEmptyLineBeforeUsingDirectiveList;
 
-        public override TestOptions Options
+        public override CSharpTestOptions Options
         {
             get { return base.Options.AddAllowedCompilerDiagnosticId("CS0430"); }
         }

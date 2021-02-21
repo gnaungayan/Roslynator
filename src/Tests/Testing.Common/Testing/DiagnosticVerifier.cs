@@ -28,20 +28,18 @@ namespace Roslynator.Testing
         public async Task VerifyDiagnosticAsync(
             DiagnosticTestState state,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             options ??= Options;
-            projectOptions ??= ProjectOptions;
 
             TAnalyzer analyzer = Activator.CreateInstance<TAnalyzer>();
             ImmutableArray<DiagnosticDescriptor> supportedDiagnostics = analyzer.SupportedDiagnostics;
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
+                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                 SyntaxTree tree = await document.GetSyntaxTreeAsync();
 
@@ -97,24 +95,21 @@ namespace Roslynator.Testing
         /// </summary>
         /// <param name="state"></param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyNoDiagnosticAsync(
             DiagnosticTestState state,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             options ??= Options;
-            projectOptions ??= ProjectOptions;
 
             TAnalyzer analyzer = Activator.CreateInstance<TAnalyzer>();
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
+                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                 SyntaxTree tree = await document.GetSyntaxTreeAsync();
 
@@ -145,13 +140,11 @@ namespace Roslynator.Testing
         public async Task VerifyFixAsync(
             DiagnosticTestState state,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             options ??= Options;
-            projectOptions ??= ProjectOptions;
 
             TAnalyzer analyzer = Activator.CreateInstance<TAnalyzer>();
             TFixProvider fixProvider = Activator.CreateInstance<TFixProvider>();
@@ -161,7 +154,7 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
+                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                 Project project = document.Project;
 
@@ -281,18 +274,15 @@ namespace Roslynator.Testing
         /// </summary>
         /// <param name="state"></param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyNoFixAsync(
             DiagnosticTestState state,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             options ??= Options;
-            projectOptions ??= ProjectOptions;
 
             TAnalyzer analyzer = Activator.CreateInstance<TAnalyzer>();
             TFixProvider fixProvider = Activator.CreateInstance<TFixProvider>();
@@ -302,7 +292,7 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
+                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                 Compilation compilation = await document.Project.GetCompilationAsync(cancellationToken);
 

@@ -300,7 +300,7 @@ class C
     {
     }
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7);
+", options: WellKnownCSharpTestOptions.Default_CSharp7);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyDefaultExpression)]

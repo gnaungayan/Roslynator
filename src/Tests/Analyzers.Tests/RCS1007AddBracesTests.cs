@@ -437,7 +437,7 @@ class C
         }
     }
 }
-", projectOptions: ProjectOptions.WithAllowUnsafe(true));
+", options: Options.WithAllowUnsafe(true));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.AddBraces)]

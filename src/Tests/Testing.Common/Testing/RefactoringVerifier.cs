@@ -24,11 +24,9 @@ namespace Roslynator.Testing
         public async Task VerifyRefactoringAsync(
             RefactoringTestState state,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             options ??= Options;
-            projectOptions ??= ProjectOptions;
 
             ImmutableArray<TextSpan>.Enumerator en = state.Spans.GetEnumerator();
 
@@ -43,7 +41,7 @@ namespace Roslynator.Testing
 
                 using (Workspace workspace = new AdhocWorkspace())
                 {
-                    (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
+                    (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                     SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
@@ -91,19 +89,17 @@ namespace Roslynator.Testing
         public async Task VerifyNoRefactoringAsync(
             RefactoringTestState state,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             options ??= Options;
-            projectOptions ??= ProjectOptions;
 
             TRefactoringProvider refactoringProvider = Activator.CreateInstance<TRefactoringProvider>();
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
+                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                 SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 

@@ -20,8 +20,8 @@ namespace Roslynator.Testing.CSharp
         {
         }
 
-        new public virtual CSharpProjectOptions ProjectOptions => CSharpProjectOptions.Default;
+        new public virtual CSharpTestOptions Options => CSharpTestOptions.Default;
 
-        protected override ProjectOptions CommonProjectOptions => ProjectOptions;
+        protected override TestOptions CommonOptions => Options;
     }
 }

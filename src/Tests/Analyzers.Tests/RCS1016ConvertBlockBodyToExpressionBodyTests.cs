@@ -914,7 +914,7 @@ class C
         return null;
     }
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp5);
+", options: WellKnownCSharpTestOptions.Default_CSharp5);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertBlockBodyToExpressionBodyOrViceVersa)]
@@ -932,7 +932,7 @@ class C
 #endif
     }
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp5);
+", options: WellKnownCSharpTestOptions.Default_CSharp5);
         }
     }
 }

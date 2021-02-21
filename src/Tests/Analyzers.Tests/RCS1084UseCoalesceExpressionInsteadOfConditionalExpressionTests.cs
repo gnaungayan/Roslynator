@@ -67,7 +67,7 @@ class C
         s = (s == null) ? s : """";
     }
 }
-", projectOptions: ProjectOptions.WithAllowUnsafe(true));
+", options: Options.WithAllowUnsafe(true));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseCoalesceExpressionInsteadOfConditionalExpression)]
@@ -84,7 +84,7 @@ class C
         i = (i != null) ? i : default(int*);
     }
 }
-", projectOptions: ProjectOptions.WithAllowUnsafe(true));
+", options: Options.WithAllowUnsafe(true));
         }
     }
 }

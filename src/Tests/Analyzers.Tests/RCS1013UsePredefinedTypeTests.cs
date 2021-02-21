@@ -92,7 +92,7 @@ class C
     {
     }
 }
-", projectOptions: CSharpProjectOptions.Default_NullableReferenceTypes);
+", options: WellKnownCSharpTestOptions.Default_NullableReferenceTypes);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UsePredefinedType)]

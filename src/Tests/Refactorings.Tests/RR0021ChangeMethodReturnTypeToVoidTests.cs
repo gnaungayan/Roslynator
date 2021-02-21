@@ -11,7 +11,7 @@ namespace Roslynator.CSharp.Refactorings.Tests
     {
         public override string RefactoringId { get; } = RefactoringIdentifiers.ChangeMethodReturnTypeToVoid;
 
-        public override TestOptions Options
+        public override CSharpTestOptions Options
         {
             get { return base.Options.AddAllowedCompilerDiagnosticId(CompilerDiagnosticIdentifiers.NotAllCodePathsReturnValue); }
         }

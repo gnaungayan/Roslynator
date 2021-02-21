@@ -13,7 +13,7 @@ namespace Roslynator.CSharp.Analysis.Tests
     {
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.UseExplicitlyTypedArrayOrViceVersa;
 
-        public override TestOptions Options
+        public override CSharpTestOptions Options
         {
             get { return base.Options.EnableDiagnostic(AnalyzerOptions.UseImplicitlyTypedArray); }
         }

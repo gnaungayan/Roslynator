@@ -139,7 +139,7 @@ class C
         s = s ?? """";
     }
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp6);
+", options: WellKnownCSharpTestOptions.Default_CSharp6);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseCompoundAssignment)]
@@ -156,7 +156,7 @@ class C
         return x ?? (x2 = M());
     }
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
+", options: WellKnownCSharpTestOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseCompoundAssignment)]
@@ -172,7 +172,7 @@ class C
         return x ?? (x = M());
     }
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
+", options: WellKnownCSharpTestOptions.Default_CSharp7_3);
         }
     }
 }

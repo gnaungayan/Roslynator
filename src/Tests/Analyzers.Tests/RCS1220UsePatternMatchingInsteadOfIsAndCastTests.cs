@@ -287,7 +287,7 @@ class C
         if (x is string && ((string)x) == s) { }
     }
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp6);
+", options: WellKnownCSharpTestOptions.Default_CSharp6);
         }
     }
 }

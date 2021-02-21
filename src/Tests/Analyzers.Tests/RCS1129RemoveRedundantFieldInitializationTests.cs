@@ -290,7 +290,7 @@ class C
 {
     string _f = null!;
 }
-", projectOptions: CSharpProjectOptions.Default.WithParseOptions(CSharpProjectOptions.Default.ParseOptions.WithLanguageVersion(LanguageVersion.Preview)));
+", options: CSharpTestOptions.Default.WithParseOptions(CSharpTestOptions.Default.ParseOptions.WithLanguageVersion(LanguageVersion.Preview)));
         }
     }
 }

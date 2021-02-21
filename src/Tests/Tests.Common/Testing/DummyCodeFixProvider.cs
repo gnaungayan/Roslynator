@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 
 namespace Roslynator.Testing
 {
-    internal sealed class DummyCodeFixProvider : CodeFixProvider
+    public sealed class DummyCodeFixProvider : CodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds => throw new NotSupportedException();
 

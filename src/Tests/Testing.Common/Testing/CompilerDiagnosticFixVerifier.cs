@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,18 +26,15 @@ namespace Roslynator.Testing
         /// </summary>
         /// <param name="state"></param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyFixAsync(
             CompilerDiagnosticFixTestState state,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             options ??= Options;
-            projectOptions ??= ProjectOptions;
 
             TFixProvider fixProvider = Activator.CreateInstance<TFixProvider>();
             ImmutableArray<string> fixableDiagnosticIds = fixProvider.FixableDiagnosticIds;
@@ -48,7 +44,7 @@ namespace Roslynator.Testing
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
+                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                 Project project = document.Project;
 
@@ -155,25 +151,22 @@ namespace Roslynator.Testing
         /// </summary>
         /// <param name="state"></param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyNoFixAsync(
             CompilerDiagnosticFixTestState state,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             options ??= Options;
-            projectOptions ??= ProjectOptions;
 
             TFixProvider fixProvider = Activator.CreateInstance<TFixProvider>();
             ImmutableArray<string> fixableDiagnosticIds = fixProvider.FixableDiagnosticIds;
 
             using (Workspace workspace = new AdhocWorkspace())
             {
-                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options, projectOptions);
+                (Document document, ImmutableArray<ExpectedDocument> expectedDocuments) = ProjectHelpers.CreateDocument(workspace.CurrentSolution, state, options);
 
                 Compilation compilation = await document.Project.GetCompilationAsync(cancellationToken);
 

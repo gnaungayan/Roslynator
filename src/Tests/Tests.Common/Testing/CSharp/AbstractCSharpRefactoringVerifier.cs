@@ -14,9 +14,7 @@ namespace Roslynator.Testing.CSharp
     {
         public abstract string RefactoringId { get; }
 
-        public override TestOptions Options => DefaultTestOptions.Value;
-
-        public override CSharpProjectOptions ProjectOptions => DefaultCSharpProjectOptions.Value;
+        public override CSharpTestOptions Options => DefaultCSharpTestOptions.Value;
 
         /// <summary>
         /// Verifies that a refactoring can be applied on a specified source code.
@@ -26,7 +24,6 @@ namespace Roslynator.Testing.CSharp
         /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyRefactoringAsync(
             string source,
@@ -34,7 +31,6 @@ namespace Roslynator.Testing.CSharp
             IEnumerable<string> additionalFiles = null,
             string equivalenceKey = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var code = TestCode.Parse(source);
@@ -50,7 +46,6 @@ namespace Roslynator.Testing.CSharp
             await VerifyRefactoringAsync(
                 state,
                 options,
-                projectOptions,
                 cancellationToken: cancellationToken);
         }
 
@@ -63,7 +58,6 @@ namespace Roslynator.Testing.CSharp
         /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyRefactoringAsync(
             string source,
@@ -72,7 +66,6 @@ namespace Roslynator.Testing.CSharp
             IEnumerable<string> additionalFiles = null,
             string equivalenceKey = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var code = TestCode.Parse(source, sourceData, expectedData);
@@ -88,7 +81,6 @@ namespace Roslynator.Testing.CSharp
             await VerifyRefactoringAsync(
                 state,
                 options,
-                projectOptions,
                 cancellationToken: cancellationToken);
         }
 
@@ -98,13 +90,11 @@ namespace Roslynator.Testing.CSharp
         /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyNoRefactoringAsync(
             string source,
             string equivalenceKey = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var code = TestCode.Parse(source);
@@ -120,7 +110,6 @@ namespace Roslynator.Testing.CSharp
             await VerifyNoRefactoringAsync(
                 state,
                 options,
-                projectOptions,
                 cancellationToken: cancellationToken);
         }
     }

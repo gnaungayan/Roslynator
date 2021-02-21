@@ -12,26 +12,17 @@ namespace Roslynator.Testing
         public const string DefaultProjectName = "TestProject";
 
         public static (Document document, ImmutableArray<ExpectedDocument> expectedDocuments)
-            CreateDocument(Solution solution, TestState state, TestOptions options, ProjectOptions projectOptions)
+            CreateDocument(Solution solution, TestState state, TestOptions options)
         {
-            CompilationOptions compilationOptions = projectOptions.CompilationOptions;
-
-            if (!options.SpecificDiagnosticOptions.IsEmpty)
-            {
-                ImmutableDictionary<string, ReportDiagnostic> specificOptions = compilationOptions.SpecificDiagnosticOptions;
-
-                specificOptions = specificOptions.SetItems(options.SpecificDiagnosticOptions);
-
-                compilationOptions = compilationOptions.WithSpecificDiagnosticOptions(specificOptions);
-            }
+            CompilationOptions compilationOptions = options.CompilationOptions;
 
             Project project = solution
-                .AddProject(DefaultProjectName, DefaultProjectName, projectOptions.Language)
-                .WithMetadataReferences(projectOptions.MetadataReferences)
+                .AddProject(DefaultProjectName, DefaultProjectName, options.Language)
+                .WithMetadataReferences(options.MetadataReferences)
                 .WithCompilationOptions(compilationOptions)
-                .WithParseOptions(projectOptions.ParseOptions);
+                .WithParseOptions(options.ParseOptions);
 
-            Document document = project.AddDocument(projectOptions.DocumentName, SourceText.From(state.Source));
+            Document document = project.AddDocument(options.DocumentName, SourceText.From(state.Source));
 
             ImmutableArray<ExpectedDocument>.Builder expectedDocuments = null;
 
@@ -44,7 +35,7 @@ namespace Roslynator.Testing
 
                 for (int i = 0; i < additionalFiles.Length; i++)
                 {
-                    Document additionalDocument = project.AddDocument(AppendNumberToFileName(projectOptions.DocumentName, i + 2), SourceText.From(additionalFiles[i].Source));
+                    Document additionalDocument = project.AddDocument(AppendNumberToFileName(options.DocumentName, i + 2), SourceText.From(additionalFiles[i].Source));
                     expectedDocuments.Add(new ExpectedDocument(additionalDocument.Id, additionalFiles[i].ExpectedSource));
                     project = additionalDocument.Project;
                 }

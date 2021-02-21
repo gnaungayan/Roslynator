@@ -45,7 +45,7 @@ class C
 
     object I() => new object();
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
+", options: WellKnownCSharpTestOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyLazyInitialization)]
@@ -113,7 +113,7 @@ class C
 
     object I() => new object();
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
+", options: WellKnownCSharpTestOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyLazyInitialization)]
@@ -148,7 +148,7 @@ class C
 
     object I() => new object();
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
+", options: WellKnownCSharpTestOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyLazyInitialization)]
@@ -183,7 +183,7 @@ class C
 
     object I() => new object();
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
+", options: WellKnownCSharpTestOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyLazyInitialization)]
@@ -255,7 +255,7 @@ class C
 
     object I() => new object();
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
+", options: WellKnownCSharpTestOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyLazyInitialization)]
@@ -331,7 +331,7 @@ class C
 
     object I() => new object();
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
+", options: WellKnownCSharpTestOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyLazyInitialization)]
@@ -372,7 +372,7 @@ class C
 
     object I() => new object();
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
+", options: WellKnownCSharpTestOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyLazyInitialization)]
@@ -407,7 +407,7 @@ class C
 
     int I() => 0;
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
+", options: WellKnownCSharpTestOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyLazyInitialization)]
@@ -442,7 +442,7 @@ class C
 
     int I() => 0;
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
+", options: WellKnownCSharpTestOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyLazyInitialization)]
@@ -512,7 +512,7 @@ class C
 
     int I() => 0;
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
+", options: WellKnownCSharpTestOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyLazyInitialization)]
@@ -584,7 +584,7 @@ class C
 
     int I() => 0;
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
+", options: WellKnownCSharpTestOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyLazyInitialization)]
@@ -656,7 +656,7 @@ class C
 
     int I() => 0;
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
+", options: WellKnownCSharpTestOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyLazyInitialization)]
@@ -695,7 +695,7 @@ class C
 
     int I() => 0;
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
+", options: WellKnownCSharpTestOptions.Default_CSharp7_3);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.SimplifyLazyInitialization)]

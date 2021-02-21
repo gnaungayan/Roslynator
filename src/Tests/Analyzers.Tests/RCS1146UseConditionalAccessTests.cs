@@ -851,7 +851,7 @@ unsafe class C
         }
     }
 }
-", projectOptions: ProjectOptions.WithAllowUnsafe(true));
+", options: Options.WithAllowUnsafe(true));
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseConditionalAccess)]
@@ -870,7 +870,7 @@ class C
         }
     }
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp5);
+", options: WellKnownCSharpTestOptions.Default_CSharp5);
         }
     }
 }

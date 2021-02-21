@@ -11,7 +11,7 @@ namespace Roslynator.CSharp.CodeFixes.Tests
     {
         public override string DiagnosticId { get; } = CompilerDiagnosticIdentifiers.ReturnTypeOfAsyncMethodMustBeVoidOrTaskOrTaskOfT;
 
-        public override TestOptions Options
+        public override CSharpTestOptions Options
         {
             get { return base.Options.AddAllowedCompilerDiagnosticId(CompilerDiagnosticIdentifiers.SinceMethodIsAsyncMethodThatReturnsTaskReturnKeywordMustNotBeFollowedByObjectExpression); }
         }

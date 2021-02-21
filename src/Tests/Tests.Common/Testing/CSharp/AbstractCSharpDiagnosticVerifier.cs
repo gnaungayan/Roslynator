@@ -21,9 +21,7 @@ namespace Roslynator.Testing.CSharp
         /// </summary>
         public abstract DiagnosticDescriptor Descriptor { get; }
 
-        public override TestOptions Options => DefaultTestOptions.Value;
-
-        public override CSharpProjectOptions ProjectOptions => DefaultCSharpProjectOptions.Value;
+        public override CSharpTestOptions Options => DefaultCSharpTestOptions.Value;
 
         /// <summary>
         /// Verifies that specified source will produce diagnostic described with see <see cref="Descriptor"/>
@@ -31,13 +29,11 @@ namespace Roslynator.Testing.CSharp
         /// <param name="source">A source code that should be tested. Tokens <c>[|</c> and <c>|]</c> represents start and end of selection respectively.</param>
         /// <param name="additionalFiles"></param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAsync(
             string source,
             IEnumerable<string> additionalFiles = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var code = TestCode.Parse(source);
@@ -56,7 +52,6 @@ namespace Roslynator.Testing.CSharp
             await VerifyDiagnosticAsync(
                 state,
                 options: options,
-                projectOptions: projectOptions,
                 cancellationToken: cancellationToken);
         }
 
@@ -67,14 +62,12 @@ namespace Roslynator.Testing.CSharp
         /// <param name="sourceData"></param>
         /// <param name="additionalFiles"></param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAsync(
             string source,
             string sourceData,
             IEnumerable<string> additionalFiles = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var code = TestCode.Parse(source, sourceData);
@@ -93,7 +86,6 @@ namespace Roslynator.Testing.CSharp
             await VerifyDiagnosticAsync(
                 state,
                 options: options,
-                projectOptions: projectOptions,
                 cancellationToken: cancellationToken);
         }
 
@@ -102,7 +94,6 @@ namespace Roslynator.Testing.CSharp
             TextSpan span,
             IEnumerable<string> additionalFiles = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var state = new DiagnosticTestState(
@@ -119,7 +110,6 @@ namespace Roslynator.Testing.CSharp
             await VerifyDiagnosticAsync(
                 state,
                 options: options,
-                projectOptions: projectOptions,
                 cancellationToken: cancellationToken);
         }
 
@@ -128,7 +118,6 @@ namespace Roslynator.Testing.CSharp
             IEnumerable<TextSpan> spans,
             IEnumerable<string> additionalFiles = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var state = new DiagnosticTestState(
@@ -145,60 +134,8 @@ namespace Roslynator.Testing.CSharp
             await VerifyDiagnosticAsync(
                 state,
                 options: options,
-                projectOptions: projectOptions,
                 cancellationToken: cancellationToken);
         }
-
-        //TODO: del
-        //internal async Task VerifyDiagnosticAsync(
-        //    string source,
-        //    Diagnostic expectedDiagnostic,
-        //    IEnumerable<string> additionalFiles = null,
-        //    TestOptions options = null,
-        //    ProjectOptions projectOptions = null,
-        //    CancellationToken cancellationToken = default)
-        //{
-        //    var state = new DiagnosticTestState(
-        //        source,
-        //        null,
-        //        ImmutableArray.Create(expectedDiagnostic),
-        //        AdditionalFile.CreateRange(additionalFiles),
-        //        null,
-        //        null,
-        //        null,
-        //        null);
-
-        //    await VerifyDiagnosticAsync(
-        //        state,
-        //        options: options,
-        //        projectOptions: projectOptions,
-        //        cancellationToken: cancellationToken);
-        //}
-
-        //internal async Task VerifyDiagnosticAsync(
-        //    string source,
-        //    IEnumerable<Diagnostic> expectedDiagnostics,
-        //    IEnumerable<string> additionalFiles = null,
-        //    TestOptions options = null,
-        //    ProjectOptions projectOptions = null,
-        //    CancellationToken cancellationToken = default)
-        //{
-        //    var state = new DiagnosticTestState(
-        //        source,
-        //        null,
-        //        expectedDiagnostics,
-        //        AdditionalFile.CreateRange(additionalFiles),
-        //        null,
-        //        null,
-        //        null,
-        //        null);
-
-        //    await VerifyDiagnosticAsync(
-        //        state,
-        //        options,
-        //        projectOptions,
-        //        cancellationToken);
-        //}
 
         /// <summary>
         /// Verifies that specified source will not produce diagnostic described with see <see cref="Descriptor"/>
@@ -207,14 +144,12 @@ namespace Roslynator.Testing.CSharp
         /// <param name="sourceData"></param>
         /// <param name="additionalFiles"></param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyNoDiagnosticAsync(
             string source,
             string sourceData,
             IEnumerable<string> additionalFiles = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var code = TestCode.Parse(source, sourceData);
@@ -233,7 +168,6 @@ namespace Roslynator.Testing.CSharp
             await VerifyNoDiagnosticAsync(
                 state,
                 options: options,
-                projectOptions: projectOptions,
                 cancellationToken);
         }
 
@@ -243,13 +177,11 @@ namespace Roslynator.Testing.CSharp
         /// <param name="source"></param>
         /// <param name="additionalFiles"></param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyNoDiagnosticAsync(
             string source,
             IEnumerable<string> additionalFiles = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var code = TestCode.Parse(source);
@@ -268,7 +200,6 @@ namespace Roslynator.Testing.CSharp
             await VerifyNoDiagnosticAsync(
                 state,
                 options: options,
-                projectOptions: projectOptions,
                 cancellationToken);
         }
 
@@ -280,7 +211,6 @@ namespace Roslynator.Testing.CSharp
         /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAndFixAsync(
             string source,
@@ -288,7 +218,6 @@ namespace Roslynator.Testing.CSharp
             IEnumerable<(string source, string expectedSource)> additionalFiles = null,
             string equivalenceKey = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var code = TestCode.Parse(source);
@@ -304,9 +233,9 @@ namespace Roslynator.Testing.CSharp
                 null,
                 equivalenceKey: equivalenceKey);
 
-            await VerifyDiagnosticAsync(state, options, projectOptions, cancellationToken);
+            await VerifyDiagnosticAsync(state, options, cancellationToken);
 
-            await VerifyFixAsync(state, options, projectOptions, cancellationToken);
+            await VerifyFixAsync(state, options, cancellationToken);
         }
 
         /// <summary>
@@ -316,14 +245,12 @@ namespace Roslynator.Testing.CSharp
         /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAndNoFixAsync(
             string source,
             IEnumerable<(string source, string expectedSource)> additionalFiles = null,
             string equivalenceKey = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var code = TestCode.Parse(source);
@@ -339,9 +266,9 @@ namespace Roslynator.Testing.CSharp
                 null,
                 equivalenceKey: equivalenceKey);
 
-            await VerifyDiagnosticAsync(state, options, projectOptions, cancellationToken);
+            await VerifyDiagnosticAsync(state, options, cancellationToken);
 
-            await VerifyNoFixAsync(state, options, projectOptions, cancellationToken: cancellationToken);
+            await VerifyNoFixAsync(state, options, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -353,7 +280,6 @@ namespace Roslynator.Testing.CSharp
         /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyDiagnosticAndFixAsync(
             string source,
@@ -362,7 +288,6 @@ namespace Roslynator.Testing.CSharp
             IEnumerable<(string source, string expectedSource)> additionalFiles = null,
             string equivalenceKey = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var code = TestCode.Parse(source, sourceData, expectedData);
@@ -378,9 +303,9 @@ namespace Roslynator.Testing.CSharp
                 null,
                 equivalenceKey: equivalenceKey);
 
-            await VerifyDiagnosticAsync(state, options: options, projectOptions, cancellationToken);
+            await VerifyDiagnosticAsync(state, options, cancellationToken);
 
-            await VerifyFixAsync(state, options: options, projectOptions, cancellationToken);
+            await VerifyFixAsync(state, options, cancellationToken);
         }
 
         internal async Task VerifyFixAsync(
@@ -390,7 +315,6 @@ namespace Roslynator.Testing.CSharp
             IEnumerable<(string source, string expectedSource)> additionalFiles = null,
             string equivalenceKey = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var code = TestCode.Parse(source, sourceData, expectedData);
@@ -409,7 +333,6 @@ namespace Roslynator.Testing.CSharp
             await VerifyFixAsync(
                 state,
                 options: options,
-                projectOptions: projectOptions,
                 cancellationToken: cancellationToken);
         }
 
@@ -419,7 +342,6 @@ namespace Roslynator.Testing.CSharp
             IEnumerable<(string source, string expectedSource)> additionalFiles = null,
             string equivalenceKey = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var code = TestCode.Parse(source);
@@ -438,7 +360,6 @@ namespace Roslynator.Testing.CSharp
             await VerifyFixAsync(
                 state: state,
                 options: options,
-                projectOptions: projectOptions,
                 cancellationToken: cancellationToken);
         }
 
@@ -449,14 +370,12 @@ namespace Roslynator.Testing.CSharp
         /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyNoFixAsync(
             string source,
             IEnumerable<string> additionalFiles = null,
             string equivalenceKey = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var code = TestCode.Parse(source);
@@ -475,28 +394,7 @@ namespace Roslynator.Testing.CSharp
             await VerifyNoFixAsync(
                 state,
                 options: options,
-                projectOptions: projectOptions,
                 cancellationToken: cancellationToken);
         }
-
-        //TODO: del
-        //internal Diagnostic CreateDiagnostic(string source, TextSpan span)
-        //{
-        //    LinePositionSpan lineSpan = span.ToLinePositionSpan(source);
-
-        //    return CreateDiagnostic(span, lineSpan);
-        //}
-
-        //internal Diagnostic CreateDiagnostic(LinePositionSpanInfo lineSpanInfo)
-        //{
-        //    return CreateDiagnostic(lineSpanInfo.Span, lineSpanInfo.LineSpan);
-        //}
-
-        //internal Diagnostic CreateDiagnostic(TextSpan span, LinePositionSpan lineSpan)
-        //{
-        //    Location location = Location.Create(ProjectOptions.DefaultDocumentName, span, lineSpan);
-
-        //    return Diagnostic.Create(Descriptor, location);
-        //}
     }
 }

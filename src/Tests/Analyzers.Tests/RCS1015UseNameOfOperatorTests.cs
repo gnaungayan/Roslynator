@@ -67,7 +67,7 @@ class C
         }
     }
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp5);
+", options: WellKnownCSharpTestOptions.Default_CSharp5);
         }
     }
 }

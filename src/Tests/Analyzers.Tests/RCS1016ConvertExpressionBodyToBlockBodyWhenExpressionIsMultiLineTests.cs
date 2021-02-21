@@ -11,20 +11,20 @@ namespace Roslynator.CSharp.Analysis.Tests
 {
     public class RCS1016ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLineTests : AbstractCSharpDiagnosticVerifier<ConvertBlockBodyToExpressionBodyOrViceVersaAnalyzer, ConvertBlockBodyToExpressionBodyOrViceVersaCodeFixProvider>
     {
-        private TestOptions _options_ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine;
-        private TestOptions _options_ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine;
+        private CSharpTestOptions _options_ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine;
+        private CSharpTestOptions _options_ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine;
 
         public override DiagnosticDescriptor Descriptor { get; } = DiagnosticDescriptors.ConvertBlockBodyToExpressionBodyOrViceVersa;
 
-        public override TestOptions Options
+        public override CSharpTestOptions Options
         {
             get { return base.Options.EnableDiagnostic(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine); }
         }
 
-        private TestOptions Options_ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine
+        private CSharpTestOptions Options_ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine
             => _options_ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine ??= Options.EnableDiagnostic(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenExpressionIsMultiLine);
 
-        private TestOptions Options_ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine
+        private CSharpTestOptions Options_ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine
             => _options_ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine ??= Options.EnableDiagnostic(AnalyzerOptions.ConvertExpressionBodyToBlockBodyWhenDeclarationIsMultiLine);
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.ConvertBlockBodyToExpressionBodyOrViceVersa)]

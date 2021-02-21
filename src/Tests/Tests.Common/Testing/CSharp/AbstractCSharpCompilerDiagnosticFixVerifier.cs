@@ -16,9 +16,7 @@ namespace Roslynator.Testing.CSharp
         /// </summary>
         public abstract string DiagnosticId { get; }
 
-        public override TestOptions Options => DefaultTestOptions.Value;
-
-        public override CSharpProjectOptions ProjectOptions => DefaultCSharpProjectOptions.Value;
+        public override CSharpTestOptions Options => DefaultCSharpTestOptions.Value;
 
         /// <summary>
         /// Verifies that specified source will produce compiler diagnostic with ID specified in <see cref="DiagnosticId"/>.
@@ -29,7 +27,6 @@ namespace Roslynator.Testing.CSharp
         /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyFixAsync(
             string source,
@@ -38,7 +35,6 @@ namespace Roslynator.Testing.CSharp
             IEnumerable<(string source, string expectedSource)> additionalFiles = null,
             string equivalenceKey = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var code = TestCode.Parse(source, sourceData, expectedData);
@@ -54,7 +50,6 @@ namespace Roslynator.Testing.CSharp
             await VerifyFixAsync(
                 state,
                 options: options,
-                projectOptions: projectOptions,
                 cancellationToken: cancellationToken);
         }
 
@@ -66,7 +61,6 @@ namespace Roslynator.Testing.CSharp
         /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyFixAsync(
             string source,
@@ -74,7 +68,6 @@ namespace Roslynator.Testing.CSharp
             IEnumerable<(string source, string expectedSource)> additionalFiles = null,
             string equivalenceKey = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var code = TestCode.Parse(source);
@@ -89,8 +82,7 @@ namespace Roslynator.Testing.CSharp
 
             await VerifyFixAsync(
                 state,
-                options: options,
-                projectOptions,
+                options,
                 cancellationToken);
         }
 
@@ -101,14 +93,12 @@ namespace Roslynator.Testing.CSharp
         /// <param name="additionalFiles"></param>
         /// <param name="equivalenceKey">Code action's equivalence key.</param>
         /// <param name="options"></param>
-        /// <param name="projectOptions"></param>
         /// <param name="cancellationToken"></param>
         public async Task VerifyNoFixAsync(
             string source,
             IEnumerable<string> additionalFiles = null,
             string equivalenceKey = null,
             TestOptions options = null,
-            ProjectOptions projectOptions = null,
             CancellationToken cancellationToken = default)
         {
             var code = TestCode.Parse(source);
@@ -124,7 +114,6 @@ namespace Roslynator.Testing.CSharp
             await VerifyNoFixAsync(
                 state,
                 options,
-                projectOptions,
                 cancellationToken);
         }
     }

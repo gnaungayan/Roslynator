@@ -169,7 +169,7 @@ class C
         (x ?? (x = new List<string>())).Add("""");
     }
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp7_3);
+", options: WellKnownCSharpTestOptions.Default_CSharp7_3);
         }
     }
 }

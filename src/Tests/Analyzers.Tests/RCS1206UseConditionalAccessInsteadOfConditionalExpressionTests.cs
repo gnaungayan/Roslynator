@@ -335,7 +335,7 @@ class Foo
         string s = (x != null) ? x.ToString() : null;
     }
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp5);
+", options: WellKnownCSharpTestOptions.Default_CSharp5);
         }
 
         [Fact, Trait(Traits.Analyzer, DiagnosticIdentifiers.UseConditionalAccessInsteadOfConditionalExpression)]

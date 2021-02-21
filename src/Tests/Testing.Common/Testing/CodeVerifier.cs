@@ -26,19 +26,17 @@ namespace Roslynator.Testing
         /// <summary>
         /// Gets a common code verification options.
         /// </summary>
-        protected abstract ProjectOptions CommonProjectOptions { get; }
+        protected abstract TestOptions CommonOptions { get; }
 
         /// <summary>
         /// Gets a code verification options.
         /// </summary>
-        public ProjectOptions ProjectOptions => CommonProjectOptions;
+        public TestOptions Options => CommonOptions;
 
         /// <summary>
         /// Gets a test assertions.
         /// </summary>
         internal IAssert Assert { get; }
-
-        public virtual TestOptions Options { get; } = TestOptions.Default;
 
         internal void VerifyCompilerDiagnostics(
             ImmutableArray<Diagnostic> diagnostics,

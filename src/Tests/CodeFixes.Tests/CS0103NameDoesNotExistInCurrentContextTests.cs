@@ -52,7 +52,7 @@ class C
         M(out string? abc);
     }
 }
-", equivalenceKey: EquivalenceKey.Create(DiagnosticId, "string?"), projectOptions: CSharpProjectOptions.Default_NullableReferenceTypes);
+", equivalenceKey: EquivalenceKey.Create(DiagnosticId, "string?"), options: WellKnownCSharpTestOptions.Default_NullableReferenceTypes);
         }
     }
 }

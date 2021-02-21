@@ -330,7 +330,7 @@ class C
         }
     }
 }
-", projectOptions: CSharpProjectOptions.Default_CSharp6);
+", options: WellKnownCSharpTestOptions.Default_CSharp6);
         }
     }
 }
